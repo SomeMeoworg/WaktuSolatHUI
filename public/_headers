@@ -8,3 +8,9 @@
 
 /malaysia-jakim.geojson
   Cache-Control: public, max-age=31536000, immutable
+
+/audio/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate

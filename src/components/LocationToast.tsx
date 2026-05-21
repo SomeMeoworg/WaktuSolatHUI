@@ -38,8 +38,12 @@ export function LocationToast({
         >
           <div className="bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)]/20 shadow-2xl rounded-[28px] p-5 flex flex-col gap-3 backdrop-blur-xl">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center shrink-0">
-                <MapPin size={24} className="stroke-[2.5]" />
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${
+                autoUpdatedZone 
+                  ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400" 
+                  : "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]"
+              }`}>
+                {autoUpdatedZone ? <Check size={24} className="stroke-[2.5]" /> : <MapPin size={24} className="stroke-[2.5]" />}
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
                 <h4 className="font-bold text-[var(--md-sys-color-on-surface)] text-lg leading-tight">

@@ -126,18 +126,26 @@ export function usePrayerNotifications(
         playTone(440, 'triangle', 0, 1.5, 0.08); // A4
         playTone(329.63, 'triangle', 0.4, 2.0, 0.08); // E4
         playTone(440, 'triangle', 0.8, 1.5, 0.05); // A4
-      } else if (sound === 'azan1') {
-        // Simple 4-note resonant sequence echoing Allahu Akbar
-        playTone(392.00, 'sine', 0, 1.2, 0.2); // G4
-        playTone(392.00, 'sine', 1.2, 2.0, 0.2); // G4
-        playTone(349.23, 'sine', 3.4, 0.8, 0.2); // F4
-        playTone(392.00, 'sine', 4.2, 2.5, 0.2); // G4
-      } else if (sound === 'azan2') {
-        // Different tone mimicking a traditional call pattern
-        playTone(440.00, 'sine', 0, 1.2, 0.2); // A4
-        playTone(440.00, 'sine', 1.4, 1.5, 0.2); // A4
-        playTone(493.88, 'sine', 3.0, 1.0, 0.2); // B4
-        playTone(440.00, 'sine', 4.2, 2.5, 0.2); // A4
+      } else if (sound === 'azan1' || sound === 'azan2') {
+        const file = sound === 'azan1' ? '/audio/azan-makkah.mp3' : '/audio/azan-madinah.mp3';
+        const audio = new Audio(file);
+        audio.volume = 0.5;
+        audio.play().catch(err => {
+          console.warn("Real audio playback failed, falling back to synthesized tone", err);
+          if (sound === 'azan1') {
+            // Simple 4-note resonant sequence echoing Allahu Akbar
+            playTone(392.00, 'sine', 0, 1.2, 0.2); // G4
+            playTone(392.00, 'sine', 1.2, 2.0, 0.2); // G4
+            playTone(349.23, 'sine', 3.4, 0.8, 0.2); // F4
+            playTone(392.00, 'sine', 4.2, 2.5, 0.2); // G4
+          } else {
+            // Different tone mimicking a traditional call pattern
+            playTone(440.00, 'sine', 0, 1.2, 0.2); // A4
+            playTone(440.00, 'sine', 1.4, 1.5, 0.2); // A4
+            playTone(493.88, 'sine', 3.0, 1.0, 0.2); // B4
+            playTone(440.00, 'sine', 4.2, 2.5, 0.2); // A4
+          }
+        });
       }
     } catch (e) {
       console.warn("AudioContext playback failed", e);

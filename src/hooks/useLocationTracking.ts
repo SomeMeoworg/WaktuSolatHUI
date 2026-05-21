@@ -107,15 +107,13 @@ export function useLocationTracking(
               if (force || foundZone !== selectedZoneRef.current) {
                 setSelectedZone(foundZone);
                 
-                // Only show the toast if they actually moved to a new zone while in the background
-                if (!force && foundZone !== selectedZoneRef.current) {
-                  setAutoUpdatedZone(foundZone);
-                  setAutoUpdatedLocationName(locName);
-                  setTimeout(() => {
-                    setAutoUpdatedZone(null);
-                    setAutoUpdatedLocationName(null);
-                  }, 5000);
-                }
+                // Show the toast if it was a forced check (user action/load) OR if the zone changed
+                setAutoUpdatedZone(foundZone);
+                setAutoUpdatedLocationName(locName);
+                setTimeout(() => {
+                  setAutoUpdatedZone(null);
+                  setAutoUpdatedLocationName(null);
+                }, 5000);
               }
             } else if (locationModeRef.current === 'manual') {
               if (foundZone !== selectedZoneRef.current) {

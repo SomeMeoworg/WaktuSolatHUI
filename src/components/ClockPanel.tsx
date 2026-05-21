@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { format, differenceInSeconds } from "date-fns";
 import { ms, enUS } from "date-fns/locale";
 import { motion, AnimatePresence } from "motion/react";
@@ -30,6 +30,38 @@ import { SwissStationClock } from "./clocks/SwissStationClock";
 import { BauhausClock } from "./clocks/BauhausClock";
 import { LayeredClock } from "./clocks/LayeredClock";
 
+function playSynthesizedSound(type: 'chime' | 'tick', pitchHz?: number) {
+  try {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    if (type === 'tick') {
+      // Clean tick: high frequency, extremely short decay
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.1);
+    } else {
+      // Chime: pure sine with pleasant harmonic decay
+      osc.type = 'triangle';
+      const freq = pitchHz || 587.33; // D5 default
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.7);
+    }
+  } catch (e) {
+    // Ignore context errors
+  }
+}
+
 export function ClockPanel({
   currentTime,
   nextPrayerName,
@@ -40,6 +72,10 @@ export function ClockPanel({
   syurukTime,
   todayData,
   onCalendarClick,
+  iqamahCountdownActive = false,
+  iqamahRemainingSeconds = 0,
+  iqamahTotalSeconds = 0,
+  currentPrayerNameForIqamah = null,
 }: {
   currentTime: Date;
   nextPrayerName: string | null;
@@ -50,6 +86,10 @@ export function ClockPanel({
   syurukTime?: string | null;
   todayData?: PrayerData | null;
   onCalendarClick?: () => void;
+  iqamahCountdownActive?: boolean;
+  iqamahRemainingSeconds?: number;
+  iqamahTotalSeconds?: number;
+  currentPrayerNameForIqamah?: string | null;
 }) {
   const { t, settings } = useAppContext();
   const visualStyle = useVisualStyle();
@@ -101,6 +141,46 @@ export function ClockPanel({
       setProgress(50);
     }
   }, [currentTime, nextPrayerTime, prevPrayerTime, t]);
+
+  const lastPlayedSecondRef = useRef<number>(-1);
+
+  useEffect(() => {
+    if (
+      iqamahCountdownActive && 
+      iqamahRemainingSeconds >= 0 && 
+      iqamahRemainingSeconds <= 10 && 
+      iqamahRemainingSeconds !== lastPlayedSecondRef.current &&
+      settings.iqamahCountdownSound &&
+      settings.iqamahCountdownSound !== 'none'
+    ) {
+      lastPlayedSecondRef.current = iqamahRemainingSeconds;
+      
+      const soundType = settings.iqamahCountdownSound;
+      if (soundType === 'chime') {
+        const pitches = [
+          1567.98, // 0s
+          1318.51, // 1s
+          1174.66, // 2s
+          1046.50, // 3s
+          987.77,  // 4s
+          880.00,  // 5s
+          783.99,  // 6s
+          698.46,  // 7s
+          659.25,  // 8s
+          587.33,  // 9s
+          523.25,  // 10s
+        ];
+        const pitch = pitches[iqamahRemainingSeconds] || 587.33;
+        playSynthesizedSound('chime', pitch);
+      } else if (soundType === 'tick') {
+        playSynthesizedSound('tick');
+      }
+    }
+    
+    if (!iqamahCountdownActive) {
+      lastPlayedSecondRef.current = -1;
+    }
+  }, [iqamahCountdownActive, iqamahRemainingSeconds, settings.iqamahCountdownSound]);
 
   // Parse Hijri date components for symmetric expressive layout
   let hijriDayNum = "";
@@ -385,41 +465,118 @@ export function ClockPanel({
         </div>
       </div>
       <div className="flex flex-row gap-2 lg:gap-3 mt-auto w-full shrink-0">
-        <motion.div
-          whileHover={{ scale: 1.02, rotate: -1, y: -4 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className={cn(
-            "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
-            visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]",
-            visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
-            visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)]"
-          )}
-        >
-          {/* @ts-ignore */}
-          <md-ripple></md-ripple>
-          <motion.div
-            className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--md-sys-color-tertiary)]/10 pointer-events-none"
-            whileHover={{ rotate: -12, opacity: 0.2 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            <Compass className="w-full h-full" />
-          </motion.div>
+        <AnimatePresence mode="wait">
+          {!iqamahCountdownActive ? (
+            <motion.div
+              key="qibla-card"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              whileHover={{ scale: 1.02, rotate: -1, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              className={cn(
+                "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
+                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
+                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)]"
+              )}
+            >
+              {/* @ts-ignore */}
+              <md-ripple></md-ripple>
+              <motion.div
+                className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--md-sys-color-tertiary)]/10 pointer-events-none"
+                whileHover={{ rotate: -12, opacity: 0.2 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <Compass className="w-full h-full" />
+              </motion.div>
 
-          <div className="relative z-10 flex flex-col h-full justify-between gap-1">
-            <h3 className="md3-label-small text-[var(--md-sys-color-on-tertiary-container)]/80 font-black uppercase tracking-widest">
-              {t("qibla")}
-            </h3>
-            <div>
-              <p className="text-lg sm:text-xl lg:text-2xl font-black font-mono tracking-tighter leading-none">
-                292.41°
-              </p>
-              <p className="text-[9px] sm:text-[10px] opacity-80 font-bold mt-1 tracking-wide">
-                {t("fromTrueNorth")}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+              <div className="relative z-10 flex flex-col h-full justify-between gap-1">
+                <h3 className="md3-label-small text-[var(--md-sys-color-on-tertiary-container)]/80 font-black uppercase tracking-widest">
+                  {t("qibla")}
+                </h3>
+                <div>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-black font-mono tracking-tighter leading-none">
+                    292.41°
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] opacity-80 font-bold mt-1 tracking-wide">
+                    {t("fromTrueNorth")}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="iqamah-card"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className={cn(
+                "p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between select-none transition-all duration-300",
+                iqamahRemainingSeconds <= 10 
+                  ? "bg-red-500 text-white border-2 border-red-600 shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse" 
+                  : "bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] border border-[var(--md-sys-color-error)]/30",
+                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
+                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20"
+              )}
+            >
+              {/* Progress Bar background overlay */}
+              <div 
+                className="absolute inset-y-0 left-0 bg-[var(--md-sys-color-error)]/10 dark:bg-white/10 transition-all duration-1000 ease-linear pointer-events-none"
+                style={{ 
+                  width: `${(iqamahRemainingSeconds / (iqamahTotalSeconds || 600)) * 100}%`,
+                  display: iqamahRemainingSeconds <= 5 ? 'none' : 'block'
+                }}
+              />
+              
+              <div className="relative z-10 flex flex-col h-full justify-between gap-1 w-full text-center">
+                {iqamahRemainingSeconds <= 5 ? (
+                  <div className="flex flex-col items-center justify-center h-full w-full py-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-red-100 dark:text-red-200 animate-bounce leading-none mb-1">
+                      {currentPrayerNameForIqamah || "IQAMAH"}
+                    </span>
+                    <motion.span 
+                      key={iqamahRemainingSeconds}
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: [1, 1.4, 1.1], opacity: 1 }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      className="text-4xl sm:text-5xl lg:text-6xl font-black font-sans tracking-tight leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]"
+                    >
+                      {iqamahRemainingSeconds}
+                    </motion.span>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className={cn(
+                      "md3-label-small font-black uppercase tracking-widest text-center",
+                      iqamahRemainingSeconds <= 10 ? "text-red-100 dark:text-red-200 animate-pulse" : "text-[var(--md-sys-color-on-error-container)]/80"
+                    )}>
+                      IQAMAH {currentPrayerNameForIqamah ? `• ${currentPrayerNameForIqamah}` : ''}
+                    </h3>
+                    <div className="flex flex-col items-center">
+                      <p className={cn(
+                        "font-black font-mono tracking-tighter leading-none text-center transition-all duration-300",
+                        iqamahRemainingSeconds <= 10 ? "text-3xl sm:text-4xl lg:text-5xl text-white" : "text-xl sm:text-2xl lg:text-3xl"
+                      )}>
+                        {Math.floor(iqamahRemainingSeconds / 60)}:
+                        {String(iqamahRemainingSeconds % 60).padStart(2, '0')}
+                      </p>
+                      <p className={cn(
+                        "text-[9px] sm:text-[10px] font-bold mt-1 tracking-wide text-center",
+                        iqamahRemainingSeconds <= 10 ? "text-red-100" : "opacity-80"
+                      )}>
+                        {iqamahRemainingSeconds <= 10 ? "SEDIA BERSOLAT" : "Sila bersedia untuk solat berjemaah"}
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.div
           whileHover={{ scale: 1.02, rotate: 1, y: -4 }}

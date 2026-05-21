@@ -28,6 +28,8 @@ import { PrayerData, JakimResponse, PrayerKey } from "./types";
 import { usePrayerNotifications } from "./hooks/usePrayerNotifications";
 import { useLocationTracking } from "./hooks/useLocationTracking";
 import { LocationToast } from "./components/LocationToast";
+import { AzanAlert } from "./components/AzanAlert";
+import { SolatMode } from "./components/SolatMode";
 import { CalendarDays, CalendarRange } from "lucide-react";
 import { useAppContext } from "./AppContext";
 import { useVisualStyle } from "./hooks/useVisualStyle";
@@ -332,6 +334,82 @@ export default function App() {
     }
   }
 
+  // State for tracking manually dismissed alerts and manually exited solat mode
+  const [manuallyDismissedAzanAlert, setManuallyDismissedAzanAlert] = useState<string | null>(null);
+  const [manuallyExitedSolatPrayer, setManuallyExitedSolatPrayer] = useState<string | null>(null);
+  
+  // Track the last active prayer to reset manual exit/dismiss states when it changes
+  const lastActivePrayerRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (prevPrayerKey && prevPrayerKey !== lastActivePrayerRef.current) {
+      setManuallyDismissedAzanAlert(null);
+      setManuallyExitedSolatPrayer(null);
+      lastActivePrayerRef.current = prevPrayerKey;
+    }
+  }, [prevPrayerKey]);
+
+  // Compute Active States for Azan Alert, Iqamah Countdown, and Solat Mode
+  let azanAlertActive = false;
+  let azanAlertRemainingSeconds = 0;
+  let azanAlertPrayerName: string | null = null;
+  
+  let iqamahCountdownActive = false;
+  let iqamahRemainingSeconds = 0;
+  let iqamahTotalSeconds = 0;
+  let currentPrayerNameForIqamah: string | null = null;
+  
+  let solatModeActive = false;
+  let solatRemainingSeconds = 0;
+  let solatTotalSeconds = 0;
+  let solatPrayerName: string | null = null;
+
+  if (prevPrayerKey && prevPrayerTime && todayData) {
+    const validKeys: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+    
+    if (validKeys.includes(prevPrayerKey as PrayerKey)) {
+      const pref = preferences[prevPrayerKey as PrayerKey];
+      const iqamahOffsetMinutes = settings.showIqamah ? (pref?.iqamahOffset ?? 0) : 0;
+      
+      const solatDurations = settings.solatModeDuration ?? { fajr: 20, dhuhr: 15, asr: 15, maghrib: 10, isha: 20 };
+      const solatDurationMinutes = solatDurations[prevPrayerKey] ?? 15;
+      
+      const iqamahEndTime = new Date(prevPrayerTime.getTime() + iqamahOffsetMinutes * 60 * 1000);
+      const solatEndTime = new Date(iqamahEndTime.getTime() + solatDurationMinutes * 60 * 1000);
+      
+      // 1. Azan Alert Active Check
+      if (settings.azanAlertStyle && settings.azanAlertStyle !== 'none' && manuallyDismissedAzanAlert !== prevPrayerKey) {
+        const alertDurationSeconds = settings.azanAlertDuration ?? 20;
+        const alertEndTime = new Date(prevPrayerTime.getTime() + alertDurationSeconds * 1000);
+        
+        if (currentTime >= prevPrayerTime && currentTime < alertEndTime) {
+          azanAlertActive = true;
+          azanAlertRemainingSeconds = Math.max(0, Math.floor((alertEndTime.getTime() - currentTime.getTime()) / 1000));
+          azanAlertPrayerName = prevPrayerName;
+        }
+      }
+      
+      // 2. Iqamah Countdown Active Check (only active if Azan alert is finished or dismissed)
+      if (settings.showIqamah && iqamahOffsetMinutes > 0 && !azanAlertActive) {
+        if (currentTime >= prevPrayerTime && currentTime < iqamahEndTime) {
+          iqamahCountdownActive = true;
+          iqamahTotalSeconds = iqamahOffsetMinutes * 60;
+          iqamahRemainingSeconds = Math.max(0, Math.floor((iqamahEndTime.getTime() - currentTime.getTime()) / 1000));
+          currentPrayerNameForIqamah = prevPrayerName;
+        }
+      }
+      
+      // 3. Solat Mode Active Check (active after iqamahEndTime, only if not manually exited)
+      if (settings.solatModeEnabled && manuallyExitedSolatPrayer !== prevPrayerKey) {
+        if (currentTime >= iqamahEndTime && currentTime < solatEndTime) {
+          solatModeActive = true;
+          solatTotalSeconds = solatDurationMinutes * 60;
+          solatRemainingSeconds = Math.max(0, Math.floor((solatEndTime.getTime() - currentTime.getTime()) / 1000));
+          solatPrayerName = prevPrayerName;
+        }
+      }
+    }
+  }
+
   const [showNotificationSettings, setShowNotificationSettings] =
     useState(false);
 
@@ -425,6 +503,32 @@ export default function App() {
           onTestSound={playSound}
         />
       </Suspense>
+      
+      <AnimatePresence>
+        {azanAlertActive && azanAlertPrayerName && prevPrayerTime && (
+          <AzanAlert
+            prayerName={azanAlertPrayerName}
+            prayerTime={prevPrayerTime}
+            remainingSeconds={azanAlertRemainingSeconds}
+            style={settings.azanAlertStyle || 'standard'}
+            onDismiss={() => {
+              if (prevPrayerKey) setManuallyDismissedAzanAlert(prevPrayerKey);
+            }}
+          />
+        )}
+        {solatModeActive && solatPrayerName && (
+          <SolatMode
+            prayerName={solatPrayerName}
+            remainingSeconds={solatRemainingSeconds}
+            showClock={settings.solatModeShowClock}
+            showQibla={settings.solatModeShowQibla}
+            onExit={() => {
+              if (prevPrayerKey) setManuallyExitedSolatPrayer(prevPrayerKey);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <main className="flex-1 w-full max-w-[2560px] mx-auto relative z-10 flex flex-col lg:flex-row px-4 sm:px-8 lg:px-12 xl:px-16 py-4 sm:py-6 lg:py-8 gap-8 lg:gap-12 xl:gap-16 lg:overflow-hidden min-h-0">
         <LocationToast 
           promptZone={promptZone}
@@ -474,6 +578,10 @@ export default function App() {
               }
               todayData={todayData}
               onCalendarClick={() => setShowCalendar(true)}
+              iqamahCountdownActive={iqamahCountdownActive}
+              iqamahRemainingSeconds={iqamahRemainingSeconds}
+              iqamahTotalSeconds={iqamahTotalSeconds}
+              currentPrayerNameForIqamah={currentPrayerNameForIqamah}
             />
           </div>
         </section>
