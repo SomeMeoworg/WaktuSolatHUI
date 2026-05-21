@@ -9,6 +9,7 @@ import "@material/web/iconbutton/icon-button.js";
 import "@material/web/button/filled-tonal-button.js";
 import "@material/web/ripple/ripple.js";
 import "@material/web/switch/switch.js";
+import "@material/web/switch/switch.js";
 import { useAppContext } from "../AppContext";
 import { MapModal } from "./MapModal";
 import { useVisualStyle } from "../hooks/useVisualStyle";
@@ -1113,22 +1114,37 @@ export function ZoneSelector({
                   )}
                 </div>
 
-                <AnimatePresence>
-                  {!searchQuery && (
-                    <md-filled-tonal-button
-                      onClick={handleAutoDetect}
-                      disabled={isDetecting}
-                      className="w-full mt-1"
-                    >
-                      <Crosshair
-                        size={18}
-                        slot="icon"
-                        className={isDetecting ? "animate-spin" : ""}
-                      />
-                      {isDetecting ? t("detecting") : t("detectLocation")}
-                    </md-filled-tonal-button>
-                  )}
-                </AnimatePresence>
+                <div className="flex flex-col gap-3 mt-1">
+                  <div className="flex items-center justify-between bg-[var(--md-sys-color-surface-container)] px-5 py-4 rounded-3xl shadow-sm border border-[var(--md-sys-color-outline)]/10">
+                    <div className="pr-4">
+                      <h4 className="font-bold text-[var(--md-sys-color-on-surface)] text-sm md:text-base">{t('autoLocationTracking' as any) || "Auto Location Tracking"}</h4>
+                      <p className="text-xs md:text-sm text-[var(--md-sys-color-on-surface-variant)] mt-0.5">{t('autoLocationDesc' as any) || "Automatically update zone when you travel"}</p>
+                    </div>
+                    {/* @ts-ignore */}
+                    <md-switch
+                      selected={settings.locationMode === 'auto' ? true : undefined}
+                      onClick={() => updateSettings({ locationMode: settings.locationMode === 'auto' ? 'manual' : 'auto' })}
+                    ></md-switch>
+                  </div>
+
+                  <AnimatePresence>
+                    {!searchQuery && settings.locationMode !== 'auto' && (
+                      <md-filled-tonal-button
+                        onClick={handleAutoDetect}
+                        disabled={isDetecting}
+                        className="w-full"
+                        style={{ '--md-filled-tonal-button-container-height': '48px', '--md-filled-tonal-button-container-shape': '24px' } as any}
+                      >
+                        <Crosshair
+                          size={20}
+                          slot="icon"
+                          className={isDetecting ? "animate-spin" : ""}
+                        />
+                        {isDetecting ? t("detecting") : t("detectLocation")}
+                      </md-filled-tonal-button>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
               <div 
