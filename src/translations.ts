@@ -198,7 +198,7 @@ export const translations = {
     styleSoft: "Lembut (Soft UI)",
   },
   en: {
-    appTitle: "Prayer Times",
+    appTitle: "AlurWaktu",
     filterAll: "All",
     filterFardu: "Fard",
     filterSunat: "Sunnah",

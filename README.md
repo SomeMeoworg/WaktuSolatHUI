@@ -2,7 +2,7 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Waktu Solat Expressive
+# AlurWaktu
 
 A modern, highly customizable, and extremely polished Islamic Prayer Times application built with React, Vite, and Material 3 Expressive (M3E) design standards.
 
