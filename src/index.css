@@ -1,0 +1,790 @@
+/* Fonts are loaded via index.html <link> tags for faster non-blocking rendering */
+@import "tailwindcss";
+
+@theme {
+    --font-sans: var(
+        --app-font-sans,
+        "Google Sans",
+        "Plus Jakarta Sans",
+        ui-sans-serif,
+        system-ui,
+        sans-serif
+    );
+    --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    /* Map Tailwind radiuses to M3 shape scale for global consistency */
+    --radius-sm: var(--md-sys-shape-corner-small, 8px);
+    --radius-md: var(--md-sys-shape-corner-medium, 16px);
+    --radius-lg: var(--md-sys-shape-corner-large, 24px);
+    --radius-xl: var(--md-sys-shape-corner-extra-large, 32px);
+    --radius-2xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 1.25);
+    --radius-3xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 1.5);
+    --radius-4xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 2);
+
+    /* Material 3 Motion Tokens */
+    --ease-m3-emphasized: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+    --ease-m3-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+    --ease-m3-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+    --ease-m3-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+
+    --default-transition-timing-function: cubic-bezier(0.2, 0.0, 0, 1.0);
+    --default-transition-duration: 300ms;
+}
+
+:root {
+    --app-radius-scale: 1.2; /* Expressive Default rounded - Exaggerated */
+}
+
+html[data-shape="boxy"] {
+    --app-radius-scale: 0.25; /* Boxy but still softly expressive */
+}
+
+html[data-shape="semi"] {
+    --app-radius-scale: 0.75;
+}
+
+html[data-shape="pill"] {
+    --app-radius-scale: 1.5;
+}
+
+html[data-shape="pill"] *:where(.rounded-2xl, .rounded-3xl, .rounded-4xl) {
+    border-radius: 9999px; /* Force full pills for large containers */
+}
+
+/* ============================================================
+   VISUAL STYLE MODES
+   Transform the entire app aesthetic beyond colors/shapes
+   ============================================================ */
+
+/* --- Retro / Neobrutalist --- */
+html[data-style="retro"] {
+    --md-sys-elevation-1: 4px 4px 0px 0px var(--md-sys-color-on-surface);
+    --md-sys-elevation-2: 6px 6px 0px 0px var(--md-sys-color-on-surface);
+    --md-sys-elevation-3: 8px 8px 0px 0px var(--md-sys-color-on-surface);
+    --md-sys-elevation-4: 10px 10px 0px 0px var(--md-sys-color-on-surface);
+    --md-sys-elevation-5: 12px 12px 0px 0px var(--md-sys-color-on-surface);
+}
+
+html[data-style="retro"] body {
+    font-weight: 500;
+}
+
+html[data-style="retro"] .md3-label-medium,
+html[data-style="retro"] .md3-label-small,
+html[data-style="retro"] .md3-label-large {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+html[data-style="retro"] .md3-headline-large,
+html[data-style="retro"] .md3-headline-medium,
+html[data-style="retro"] .md3-headline-small {
+    font-weight: 800;
+}
+
+html[data-style="retro"] .md3-title-large,
+html[data-style="retro"] .md3-title-medium,
+html[data-style="retro"] .md3-title-small {
+    font-weight: 700;
+}
+
+html[data-style="retro"] .md3-body-large,
+html[data-style="retro"] .md3-body-medium,
+html[data-style="retro"] .md3-body-small {
+    font-weight: 500;
+}
+
+/* --- Glass / Glassmorphism --- */
+html[data-style="glass"] {
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --glass-blur: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-style="glass"] {
+        --glass-bg: rgba(0, 0, 0, 0.3);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+}
+
+html[data-style="glass"] body {
+    background: linear-gradient(135deg, var(--md-sys-color-background) 0%, var(--md-sys-color-surface-variant) 50%, var(--md-sys-color-primary-container) 100%);
+    background-attachment: fixed;
+}
+
+/* --- Soft / Soft UI --- */
+html[data-style="soft"] {
+    --soft-shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.8), 6px 6px 12px rgba(0, 0, 0, 0.1);
+    --soft-shadow-dark: inset -4px -4px 8px rgba(255, 255, 255, 0.5), inset 4px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-style="soft"] {
+        --soft-shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.05), 6px 6px 12px rgba(0, 0, 0, 0.5);
+        --soft-shadow-dark: inset -4px -4px 8px rgba(255, 255, 255, 0.03), inset 4px 4px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ============================================================
+   MATERIAL 3 DESIGN TOKENS
+   Following the official M3 specification.
+   @see https://m3.material.io/styles
+   ============================================================ */
+
+/* --- M3 Typography Scale ---
+   Official type scale with display, headline, title, body, label roles.
+   Each has large, medium, small variants. */
+@layer base {
+    :root {
+        /* Material Web Font References */
+        --md-ref-typeface-brand: var(--font-sans);
+        --md-ref-typeface-plain: var(--font-sans);
+        --md-ref-typeface-weight-regular: 400;
+        --md-ref-typeface-weight-medium: 500;
+        --md-ref-typeface-weight-bold: 600;
+
+        /* Display */
+        --md-sys-typescale-display-large-font: var(--font-sans);
+        --md-sys-typescale-display-large-size: 57px;
+        --md-sys-typescale-display-large-line-height: 64px;
+        --md-sys-typescale-display-large-weight: 400;
+        --md-sys-typescale-display-large-tracking: -0.25px;
+
+        --md-sys-typescale-display-medium-font: var(--font-sans);
+        --md-sys-typescale-display-medium-size: 45px;
+        --md-sys-typescale-display-medium-line-height: 52px;
+        --md-sys-typescale-display-medium-weight: 400;
+        --md-sys-typescale-display-medium-tracking: 0;
+
+        --md-sys-typescale-display-small-font: var(--font-sans);
+        --md-sys-typescale-display-small-size: 36px;
+        --md-sys-typescale-display-small-line-height: 44px;
+        --md-sys-typescale-display-small-weight: 400;
+        --md-sys-typescale-display-small-tracking: 0;
+
+        /* Headline */
+        --md-sys-typescale-headline-large-font: var(--font-sans);
+        --md-sys-typescale-headline-large-size: 32px;
+        --md-sys-typescale-headline-large-line-height: 40px;
+        --md-sys-typescale-headline-large-weight: 400;
+        --md-sys-typescale-headline-large-tracking: 0;
+
+        --md-sys-typescale-headline-medium-font: var(--font-sans);
+        --md-sys-typescale-headline-medium-size: 28px;
+        --md-sys-typescale-headline-medium-line-height: 36px;
+        --md-sys-typescale-headline-medium-weight: 400;
+        --md-sys-typescale-headline-medium-tracking: 0;
+
+        --md-sys-typescale-headline-small-font: var(--font-sans);
+        --md-sys-typescale-headline-small-size: 24px;
+        --md-sys-typescale-headline-small-line-height: 32px;
+        --md-sys-typescale-headline-small-weight: 400;
+        --md-sys-typescale-headline-small-tracking: 0;
+
+        /* Title */
+        --md-sys-typescale-title-large-font: var(--font-sans);
+        --md-sys-typescale-title-large-size: 22px;
+        --md-sys-typescale-title-large-line-height: 28px;
+        --md-sys-typescale-title-large-weight: 400;
+        --md-sys-typescale-title-large-tracking: 0;
+
+        --md-sys-typescale-title-medium-font: var(--font-sans);
+        --md-sys-typescale-title-medium-size: 16px;
+        --md-sys-typescale-title-medium-line-height: 24px;
+        --md-sys-typescale-title-medium-weight: 500;
+        --md-sys-typescale-title-medium-tracking: 0.15px;
+
+        --md-sys-typescale-title-small-font: var(--font-sans);
+        --md-sys-typescale-title-small-size: 14px;
+        --md-sys-typescale-title-small-line-height: 20px;
+        --md-sys-typescale-title-small-weight: 500;
+        --md-sys-typescale-title-small-tracking: 0.1px;
+
+        /* Body */
+        --md-sys-typescale-body-large-font: var(--font-sans);
+        --md-sys-typescale-body-large-size: 16px;
+        --md-sys-typescale-body-large-line-height: 24px;
+        --md-sys-typescale-body-large-weight: 400;
+        --md-sys-typescale-body-large-tracking: 0.5px;
+
+        --md-sys-typescale-body-medium-font: var(--font-sans);
+        --md-sys-typescale-body-medium-size: 14px;
+        --md-sys-typescale-body-medium-line-height: 20px;
+        --md-sys-typescale-body-medium-weight: 400;
+        --md-sys-typescale-body-medium-tracking: 0.25px;
+
+        --md-sys-typescale-body-small-font: var(--font-sans);
+        --md-sys-typescale-body-small-size: 12px;
+        --md-sys-typescale-body-small-line-height: 16px;
+        --md-sys-typescale-body-small-weight: 400;
+        --md-sys-typescale-body-small-tracking: 0.4px;
+
+        /* Label (Bolded and increased for M3 Expressive) */
+        --md-sys-typescale-label-large-font: var(--font-sans);
+        --md-sys-typescale-label-large-size: 15px;
+        --md-sys-typescale-label-large-line-height: 20px;
+        --md-sys-typescale-label-large-weight: 600;
+        --md-sys-typescale-label-large-tracking: 0.1px;
+
+        --md-sys-typescale-label-medium-font: var(--font-sans);
+        --md-sys-typescale-label-medium-size: 13px;
+        --md-sys-typescale-label-medium-line-height: 16px;
+        --md-sys-typescale-label-medium-weight: 600;
+        --md-sys-typescale-label-medium-tracking: 0.5px;
+
+        --md-sys-typescale-label-small-font: var(--font-sans);
+        --md-sys-typescale-label-small-size: 12px;
+        --md-sys-typescale-label-small-line-height: 16px;
+        --md-sys-typescale-label-small-weight: 600;
+        --md-sys-typescale-label-small-tracking: 0.5px;
+
+        /* --- M3 Elevation Levels ---
+       M3 uses tonal elevation (surface tint) combined with shadow.
+       Level 0: no shadow, Level 1-5: increasing shadow + tint */
+        --md-sys-elevation-0: none;
+        --md-sys-elevation-1:
+            0px 1px 2px 0px rgba(0, 0, 0, 0.3),
+            0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        --md-sys-elevation-2:
+            0px 1px 2px 0px rgba(0, 0, 0, 0.3),
+            0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+        --md-sys-elevation-3:
+            0px 1px 3px 0px rgba(0, 0, 0, 0.3),
+            0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+        --md-sys-elevation-4:
+            0px 2px 3px 0px rgba(0, 0, 0, 0.3),
+            0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+        --md-sys-elevation-5:
+            0px 4px 4px 0px rgba(0, 0, 0, 0.3),
+            0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+        /* --- M3 State Layer Opacities ---
+       Official Material 3 interaction state opacities */
+        --md-sys-state-hover-opacity: 0.08;
+        --md-sys-state-focus-opacity: 0.12;
+        --md-sys-state-pressed-opacity: 0.12;
+        --md-sys-state-dragged-opacity: 0.16;
+
+        /* --- M3 Shape Scale ---
+       Official Material 3 shape corner radii */
+        --md-sys-shape-corner-none: 0px;
+        --md-sys-shape-corner-extra-small: calc(
+            4px * var(--app-radius-scale, 1)
+        );
+        --md-sys-shape-corner-small: calc(8px * var(--app-radius-scale, 1));
+        --md-sys-shape-corner-medium: calc(12px * var(--app-radius-scale, 1));
+        --md-sys-shape-corner-large: calc(16px * var(--app-radius-scale, 1));
+        --md-sys-shape-corner-extra-large: calc(
+            28px * var(--app-radius-scale, 1)
+        );
+        --md-sys-shape-corner-full: 9999px;
+
+        /* --- M3 Expressive Motion ---
+       Spring-inspired easing curves for M3 Expressive */
+        --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+        --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(
+            0.05,
+            0.7,
+            0.1,
+            1
+        );
+        --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(
+            0.3,
+            0,
+            0.8,
+            0.15
+        );
+        --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+        --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+        --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+        --md-sys-motion-duration-short1: 50ms;
+        --md-sys-motion-duration-short2: 100ms;
+        --md-sys-motion-duration-short3: 150ms;
+        --md-sys-motion-duration-short4: 200ms;
+        --md-sys-motion-duration-medium1: 250ms;
+        --md-sys-motion-duration-medium2: 300ms;
+        --md-sys-motion-duration-medium3: 350ms;
+        --md-sys-motion-duration-medium4: 400ms;
+        --md-sys-motion-duration-long1: 450ms;
+        --md-sys-motion-duration-long2: 500ms;
+        --md-sys-motion-duration-long3: 550ms;
+        --md-sys-motion-duration-long4: 600ms;
+        --md-sys-motion-duration-extra-long1: 700ms;
+        --md-sys-motion-duration-extra-long2: 800ms;
+        --md-sys-motion-duration-extra-long3: 900ms;
+        --md-sys-motion-duration-extra-long4: 1000ms;
+    }
+}
+
+/* --- M3 Ripple Keyframes --- */
+@keyframes md3-ripple-expand {
+    from {
+        opacity: 0.12;
+        transform: scale(0);
+    }
+    to {
+        opacity: 0.12;
+        transform: scale(1);
+    }
+}
+
+@keyframes md3-ripple-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.12;
+    }
+}
+
+@keyframes md3-ripple-fade-out {
+    from {
+        opacity: 0.12;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* --- M3 Typography Utility Classes --- */
+@layer utilities {
+    .md3-display-large {
+        font-size: var(--md-sys-typescale-display-large-size);
+        line-height: var(--md-sys-typescale-display-large-line-height);
+        font-weight: var(--md-sys-typescale-display-large-weight);
+        letter-spacing: var(--md-sys-typescale-display-large-tracking);
+    }
+    .md3-display-medium {
+        font-size: var(--md-sys-typescale-display-medium-size);
+        line-height: var(--md-sys-typescale-display-medium-line-height);
+        font-weight: var(--md-sys-typescale-display-medium-weight);
+        letter-spacing: var(--md-sys-typescale-display-medium-tracking);
+    }
+    .md3-display-small {
+        font-size: var(--md-sys-typescale-display-small-size);
+        line-height: var(--md-sys-typescale-display-small-line-height);
+        font-weight: var(--md-sys-typescale-display-small-weight);
+        letter-spacing: var(--md-sys-typescale-display-small-tracking);
+    }
+    .md3-headline-large {
+        font-size: var(--md-sys-typescale-headline-large-size);
+        line-height: var(--md-sys-typescale-headline-large-line-height);
+        font-weight: var(--md-sys-typescale-headline-large-weight);
+        letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+    }
+    .md3-headline-medium {
+        font-size: var(--md-sys-typescale-headline-medium-size);
+        line-height: var(--md-sys-typescale-headline-medium-line-height);
+        font-weight: var(--md-sys-typescale-headline-medium-weight);
+        letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
+    }
+    .md3-headline-small {
+        font-size: var(--md-sys-typescale-headline-small-size);
+        line-height: var(--md-sys-typescale-headline-small-line-height);
+        font-weight: var(--md-sys-typescale-headline-small-weight);
+        letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+    }
+    .md3-title-large {
+        font-size: var(--md-sys-typescale-title-large-size);
+        line-height: var(--md-sys-typescale-title-large-line-height);
+        font-weight: var(--md-sys-typescale-title-large-weight);
+        letter-spacing: var(--md-sys-typescale-title-large-tracking);
+    }
+    .md3-title-medium {
+        font-size: var(--md-sys-typescale-title-medium-size);
+        line-height: var(--md-sys-typescale-title-medium-line-height);
+        font-weight: var(--md-sys-typescale-title-medium-weight);
+        letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+    }
+    .md3-title-small {
+        font-size: var(--md-sys-typescale-title-small-size);
+        line-height: var(--md-sys-typescale-title-small-line-height);
+        font-weight: var(--md-sys-typescale-title-small-weight);
+        letter-spacing: var(--md-sys-typescale-title-small-tracking);
+    }
+    .md3-body-large {
+        font-size: var(--md-sys-typescale-body-large-size);
+        line-height: var(--md-sys-typescale-body-large-line-height);
+        font-weight: var(--md-sys-typescale-body-large-weight);
+        letter-spacing: var(--md-sys-typescale-body-large-tracking);
+    }
+    .md3-body-medium {
+        font-size: var(--md-sys-typescale-body-medium-size);
+        line-height: var(--md-sys-typescale-body-medium-line-height);
+        font-weight: var(--md-sys-typescale-body-medium-weight);
+        letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+    }
+    .md3-body-small {
+        font-size: var(--md-sys-typescale-body-small-size);
+        line-height: var(--md-sys-typescale-body-small-line-height);
+        font-weight: var(--md-sys-typescale-body-small-weight);
+        letter-spacing: var(--md-sys-typescale-body-small-tracking);
+    }
+    .md3-label-large {
+        font-size: var(--md-sys-typescale-label-large-size);
+        line-height: var(--md-sys-typescale-label-large-line-height);
+        font-weight: var(--md-sys-typescale-label-large-weight);
+        letter-spacing: var(--md-sys-typescale-label-large-tracking);
+    }
+    .md3-label-medium {
+        font-size: var(--md-sys-typescale-label-medium-size);
+        line-height: var(--md-sys-typescale-label-medium-line-height);
+        font-weight: var(--md-sys-typescale-label-medium-weight);
+        letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+    }
+    .md3-label-small {
+        font-size: var(--md-sys-typescale-label-small-size);
+        line-height: var(--md-sys-typescale-label-small-line-height);
+        font-weight: var(--md-sys-typescale-label-small-weight);
+        letter-spacing: var(--md-sys-typescale-label-small-tracking);
+    }
+
+    /* --- M3 Elevation Utility Classes --- */
+    .md3-elevation-0 {
+        box-shadow: var(--md-sys-elevation-0);
+    }
+    .md3-elevation-1 {
+        box-shadow: var(--md-sys-elevation-1);
+    }
+    .md3-elevation-2 {
+        box-shadow: var(--md-sys-elevation-2);
+    }
+    .md3-elevation-3 {
+        box-shadow: var(--md-sys-elevation-3);
+    }
+    .md3-elevation-4 {
+        box-shadow: var(--md-sys-elevation-4);
+    }
+    .md3-elevation-5 {
+        box-shadow: var(--md-sys-elevation-5);
+    }
+
+    /* --- M3 State Layer Utility Classes ---
+     Apply these to interactive elements for proper M3 hover/focus states.
+     Uses pseudo-element overlay for the state layer. */
+    .md3-state-layer {
+        position: relative;
+        overflow: hidden;
+    }
+    .md3-state-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: currentColor;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--md-sys-motion-duration-short2)
+            var(--md-sys-motion-easing-standard);
+    }
+    .md3-state-layer:hover::after {
+        opacity: var(--md-sys-state-hover-opacity);
+    }
+    .md3-state-layer:focus-visible::after {
+        opacity: var(--md-sys-state-focus-opacity);
+    }
+    .md3-state-layer:active::after {
+        opacity: var(--md-sys-state-pressed-opacity);
+    }
+
+    /* --- M3 Shape Utility Classes --- */
+    .md3-shape-none {
+        border-radius: var(--md-sys-shape-corner-none);
+    }
+    .md3-shape-extra-small {
+        border-radius: var(--md-sys-shape-corner-extra-small);
+    }
+    .md3-shape-small {
+        border-radius: var(--md-sys-shape-corner-small);
+    }
+    .md3-shape-medium {
+        border-radius: var(--md-sys-shape-corner-medium);
+    }
+    .md3-shape-large {
+        border-radius: var(--md-sys-shape-corner-large);
+    }
+    .md3-shape-extra-large {
+        border-radius: var(--md-sys-shape-corner-extra-large);
+    }
+    .md3-shape-full {
+        border-radius: var(--md-sys-shape-corner-full);
+    }
+}
+
+/* --- Official @material/web component theming ---
+   Map our dynamic CSS variables to the md-* component CSS properties
+   so official web components use our theme colors. */
+:root {
+    /* Switch */
+    --md-switch-selected-handle-color: var(--md-sys-color-on-primary);
+    --md-switch-selected-track-color: var(--md-sys-color-primary);
+    --md-switch-unselected-handle-color: var(--md-sys-color-outline);
+    --md-switch-unselected-track-color: var(--md-sys-color-surface-variant);
+    --md-switch-selected-icon-color: var(--md-sys-color-on-primary-container);
+    --md-switch-unselected-icon-color: var(--md-sys-color-surface-variant);
+    --md-switch-selected-hover-track-color: var(--md-sys-color-primary);
+    --md-switch-selected-focus-track-color: var(--md-sys-color-primary);
+    --md-switch-selected-pressed-track-color: var(--md-sys-color-primary);
+
+    /* Filter Chip */
+    --md-filter-chip-container-color: var(--md-sys-color-surface-container-high);
+    --md-filter-chip-label-text-color: var(--md-sys-color-on-surface-variant);
+    --md-filter-chip-selected-container-color: var(--md-sys-color-primary);
+    --md-filter-chip-selected-label-text-color: var(--md-sys-color-on-primary);
+    --md-filter-chip-selected-icon-color: var(--md-sys-color-on-primary);
+    --md-filter-chip-hover-state-layer-color: var(--md-sys-color-on-surface-variant);
+    --md-filter-chip-selected-hover-state-layer-color: var(--md-sys-color-on-primary);
+    --md-filter-chip-container-height: 40px;
+    --md-filter-chip-container-shape: 20px;
+    --md-filter-chip-label-text-size: 15px;
+
+    /* Primary Tab */
+    --md-primary-tab-container-color: var(--md-sys-color-surface);
+    --md-primary-tab-active-indicator-color: var(--md-sys-color-primary);
+    --md-primary-tab-active-indicator-height: 3px;
+    --md-primary-tab-active-icon-color: var(--md-sys-color-primary);
+    --md-primary-tab-active-label-text-color: var(--md-sys-color-primary);
+    --md-primary-tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+    --md-primary-tab-inactive-label-text-color: var(--md-sys-color-on-surface-variant);
+    --md-primary-tab-hover-state-layer-color: var(--md-sys-color-primary);
+    
+    /* Secondary Tab */
+    --md-secondary-tab-container-color: var(--md-sys-color-surface);
+    --md-secondary-tab-active-indicator-color: var(--md-sys-color-primary);
+    --md-secondary-tab-active-icon-color: var(--md-sys-color-primary);
+    --md-secondary-tab-active-label-text-color: var(--md-sys-color-primary);
+    --md-secondary-tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+    --md-secondary-tab-inactive-label-text-color: var(--md-sys-color-on-surface-variant);
+    
+    /* Filled Tonal Button */
+    --md-filled-tonal-button-container-color: var(--md-sys-color-secondary-container);
+    --md-filled-tonal-button-label-text-color: var(--md-sys-color-on-secondary-container);
+    --md-filled-tonal-button-hover-state-layer-color: var(--md-sys-color-on-secondary-container);
+    
+    /* Filled Tonal Icon Button */
+    --md-filled-tonal-icon-button-container-color: var(--md-sys-color-secondary-container);
+    --md-filled-tonal-icon-button-icon-color: var(--md-sys-color-on-secondary-container);
+    --md-filled-tonal-icon-button-hover-state-layer-color: var(--md-sys-color-on-secondary-container);
+}
+
+@layer utilities {
+    @keyframes squiggle-move {
+        0% {
+            -webkit-mask-position: 0px center;
+            mask-position: 0px center;
+        }
+        100% {
+            -webkit-mask-position: -40px center;
+            mask-position: -40px center;
+        }
+    }
+
+    .animate-squiggle {
+        animation: squiggle-move 1.5s linear infinite;
+    }
+}
+
+@layer base {
+    :root {
+        /* Refined Material 3 Emerald/Teal Theme */
+        --md-sys-color-primary: #006c54;
+        --md-sys-color-on-primary: #ffffff;
+        --md-sys-color-primary-container: #6cfcbd;
+        --md-sys-color-on-primary-container: #002116;
+
+        --md-sys-color-secondary: #4a6359;
+        --md-sys-color-on-secondary: #ffffff;
+        --md-sys-color-secondary-container: #cce8db;
+        --md-sys-color-on-secondary-container: #052018;
+
+        --md-sys-color-tertiary: #406275;
+        --md-sys-color-on-tertiary: #ffffff;
+        --md-sys-color-tertiary-container: #c4e7fe;
+        --md-sys-color-on-tertiary-container: #001e2e;
+
+        --md-sys-color-error: #ba1a1a;
+        --md-sys-color-on-error: #ffffff;
+        --md-sys-color-error-container: #ffdad6;
+        --md-sys-color-on-error-container: #410002;
+
+        --md-sys-color-background: #f4fbf6;
+        --md-sys-color-on-background: #161d1a;
+        --md-sys-color-surface: #fafdfa;
+        --md-sys-color-on-surface: #161d1a;
+
+        --md-sys-color-surface-variant: #dbe5df;
+        --md-sys-color-on-surface-variant: #404944;
+
+        --md-sys-color-outline: #707974;
+
+        /* Surface Containers Fallbacks */
+        --md-sys-color-surface-container-lowest: #ffffff;
+        --md-sys-color-surface-container-low: #f4fbf6;
+        --md-sys-color-surface-container: #eef5f0;
+        --md-sys-color-surface-container-high: #e8efea;
+        --md-sys-color-surface-container-highest: #e2e9e4;
+
+        /* Custom expressive colors */
+        --expressive-gradient: linear-gradient(
+            135deg,
+            var(--md-sys-color-surface) 0%,
+            var(--md-sys-color-primary-container) 100%
+        );
+    }
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --md-sys-color-primary: #4bdf95;
+            --md-sys-color-on-primary: #00382a;
+            --md-sys-color-primary-container: #00513e;
+            --md-sys-color-on-primary-container: #6cfcbd;
+
+            --md-sys-color-secondary: #b1ccc0;
+            --md-sys-color-on-secondary: #1d352c;
+            --md-sys-color-secondary-container: #334b42;
+            --md-sys-color-on-secondary-container: #cce8db;
+
+            --md-sys-color-tertiary: #a8cbe3;
+            --md-sys-color-on-tertiary: #0c3445;
+            --md-sys-color-tertiary-container: #264a5d;
+            --md-sys-color-on-tertiary-container: #c4e7fe;
+
+            --md-sys-color-error: #ffb4ab;
+            --md-sys-color-on-error: #690005;
+            --md-sys-color-error-container: #93000a;
+            --md-sys-color-on-error-container: #ffdad6;
+
+            --md-sys-color-background: #0e1512;
+            --md-sys-color-on-background: #dfe4e0;
+            --md-sys-color-surface: #111a16;
+            --md-sys-color-on-surface: #dfe4e0;
+
+            --md-sys-color-surface-variant: #404944;
+            --md-sys-color-on-surface-variant: #bfc9c3;
+
+            --md-sys-color-outline: #89938e;
+
+            /* Surface Containers Fallbacks */
+            --md-sys-color-surface-container-lowest: #0b110e;
+            --md-sys-color-surface-container-low: #111a16;
+            --md-sys-color-surface-container: #16221d;
+            --md-sys-color-surface-container-high: #1e2e27;
+            --md-sys-color-surface-container-highest: #283c32;
+        }
+    }
+
+    html.theme-transitioning,
+    html.theme-transitioning *,
+    html.theme-transitioning *::before,
+    html.theme-transitioning *::after {
+        transition:
+            background-color 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            color 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            fill 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            stroke 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-radius 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    }
+
+    body {
+        @apply bg-[var(--md-sys-color-background)] text-[var(--md-sys-color-on-background)] font-sans antialiased overflow-x-hidden;
+    }
+}
+
+@layer utilities {
+    .bg-surface {
+        background-color: var(--md-sys-color-surface);
+    }
+    .bg-surface-variant {
+        background-color: var(--md-sys-color-surface-variant);
+    }
+    .bg-primary {
+        background-color: var(--md-sys-color-primary);
+    }
+    .bg-primary-container {
+        background-color: var(--md-sys-color-primary-container);
+    }
+    .bg-secondary-container {
+        background-color: var(--md-sys-color-secondary-container);
+    }
+    .text-on-surface {
+        color: var(--md-sys-color-on-surface);
+    }
+    .text-on-surface-variant {
+        color: var(--md-sys-color-on-surface-variant);
+    }
+    .text-primary {
+        color: var(--md-sys-color-primary);
+    }
+    .text-on-primary-container {
+        color: var(--md-sys-color-on-primary-container);
+    }
+    .text-on-secondary-container {
+        color: var(--md-sys-color-on-secondary-container);
+    }
+
+    /* Material 3 typical shapes */
+    .rounded-m3-large {
+        border-radius: 24px;
+    }
+    .rounded-m3-extra-large {
+        border-radius: 32px;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: var(--md-sys-color-primary);
+        border-radius: 20px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+        opacity: 0.5;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: var(--md-sys-color-primary);
+        opacity: 1;
+    }
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: var(--md-sys-color-primary) transparent;
+    }
+}
+
+/* Custom Leaflet overrides */
+.leaflet-tooltip.bg-transparent {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.leaflet-tooltip.bg-transparent::before {
+    display: none !important;
+}
+
+.custom-m3e-tooltip {
+    background: var(--md-sys-color-surface-container-highest) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    border-radius: var(--md-sys-shape-corner-large) !important;
+    padding: 12px !important;
+    border: 2px solid var(--md-sys-color-outline-variant) !important;
+    box-shadow: 0 8px 24px -4px rgba(0,0,0,0.3) !important;
+}
+.custom-m3e-tooltip::before {
+    border-top-color: var(--md-sys-color-surface-container-highest) !important;
+}
