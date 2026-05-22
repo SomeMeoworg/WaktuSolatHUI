@@ -47,6 +47,8 @@ export interface GeneralSettings {
   clockMovement?: 'tick' | 'sweep';
   visualStyle?: 'default' | 'retro' | 'glass' | 'soft';
   locationMode?: 'auto' | 'manual';
+  trackImsak?: boolean;
+  showJumaat?: boolean;
   // Mosque / Surau Mode
   azanAlertStyle?: 'dramatic' | 'standard' | 'subtle' | 'none';
   azanAlertDuration?: number; // seconds before auto-dismiss
@@ -94,7 +96,9 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   clockMovement: 'sweep',
   visualStyle: 'default',
   locationMode: 'manual',
-  azanAlertStyle: 'standard',
+  trackImsak: false,
+  showJumaat: true,
+  azanAlertStyle: 'dramatic',
   azanAlertDuration: 20,
   solatModeEnabled: false,
   solatModeDuration: { fajr: 10, dhuhr: 10, asr: 10, maghrib: 10, isha: 10 },

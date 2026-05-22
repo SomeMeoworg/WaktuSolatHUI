@@ -398,15 +398,23 @@ export default function App() {
     let lastKey: (typeof PRAYER_KEYS)[number] | null = null;
     let foundNext = false;
 
-    for (const key of PRAYER_KEYS) {
+    const isFriday = currentTime.getDay() === 5;
+    const showJumaat = settings.showJumaat !== false;
+    const trackImsak = settings.trackImsak === true;
+
+    const keysToTrack = PRAYER_KEYS.filter(k => trackImsak ? true : k !== "imsak");
+
+    for (const key of keysToTrack) {
       const pTime = getAdjustedTime(todayData, key, currentTime);
       if (isAfter(pTime, currentTime)) {
-        nextPrayerName = t(key as any);
-        nextPrayerTime = pTime;
         nextPrayerKey = key;
-        prevPrayerTime = lastP;
-        prevPrayerName = lastKey ? t(lastKey as any) : null;
+        nextPrayerName = (key === "dhuhr" && isFriday && showJumaat) ? t("jumaat") : t(key as any);
+        nextPrayerTime = pTime;
+        
         prevPrayerKey = lastKey;
+        prevPrayerTime = lastP;
+        prevPrayerName = lastKey ? ((lastKey === "dhuhr" && isFriday && showJumaat) ? t("jumaat") : t(lastKey as any)) : null;
+        
         foundNext = true;
         break;
       }
@@ -414,16 +422,17 @@ export default function App() {
       lastKey = key;
     }
 
-    // If no next prayer today, it must be tomorrow's first prayer (Imsak)
+    // If no next prayer today, it must be tomorrow's first tracked prayer (Imsak or Fajr)
     if (!foundNext && tomorrowData) {
+      const firstKey = trackImsak ? "imsak" : "fajr";
       const pTime = getAdjustedTime(
         tomorrowData,
-        "imsak",
+        firstKey,
         addDays(currentTime, 1),
       );
-      nextPrayerName = t("imsak");
+      nextPrayerName = t(firstKey as any);
       nextPrayerTime = pTime;
-      nextPrayerKey = "imsak";
+      nextPrayerKey = firstKey;
       prevPrayerTime = getAdjustedTime(todayData, "isha", currentTime);
       prevPrayerName = t("isha");
       prevPrayerKey = "isha";

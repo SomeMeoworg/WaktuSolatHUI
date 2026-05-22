@@ -10,9 +10,9 @@ export const M3_EASING = {
 export const M3_MOTION = {
   expressiveSpring: {
     type: "spring",
-    stiffness: 400,
-    damping: 30,
-    mass: 1,
+    stiffness: 450,
+    damping: 24,
+    mass: 0.9,
   },
   emphasizedEntrance: {
     type: "tween",

@@ -105,7 +105,7 @@ export function PrayerSchedule({
   }
 
   const allTimes: PrayerKey[] = [
-    "imsak",
+    ...(settings.trackImsak ? ["imsak" as PrayerKey] : []),
     "fajr",
     "syuruk",
     "dhuhr",
@@ -114,7 +114,10 @@ export function PrayerSchedule({
     "isha",
   ];
   const fardhuTimes: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
-  const sunnahTimes: PrayerKey[] = ["imsak", "syuruk"];
+  const sunnahTimes: PrayerKey[] = [
+    ...(settings.trackImsak ? ["imsak" as PrayerKey] : []),
+    "syuruk"
+  ];
 
   const timesToDisplay: PrayerKey[] =
     filter === "fardu"
@@ -125,6 +128,16 @@ export function PrayerSchedule({
   const hasAnyNotificationEnabled = Object.values(preferences).some(
     (p) => p.enabled,
   );
+
+  const isFriday = currentTime.getDay() === 5;
+  const showJumaat = settings.showJumaat !== false;
+
+  const getPrayerDisplayName = (key: PrayerKey) => {
+    if (key === "dhuhr" && isFriday && showJumaat) {
+      return t("jumaat");
+    }
+    return t(key as any);
+  };
 
   const formatTime = (key: PrayerKey) => {
     if (!todayData[key]) return "--:--";
@@ -328,7 +341,7 @@ export function PrayerSchedule({
                           "text-[var(--md-sys-color-on-tertiary-container)]",
                       )}
                     >
-                      {t(key as any)}
+                      {getPrayerDisplayName(key)}
                     </span>
                     {!isFardhu && !isNext && !isCurrent && (
                       <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-[var(--md-sys-color-surface)] text-[10px] font-black uppercase tracking-widest opacity-70">

@@ -499,6 +499,44 @@ export function SettingsModal({
                         icons
                       ></md-switch>
                     </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-3xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/5 shadow-sm mt-2">
+                      <div>
+                        <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)] block mb-0.5">
+                          {t("trackImsak" as any) || "Track Imsak"}
+                        </label>
+                        <p className="md3-body-small text-[var(--md-sys-color-on-surface-variant)] leading-relaxed max-w-[200px] sm:max-w-xs">
+                          {t("trackImsakDesc" as any) || "Show Imsak as the next time after Isha"}
+                        </p>
+                      </div>
+                      {/* @ts-ignore */}
+                      <md-switch
+                        selected={!!settings.trackImsak}
+                        onChange={(e: any) =>
+                          updateSettings({ trackImsak: e.target.selected })
+                        }
+                        icons
+                      ></md-switch>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-3xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/5 shadow-sm mt-2">
+                      <div>
+                        <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)] block mb-0.5">
+                          {t("showJumaat" as any) || "Show Jumu'ah"}
+                        </label>
+                        <p className="md3-body-small text-[var(--md-sys-color-on-surface-variant)] leading-relaxed max-w-[200px] sm:max-w-xs">
+                          {t("showJumaatDesc" as any) || "Replace Dhuhr with Jumu'ah on Fridays"}
+                        </p>
+                      </div>
+                      {/* @ts-ignore */}
+                      <md-switch
+                        selected={settings.showJumaat !== false}
+                        onChange={(e: any) =>
+                          updateSettings({ showJumaat: e.target.selected })
+                        }
+                        icons
+                      ></md-switch>
+                    </div>
                   </div>
 
                   {/* Offline Mode section */}
