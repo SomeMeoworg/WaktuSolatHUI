@@ -982,19 +982,14 @@ export default function App() {
         </section>
 
         {/* Right Side: Schedule Grid */}
-        <section className={cn(
-          "w-full lg:w-[50%] xl:w-[45%] lg:pl-6 xl:pl-8 lg:border-l-4 border-[var(--md-sys-color-surface-variant)] flex flex-col lg:overflow-hidden min-h-0 relative z-10",
-          visualStyle === 'retro' && "lg:border-l-2 lg:border-[var(--md-sys-color-on-surface)]",
-          visualStyle === 'glass' && "lg:border-l lg:border-[var(--glass-border)]",
-          visualStyle === 'soft' && "lg:border-l-0"
-        )}>
+        <section className="m3e-panel-right">
           {error && (
             <div className="bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] p-4 rounded-4xl mb-6 shrink-0 shadow-sm">
               {error}
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto lg:overflow-hidden pr-2 pb-6 lg:pb-0 no-scrollbar min-h-0 flex flex-col">
+          <div className="m3e-panel-right-scrollable">
             <div className="flex flex-col gap-2 min-h-full lg:flex-1 lg:min-h-0">
               <Suspense
                 fallback={

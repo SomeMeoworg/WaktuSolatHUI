@@ -123,17 +123,6 @@ export function ClockPanel({
 
   const [countdownString, setCountdownString] = useState("");
   const [progress, setProgress] = useState(0);
-  const [smoothTime, setSmoothTime] = useState(currentTime);
-
-  useEffect(() => {
-    let animationFrameId: number;
-    const updateTime = () => {
-      setSmoothTime(new Date());
-      animationFrameId = requestAnimationFrame(updateTime);
-    };
-    animationFrameId = requestAnimationFrame(updateTime);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
 
   useEffect(() => {
     if (!nextPrayerTime) {

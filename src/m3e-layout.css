@@ -1,0 +1,183 @@
+/* ============================================================
+   M3 EXPRESSIVE NATIVE LAYOUT ENGINE
+   Replaces Tailwind utility spaghetti with semantic M3 grid/flex blocks.
+   ============================================================ */
+
+.m3e-app-container {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: var(--font-sans);
+    color: var(--md-sys-color-on-background);
+    position: relative;
+}
+
+@media (min-width: 1024px) {
+    .m3e-app-container {
+        height: 100dvh;
+        overflow: hidden;
+    }
+}
+
+.m3e-main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 2560px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem;
+    gap: 2rem;
+    min-height: 0;
+}
+
+@media (min-width: 640px) {
+    .m3e-main-content {
+        padding: 1.5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .m3e-main-content {
+        flex-direction: row;
+        padding: 2rem 3rem;
+        gap: 3rem;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1280px) {
+    .m3e-main-content {
+        padding: 2rem 4rem;
+        gap: 4rem;
+    }
+}
+
+/* Left Panel (Clock, Header, Prompts) */
+.m3e-panel-left {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    z-index: 20;
+    padding-bottom: 0.5rem;
+    min-height: 0;
+}
+
+@media (min-width: 1024px) {
+    .m3e-panel-left {
+        width: 50%;
+        overflow: visible;
+        padding-bottom: 0;
+    }
+}
+
+@media (min-width: 1280px) {
+    .m3e-panel-left {
+        width: 55%;
+    }
+}
+
+/* Right Panel (Schedule Grid) */
+.m3e-panel-right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    min-height: 0;
+}
+
+@media (min-width: 1024px) {
+    .m3e-panel-right {
+        width: 50%;
+        padding-left: 1.5rem;
+        border-left: 4px solid var(--md-sys-color-surface-variant);
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1280px) {
+    .m3e-panel-right {
+        width: 45%;
+        padding-left: 2rem;
+    }
+}
+
+.m3e-panel-right-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    padding-bottom: 1.5rem;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+    .m3e-panel-right-scrollable {
+        overflow: hidden;
+        padding-bottom: 0;
+    }
+}
+
+/* Modifiers for Visual Styles */
+html[data-style="retro"] .m3e-panel-right {
+    border-left-width: 2px;
+    border-color: var(--md-sys-color-on-surface);
+}
+
+html[data-style="glass"] .m3e-panel-right {
+    border-left-width: 1px;
+    border-color: var(--glass-border);
+}
+
+html[data-style="soft"] .m3e-panel-right {
+    border-left-width: 0px;
+}
+
+html[data-style="glass"] .m3e-app-container-no-wallpaper {
+    background: linear-gradient(135deg, var(--md-sys-color-background) 0%, var(--md-sys-color-surface-variant) 50%, var(--md-sys-color-primary-container) 100%);
+}
+
+.m3e-app-container-no-wallpaper {
+    background-color: var(--md-sys-color-background);
+}
+
+/* Header */
+.m3e-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 60;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.m3e-clock-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    padding-top: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+    .m3e-clock-container {
+        justify-content: flex-start;
+        overflow-y: auto;
+    }
+}
+
+@media (min-width: 1280px) {
+    .m3e-clock-container {
+        justify-content: center;
+    }
+}
