@@ -30,11 +30,11 @@ import { useLocationTracking } from "./hooks/useLocationTracking";
 import { LocationToast } from "./components/LocationToast";
 import { AzanAlert } from "./components/AzanAlert";
 import { SolatMode } from "./components/SolatMode";
-import { CalendarDays, CalendarRange } from "lucide-react";
+import { CalendarDays, CalendarRange, Wifi, RefreshCw } from "lucide-react";
 import { useAppContext } from "./AppContext";
 import { useVisualStyle } from "./hooks/useVisualStyle";
 import { cn } from "./lib/utils";
-import { getWallpaperBlob } from "./lib/db";
+import { getWallpaperBlob, getOfflinePrayers, saveOfflinePrayers } from "./lib/db";
 import { applyThemeFromHex, applyThemeFromImage, PRAYER_COLORS } from "./lib/theme";
 
 const PRAYER_KEYS = [
@@ -54,6 +54,11 @@ export default function App() {
   const [selectedZone, setSelectedZone] = useState(() => {
     return localStorage.getItem("waktu-solat-zone") || "";
   });
+
+  const [isOfflineModeActive, setIsOfflineModeActive] = useState(false);
+  const [showOnlineSyncToast, setShowOnlineSyncToast] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const { promptZone, promptLocationName, autoUpdatedZone, autoUpdatedLocationName, currentLocationName, isDetecting, acceptPrompt, dismissPrompt } = useLocationTracking(
     selectedZone,
@@ -202,14 +207,95 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
+  const triggerSilentSync = useCallback(async () => {
+    setIsSyncing(true);
+    setSyncStatus('idle');
+    try {
+      let url = `/api/solat/${selectedZone}`;
+      if (settings.offlineCachedRange === 'month') {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        url = `/api/solat/${selectedZone}?year=${year}&month=${month}`;
+      } else if (settings.offlineCachedRange === 'year') {
+        const d = new Date();
+        const year = d.getFullYear();
+        url = `/api/solat/${selectedZone}?year=${year}`;
+      }
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Sync request failed");
+      const data = await res.json();
+      
+      if (data && data.prayerTime && Array.isArray(data.prayerTime) && data.prayerTime.length > 0) {
+        await saveOfflinePrayers(selectedZone, data.prayerTime, settings.offlineCachedRange || 'month');
+        updateSettings({
+          offlineCachedAt: Date.now()
+        });
+        setWeekData(data.prayerTime);
+        setIsOfflineModeActive(false);
+        setSyncStatus('success');
+        
+        setTimeout(() => {
+          setShowOnlineSyncToast(false);
+          setSyncStatus('idle');
+        }, 3000);
+      }
+    } catch (e) {
+      console.error("Auto sync failed:", e);
+      setSyncStatus('error');
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [selectedZone, settings.offlineCachedRange, updateSettings]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      if (settings.autoSyncOffline) {
+        triggerSilentSync();
+      } else {
+        setShowOnlineSyncToast(true);
+      }
+    };
+
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+  }, [settings.autoSyncOffline, triggerSilentSync]);
+
   useEffect(() => {
     if (!selectedZone) return;
 
     localStorage.setItem("waktu-solat-zone", selectedZone);
     let isMounted = true;
 
-    const fetchSolat = () => {
+    const fetchSolat = async () => {
       setIsLoading(true);
+
+      const loadFromCache = async () => {
+        try {
+          const cached = await getOfflinePrayers(selectedZone);
+          if (cached && cached.prayerTime && Array.isArray(cached.prayerTime) && cached.prayerTime.length > 0) {
+            if (isMounted) {
+              setWeekData(cached.prayerTime);
+              setIsOfflineModeActive(true);
+              setError(null);
+              return true;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to load offline cached prayers:", e);
+        }
+        return false;
+      };
+
+      if (!navigator.onLine) {
+        const loaded = await loadFromCache();
+        if (loaded) {
+          setIsLoading(false);
+          return;
+        }
+      }
+
       fetch(`/api/solat/${selectedZone}`)
         .then(async (res) => {
           if (!res.ok) throw new Error("Failed to load");
@@ -222,6 +308,7 @@ export default function App() {
         .then((data: JakimResponse) => {
           if (isMounted) {
             setWeekData(data.prayerTime);
+            setIsOfflineModeActive(false);
             localStorage.setItem(
               `waktu-solat-data-${selectedZone}`,
               JSON.stringify(data.prayerTime),
@@ -229,10 +316,13 @@ export default function App() {
             setError(null);
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch(async (err) => {
+          console.warn("Network fetch failed, attempting IndexedDB cache fallback:", err);
           if (isMounted) {
-            setError(t("failedToLoadSolat"));
+            const loaded = await loadFromCache();
+            if (!loaded) {
+              setError(t("failedToLoadSolat"));
+            }
           }
         })
         .finally(() => {
@@ -517,7 +607,7 @@ export default function App() {
     return () => {
       active = false;
     };
-  }, [settings.wallpaperEnabled, settings.wallpaperSource]);
+  }, [settings.wallpaperEnabled, settings.wallpaperSource, settings.wallpaperLastUpdated]);
 
   // Clean up Object URLs to prevent leaks
   useEffect(() => {
@@ -743,8 +833,9 @@ export default function App() {
 
   return (
     <div className={cn(
-      "min-h-[100dvh] lg:h-[100dvh] flex flex-col w-full font-sans text-[var(--md-sys-color-on-background)] lg:overflow-hidden relative bg-[var(--md-sys-color-background)]",
-      visualStyle === 'glass' && "bg-gradient-to-br from-[var(--md-sys-color-background)] via-[var(--md-sys-color-surface-variant)] to-[var(--md-sys-color-primary-container)]",
+      "min-h-[100dvh] lg:h-[100dvh] flex flex-col w-full font-sans text-[var(--md-sys-color-on-background)] lg:overflow-hidden relative",
+      !(settings.wallpaperEnabled && activeWallpaperUrl) && "bg-[var(--md-sys-color-background)]",
+      !(settings.wallpaperEnabled && activeWallpaperUrl) && visualStyle === 'glass' && "bg-gradient-to-br from-[var(--md-sys-color-background)] via-[var(--md-sys-color-surface-variant)] to-[var(--md-sys-color-primary-container)]",
       settings.wallpaperEnabled && activeWallpaperUrl && settings.wallpaperTextGlow && "text-glow-boost"
     )}>
       {/* Legible Custom Wallpaper Layer */}
@@ -789,6 +880,7 @@ export default function App() {
           permission={permission}
           onRequestPermission={requestPermission}
           onTestSound={playSound}
+          selectedZone={selectedZone}
         />
       </Suspense>
       
@@ -915,6 +1007,65 @@ export default function App() {
           </div>
         </section>
       </main>
+
+      <AnimatePresence>
+        {showOnlineSyncToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className={cn(
+              "fixed bottom-6 left-6 right-6 sm:left-auto sm:right-6 sm:max-w-md z-[80] flex items-center justify-between gap-4 p-5 rounded-3xl shadow-xl border cursor-default bg-[var(--md-sys-color-surface-container-high)] border-[var(--md-sys-color-outline)]/20 shadow-black/30",
+              visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]",
+              visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[12px] border border-[var(--glass-border)]",
+              visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
+            )}
+          >
+            <div className="flex items-start gap-3 flex-1 min-w-0">
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] mt-0.5">
+                <Wifi className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="font-bold text-sm text-[var(--md-sys-color-on-surface)]">
+                  {syncStatus === 'success' ? t("syncSuccess" as any) : syncStatus === 'error' ? t("syncFailed" as any) : t("backOnline" as any)}
+                </span>
+                <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-0.5 leading-normal">
+                  {syncStatus === 'success' 
+                    ? (settings.language === "ms" ? "Waktu solat dikemaskini!" : "Prayer times synchronized!") 
+                    : syncStatus === 'error'
+                    ? (settings.language === "ms" ? "Gagal mengemaskini waktu solat." : "Failed to sync prayer times.")
+                    : t("backOnlineToastDesc" as any)}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 shrink-0">
+              {syncStatus === 'idle' && (
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowOnlineSyncToast(false)}
+                    className="px-3 py-2 text-xs font-bold rounded-full text-[var(--md-sys-color-outline)] hover:bg-[var(--md-sys-color-surface-variant)]/50"
+                  >
+                    {t("close")}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    disabled={isSyncing}
+                    onClick={triggerSilentSync}
+                    className="px-4 py-2 text-xs font-bold rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm hover:opacity-95 flex items-center gap-1.5"
+                  >
+                    {isSyncing && <RefreshCw size={12} className="animate-spin" />}
+                    {t("syncNow" as any)}
+                  </motion.button>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

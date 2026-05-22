@@ -69,6 +69,10 @@ export interface GeneralSettings {
   wallpaperTextGlow?: boolean;
   wallpaperVignette?: boolean;
   wallpaperMosqueAutoDim?: boolean;
+  wallpaperLastUpdated?: number;
+  offlineCachedRange?: 'week' | 'month' | 'year' | null;
+  offlineCachedAt?: number | null;
+  autoSyncOffline?: boolean;
   // Core theme styles synced globally
   themeDark?: boolean;
   themeColor?: string;
@@ -110,6 +114,10 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   wallpaperTextGlow: false,
   wallpaperVignette: true,
   wallpaperMosqueAutoDim: true,
+  wallpaperLastUpdated: 0,
+  offlineCachedRange: null,
+  offlineCachedAt: null,
+  autoSyncOffline: true,
   themeDark: false,
   themeColor: '#006C54', // Emerald
   themeVariant: 'tonal_spot',

@@ -15,6 +15,7 @@ import {
   Droplets,
   Thermometer,
   Umbrella,
+  WifiOff,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAppContext } from "../AppContext";
@@ -35,6 +36,22 @@ interface WeatherData {
 export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
   const { t } = useAppContext();
   const visualStyle = useVisualStyle();
+  
+  const [isOnline, setIsOnline] = useState(() => typeof navigator !== "undefined" ? navigator.onLine : true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   const [weather, setWeather] = useState<WeatherData | null>(() => {
     const cached = localStorage.getItem(`weather-${selectedZone}`);
     if (cached) {
@@ -111,6 +128,48 @@ export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
       clearInterval(intervalId);
     };
   }, [selectedZone]);
+
+  if (!isOnline) {
+    return (
+      <motion.div
+        className={cn(
+          "flex w-full items-center justify-between bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] rounded-[var(--md-sys-shape-corner-extra-large)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-default border border-[var(--md-sys-color-error)]/25",
+          visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]",
+          visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[8px] border border-[var(--glass-border)]",
+          visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
+        )}
+        whileHover={{ scale: 1.01, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      >
+        {/* @ts-ignore */}
+        <md-ripple></md-ripple>
+        <div className="flex items-center gap-3 sm:gap-4 z-10 w-full pr-2 lg:pr-3 relative">
+          <motion.div
+            className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--md-sys-shape-corner-large)] flex items-center justify-center shrink-0 bg-[var(--md-sys-color-error)] text-[var(--md-sys-color-on-error)]"
+            whileHover={{ rotate: 12, scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+          >
+            <WifiOff className={cn(
+              "w-5 h-5 sm:w-6 sm:h-6",
+              visualStyle === 'retro' && "stroke-[3]",
+              (visualStyle === 'glass' || visualStyle === 'soft') && "stroke-[1.5]",
+              !(visualStyle === 'retro' || visualStyle === 'glass' || visualStyle === 'soft') && "stroke-[2.5]"
+            )} />
+          </motion.div>
+
+          <div className="flex flex-col flex-1 min-w-0">
+            <span className="font-black text-sm sm:text-base lg:text-lg leading-tight text-[var(--md-sys-color-on-error-container)] truncate">
+              {t("noInternetConnection")}
+            </span>
+            <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest mt-1 opacity-80 text-[var(--md-sys-color-on-error-container)]/80">
+              {t("offlineModeActive")}
+            </span>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   if (isLoading && !weather) return null;
   if (!weather) return null;

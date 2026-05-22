@@ -19,6 +19,12 @@ import {
   ChevronDown,
   Plus,
   Minus,
+  Wifi,
+  WifiOff,
+  Download,
+  RefreshCw,
+  Check,
+  AlertCircle
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { modalVariants } from "../lib/motion";
@@ -32,6 +38,7 @@ import {
 import { PRAYER_NAMES } from "./PrayerSchedule";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../AppContext";
+import { saveOfflinePrayers } from "../lib/db";
 
 function playSynthesizedSoundLocal(type: 'chime' | 'tick', pitchHz?: number) {
   try {
@@ -76,6 +83,7 @@ interface SettingsModalProps {
   permission: string;
   onRequestPermission: () => void;
   onTestSound: (sound: NotificationSound, message: string) => void;
+  selectedZone: string;
 }
 
 export function SettingsModal({
@@ -86,11 +94,64 @@ export function SettingsModal({
   permission,
   onRequestPermission,
   onTestSound,
+  selectedZone,
 }: SettingsModalProps) {
   const { settings, updateSettings, t } = useAppContext();
   const [activeTab, setActiveTab] = useState<
     "general" | "notifications" | "adjustments" | "mosque"
   >("general");
+
+  const [downloadRange, setDownloadRange] = useState<'week' | 'month' | 'year'>('month');
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  const handleSaveOffline = async () => {
+    if (!navigator.onLine) {
+      setDownloadError(settings.language === "ms" ? "Tiada sambungan internet" : "No internet connection");
+      return;
+    }
+
+    setIsDownloading(true);
+    setDownloadError(null);
+    setDownloadSuccess(false);
+
+    try {
+      let url = `/api/solat/${selectedZone}`;
+      if (downloadRange === 'month') {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        url = `/api/solat/${selectedZone}?year=${year}&month=${month}`;
+      } else if (downloadRange === 'year') {
+        const d = new Date();
+        const year = d.getFullYear();
+        url = `/api/solat/${selectedZone}?year=${year}`;
+      }
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Failed to fetch prayer times from server");
+      const data = await res.json();
+      
+      if (!data || !data.prayerTime || !Array.isArray(data.prayerTime) || data.prayerTime.length === 0) {
+        throw new Error("No prayer data returned from API");
+      }
+
+      await saveOfflinePrayers(selectedZone, data.prayerTime, downloadRange);
+      
+      updateSettings({
+        offlineCachedRange: downloadRange,
+        offlineCachedAt: Date.now()
+      });
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 3000);
+    } catch (err: any) {
+      console.error("Offline download failed:", err);
+      setDownloadError(t("saveOfflineFailed" as any) || "Gagal menyimpan luar talian");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -400,6 +461,140 @@ export function SettingsModal({
                         selected={!!settings.showIqamah}
                         onChange={(e: any) =>
                           updateSettings({ showIqamah: e.target.selected })
+                        }
+                        icons
+                      ></md-switch>
+                    </div>
+                  </div>
+
+                  {/* Offline Mode section */}
+                  <hr className="border-[var(--md-sys-color-outline)]/10 my-6" />
+
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <WifiOff className="text-[var(--md-sys-color-primary)] w-5 h-5" />
+                      <h3 className="md3-title-medium font-bold text-[var(--md-sys-color-on-surface)]">
+                        {t("offlineMode" as any)}
+                      </h3>
+                    </div>
+
+                    <p className="md3-body-small text-[var(--md-sys-color-on-surface-variant)] leading-relaxed">
+                      {t("saveOfflineDesc" as any)}
+                    </p>
+
+                    <div className="p-5 rounded-3xl bg-[var(--md-sys-color-surface-container-high)] ring-1 ring-[var(--md-sys-color-outline)]/5 space-y-4">
+                      {/* Cache Status */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--md-sys-color-outline)]/10 pb-4">
+                        <div>
+                          <span className="text-xs uppercase font-black tracking-widest text-[var(--md-sys-color-on-surface-variant)]">
+                            {t("cachingStatus" as any)}
+                          </span>
+                          <div className="font-bold text-sm sm:text-base mt-0.5 text-[var(--md-sys-color-on-surface)]">
+                            {settings.offlineCachedRange ? (
+                              <span className="flex items-center gap-1.5 text-[var(--md-sys-color-primary)]">
+                                <Check size={16} className="stroke-[3]" />
+                                {t("offlineCacheSaved" as any)
+                                  .replace("{zone}", selectedZone)
+                                  .replace("{range}", t(`offline${settings.offlineCachedRange.charAt(0).toUpperCase() + settings.offlineCachedRange.slice(1)}` as any))}
+                              </span>
+                            ) : (
+                              <span className="text-[var(--md-sys-color-outline)]">
+                                {t("offlineCacheNotSaved" as any)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {settings.offlineCachedAt && (
+                          <div className="text-right">
+                            <span className="text-[10px] sm:text-xs text-[var(--md-sys-color-on-surface-variant)] block">
+                              {t("offlineCacheAtLabel" as any).replace(
+                                "{date}",
+                                new Date(settings.offlineCachedAt).toLocaleDateString(
+                                  settings.language === "ms" ? "ms-MY" : "en-US",
+                                  { dateStyle: "medium" }
+                                )
+                              )}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Cache Duration */}
+                      <div className="space-y-2">
+                        <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)] block">
+                          {t("offlineDuration" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {(["week", "month", "year"] as const).map((range) => (
+                            /* @ts-ignore */
+                            <md-filter-chip
+                              key={range}
+                              label={t(`offline${range.charAt(0).toUpperCase() + range.slice(1)}` as any)}
+                              selected={downloadRange === range}
+                              onClick={() => setDownloadRange(range)}
+                            ></md-filter-chip>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Save Button */}
+                      <div className="flex flex-wrap items-center gap-3 pt-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          disabled={isDownloading}
+                          onClick={handleSaveOffline}
+                          className={cn(
+                            "w-full sm:w-auto px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)]",
+                            isDownloading
+                              ? "bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-outline)] cursor-not-allowed"
+                              : "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm hover:opacity-95"
+                          )}
+                        >
+                          {isDownloading ? (
+                            <>
+                              <RefreshCw size={16} className="animate-spin" />
+                              {t("syncing" as any)}
+                            </>
+                          ) : (
+                            <>
+                              <Download size={16} />
+                              {t("saveOfflineBtn" as any)}
+                            </>
+                          )}
+                        </motion.button>
+
+                        {downloadError && (
+                          <span className="text-xs text-[var(--md-sys-color-error)] font-bold flex items-center gap-1">
+                            <AlertCircle size={14} />
+                            {downloadError}
+                          </span>
+                        )}
+                        {downloadSuccess && (
+                          <span className="text-xs text-[var(--md-sys-color-primary)] font-bold flex items-center gap-1">
+                            <Check size={14} className="stroke-[3]" />
+                            {t("saveOfflineSuccess" as any)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Auto Sync Offline Toggle */}
+                    <div className="flex items-center justify-between p-4 rounded-3xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/5 shadow-sm">
+                      <div className="pr-4">
+                        <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)] block mb-0.5">
+                          {t("autoSyncOffline" as any)}
+                        </label>
+                        <p className="md3-body-small text-[var(--md-sys-color-on-surface-variant)] leading-relaxed max-w-[200px] sm:max-w-xs">
+                          {t("autoSyncOfflineDesc" as any)}
+                        </p>
+                      </div>
+                      {/* @ts-ignore */}
+                      <md-switch
+                        selected={!!settings.autoSyncOffline}
+                        onChange={(e: any) =>
+                          updateSettings({ autoSyncOffline: e.target.selected })
                         }
                         icons
                       ></md-switch>

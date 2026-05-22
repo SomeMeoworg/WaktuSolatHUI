@@ -220,7 +220,8 @@ export function ThemeControl() {
           updateSettings({
             wallpaperEnabled: true,
             wallpaperSource: "upload",
-            wallpaperUrl: "" // Reset URL if file uploaded
+            wallpaperUrl: "", // Reset URL if file uploaded
+            wallpaperLastUpdated: Date.now()
           });
           setPreviewWallpaperUrl(url);
         } catch (e) {
