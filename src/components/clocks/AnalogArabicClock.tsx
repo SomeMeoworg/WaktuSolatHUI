@@ -28,11 +28,8 @@ export function AnalogArabicClock({ movement }: { movement: 'tick' | 'sweep' }) 
   return (
     <div className={cn(
       "relative w-full aspect-square shrink-0 mx-auto flex flex-col items-center justify-center transition-all duration-300",
-      // Size limits (Symmetric Locking Formula)
-      "max-w-[180px] sm:max-w-[220px] md:max-w-[250px] lg:max-w-[280px] xl:max-w-[310px] 2xl:max-w-[340px]",
-      "max-h-[180px] sm:max-h-[220px] md:max-h-[250px] lg:max-h-[280px] xl:max-h-[310px] 2xl:max-h-[340px]",
-      "max-w-[20vh] sm:max-w-[24vh] lg:max-w-[28vh] xl:max-w-[30vh]",
-      "max-h-[20vh] sm:max-h-[24vh] lg:max-h-[28vh] xl:max-h-[30vh]",
+      // Size limits (Optimized for Mobile & Desktop)
+      "w-[90%] sm:w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[360px]",
       
       // Default Style: Circular Dial
       "rounded-full border-[1.5px] border-[var(--md-sys-color-outline-variant)]/20 bg-[var(--md-sys-color-surface)] shadow-inner",

@@ -290,172 +290,186 @@ export function SettingsModal({
               </md-primary-tab>
             </md-tabs>
 
-            <div className="flex-1 overflow-y-auto px-6 sm:px-8 pb-8 pt-8 space-y-8 no-scrollbar bg-[var(--md-sys-color-surface-container)]">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 pb-8 pt-6 space-y-6 no-scrollbar bg-[var(--md-sys-color-surface-container-lowest)]">
               {activeTab === "general" && (
-                <div className="space-y-6 max-w-xl mx-auto">
-                  <div className="space-y-2">
-                    <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                      {t("language")}
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("malay" as any)}
-                        selected={settings.language === "ms"}
-                        onClick={() => updateSettings({ language: "ms" })}
-                      ></md-filter-chip>
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("english" as any)}
-                        selected={settings.language === "en"}
-                        onClick={() => updateSettings({ language: "en" })}
-                      ></md-filter-chip>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                      {t("timeFormat")}
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("hour12" as any)}
-                        selected={settings.timeFormat === "12h"}
-                        onClick={() => updateSettings({ timeFormat: "12h" })}
-                      ></md-filter-chip>
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("hour24" as any)}
-                        selected={settings.timeFormat === "24h"}
-                        onClick={() => updateSettings({ timeFormat: "24h" })}
-                      ></md-filter-chip>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                      {t("mazhab")}
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("mazhabShafii" as any)}
-                        selected={settings.mazhab !== "hanafi"}
-                        onClick={() => updateSettings({ mazhab: "shafii" })}
-                      ></md-filter-chip>
-                      {/* @ts-ignore */}
-                      <md-filter-chip
-                        label={t("mazhabHanafi" as any)}
-                        selected={settings.mazhab === "hanafi"}
-                        onClick={() => updateSettings({ mazhab: "hanafi" })}
-                      ></md-filter-chip>
-                    </div>
-                    {settings.mazhab === "hanafi" && (
-                      <p className="text-xs text-[var(--md-sys-color-primary)] mt-2 italic">
-                        {t("hanafiAsarNote" as any)}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                      {t("notificationType")}
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {(["in-app", "push", "both"] as const).map((type) => (
-                        /* @ts-ignore */
-                        <md-filter-chip
-                          key={type}
-                          label={
-                            type === "in-app"
-                              ? t("inApp")
-                              : type === "push"
-                                ? t("push")
-                                : t("both")
-                          }
-                          selected={settings.notificationType === type}
-                          onClick={() => updateSettings({ notificationType: type })}
-                        ></md-filter-chip>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                      {t("clockStyle" as any)}
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {(["digital", "analog", "analog-numeric", "analog-roman", "analog-arabic", "anadigi", "chronograph", "flip", "word", "minimal", "orbit", "typographic", "prayer-ring", "dashboard", "abstract", "swiss-station", "bauhaus", "layered"] as const).map((style) => (
-                        /* @ts-ignore */
-                        <md-filter-chip
-                          key={style}
-                          label={
-                            style === "digital"
-                              ? t("clockStyleDigital" as any)
-                              : style === "analog"
-                                ? t("clockStyleAnalog" as any)
-                                : style === "analog-numeric"
-                                  ? t("clockStyleAnalogNumeric" as any)
-                                  : style === "analog-roman"
-                                    ? t("clockStyleAnalogRoman" as any)
-                                    : style === "analog-arabic"
-                                      ? t("clockStyleAnalogArabic" as any)
-                                      : style === "anadigi"
-                                        ? t("clockStyleAnaDigi" as any)
-                                        : style === "chronograph"
-                                          ? t("clockStyleChronograph" as any)
-                                          : style === "flip"
-                                            ? t("clockStyleFlip" as any)
-                                            : style === "word"
-                                              ? t("clockStyleWord" as any)
-                                              : style === "minimal"
-                                                ? t("clockStyleMinimal" as any)
-                                                : style === "orbit"
-                                                  ? t("clockStyleOrbit" as any)
-                                                  : style === "typographic"
-                                                    ? t("clockStyleTypographic" as any)
-                                                    : style === "prayer-ring"
-                                                      ? t("clockStylePrayerRing" as any)
-                                                      : style === "dashboard"
-                                                        ? t("clockStyleDashboard" as any)
-                                                        : style === "swiss-station"
-                                                          ? t("clockStyleSwissStation" as any)
-                                                          : style === "bauhaus"
-                                                            ? t("clockStyleBauhaus" as any)
-                                                            : style === "layered"
-                                                              ? t("clockStyleLayered" as any)
-                                                              : t("clockStyleAbstract" as any)
-                          }
-                          selected={settings.clockFace === style || (!settings.clockFace && style === "digital")}
-                          onClick={() => updateSettings({ clockFace: style })}
-                        ></md-filter-chip>
-                      ))}
-                    </div>
-                  </div>
-
-                  {settings.clockFace !== "digital" && (
-                    <div className="space-y-2">
-                      <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
-                        {t("clockMovement" as any)}
+                <div className="space-y-4 max-w-xl mx-auto">
+                  {/* Language & Time Format Card */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[24px] p-5 border border-[var(--md-sys-color-outline)]/5 shadow-sm space-y-6">
+                    <div className="space-y-3">
+                      <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2">
+                        {t("language")}
                       </label>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {(["sweep", "tick"] as const).map((movement) => (
-                          /* @ts-ignore */
-                          <md-filter-chip
-                            key={movement}
-                            label={
-                              movement === "sweep"
-                                ? t("clockMovementSweep" as any)
-                                : t("clockMovementTick" as any)
-                            }
-                            selected={settings.clockMovement === movement || (!settings.clockMovement && movement === "sweep")}
-                            onClick={() => updateSettings({ clockMovement: movement })}
-                          ></md-filter-chip>
-                        ))}
+                      <div className="flex flex-wrap gap-2">
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("malay" as any)}
+                          selected={settings.language === "ms"}
+                          onClick={() => updateSettings({ language: "ms" })}
+                        ></md-filter-chip>
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("english" as any)}
+                          selected={settings.language === "en"}
+                          onClick={() => updateSettings({ language: "en" })}
+                        ></md-filter-chip>
                       </div>
                     </div>
-                  )}
+
+                    <div className="space-y-3">
+                      <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2">
+                        {t("timeFormat")}
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("hour12" as any)}
+                          selected={settings.timeFormat === "12h"}
+                          onClick={() => updateSettings({ timeFormat: "12h" })}
+                        ></md-filter-chip>
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("hour24" as any)}
+                          selected={settings.timeFormat === "24h"}
+                          onClick={() => updateSettings({ timeFormat: "24h" })}
+                        ></md-filter-chip>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Religion & Formatting Card */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[24px] p-5 border border-[var(--md-sys-color-outline)]/5 shadow-sm space-y-6">
+                    <div className="space-y-3">
+                      <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2">
+                        {t("mazhab")}
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("mazhabShafii" as any)}
+                          selected={settings.mazhab !== "hanafi"}
+                          onClick={() => updateSettings({ mazhab: "shafii" })}
+                        ></md-filter-chip>
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("mazhabHanafi" as any)}
+                          selected={settings.mazhab === "hanafi"}
+                          onClick={() => updateSettings({ mazhab: "hanafi" })}
+                        ></md-filter-chip>
+                      </div>
+                      {settings.mazhab === "hanafi" && (
+                        <p className="text-xs text-[var(--md-sys-color-error)] mt-2 italic font-bold">
+                          {t("hanafiAsarNote" as any)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2">
+                        {t("hijriFormat")}
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("hijriBoth")}
+                          selected={!settings.hijriFormat || settings.hijriFormat === "both"}
+                          onClick={() => updateSettings({ hijriFormat: "both" })}
+                        ></md-filter-chip>
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("hijriText")}
+                          selected={settings.hijriFormat === "text"}
+                          onClick={() => updateSettings({ hijriFormat: "text" })}
+                        ></md-filter-chip>
+                        {/* @ts-ignore */}
+                        <md-filter-chip
+                          label={t("hijriNumber")}
+                          selected={settings.hijriFormat === "number"}
+                          onClick={() => updateSettings({ hijriFormat: "number" })}
+                        ></md-filter-chip>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Clock Customization Card */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[24px] p-0 border border-[var(--md-sys-color-outline)]/5 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-5 pb-0">
+                      <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2 mb-3">
+                        {t("clockStyle" as any)}
+                      </label>
+                    </div>
+                    {/* Horizontal scroll for clocks to save vertical space on mobile */}
+                    <div className="flex overflow-x-auto gap-2 px-5 pb-5 no-scrollbar snap-x">
+                      {(["digital", "analog", "analog-numeric", "analog-roman", "analog-arabic", "anadigi", "chronograph", "flip", "word", "minimal", "orbit", "typographic", "prayer-ring", "dashboard", "abstract", "swiss-station", "bauhaus", "layered"] as const).map((style) => (
+                        <div key={style} className="snap-start shrink-0">
+                          {/* @ts-ignore */}
+                          <md-filter-chip
+                            label={
+                              style === "digital"
+                                ? t("clockStyleDigital" as any)
+                                : style === "analog"
+                                  ? t("clockStyleAnalog" as any)
+                                  : style === "analog-numeric"
+                                    ? t("clockStyleAnalogNumeric" as any)
+                                    : style === "analog-roman"
+                                      ? t("clockStyleAnalogRoman" as any)
+                                      : style === "analog-arabic"
+                                        ? t("clockStyleAnalogArabic" as any)
+                                        : style === "anadigi"
+                                          ? t("clockStyleAnaDigi" as any)
+                                          : style === "chronograph"
+                                            ? t("clockStyleChronograph" as any)
+                                            : style === "flip"
+                                              ? t("clockStyleFlip" as any)
+                                              : style === "word"
+                                                ? t("clockStyleWord" as any)
+                                                : style === "minimal"
+                                                  ? t("clockStyleMinimal" as any)
+                                                  : style === "orbit"
+                                                    ? t("clockStyleOrbit" as any)
+                                                    : style === "typographic"
+                                                      ? t("clockStyleTypographic" as any)
+                                                      : style === "prayer-ring"
+                                                        ? t("clockStylePrayerRing" as any)
+                                                        : style === "dashboard"
+                                                          ? t("clockStyleDashboard" as any)
+                                                          : style === "swiss-station"
+                                                            ? t("clockStyleSwissStation" as any)
+                                                            : style === "bauhaus"
+                                                              ? t("clockStyleBauhaus" as any)
+                                                              : style === "layered"
+                                                                ? t("clockStyleLayered" as any)
+                                                                : t("clockStyleAbstract" as any)
+                            }
+                            selected={settings.clockFace === style || (!settings.clockFace && style === "digital")}
+                            onClick={() => updateSettings({ clockFace: style })}
+                          ></md-filter-chip>
+                        </div>
+                      ))}
+                    </div>
+
+                    {settings.clockFace !== "digital" && (
+                      <div className="p-5 pt-0 border-t border-[var(--md-sys-color-outline)]/5 mt-2">
+                        <label className="md3-label-large font-bold text-[var(--md-sys-color-primary)] flex items-center gap-2 mb-3 mt-4">
+                          {t("clockMovement" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {(["sweep", "tick"] as const).map((movement) => (
+                            /* @ts-ignore */
+                            <md-filter-chip
+                              key={movement}
+                              label={
+                                movement === "sweep"
+                                  ? t("clockMovementSweep" as any)
+                                  : t("clockMovementTick" as any)
+                              }
+                              selected={settings.clockMovement === movement || (!settings.clockMovement && movement === "sweep")}
+                              onClick={() => updateSettings({ clockMovement: movement })}
+                            ></md-filter-chip>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="space-y-2">
                     <label className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
