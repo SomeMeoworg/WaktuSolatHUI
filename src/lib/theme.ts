@@ -86,12 +86,23 @@ function applyThemeColors(scheme: DynamicScheme | Scheme, isDark: boolean = fals
   }
 }
 
+export const PRAYER_COLORS = {
+  imsak: "#1E1B4B",   // Isya/Imsak (Cosmic deep midnight indigo)
+  fajr: "#2E5A88",    // Subuh (Cool pre-dawn serenity blue)
+  syuruk: "#D97706",  // Syuruk (Radiant golden-yellow sunrise)
+  dhuhr: "#007A8C",   // Zohor (Vibrant sky-noon teal/cyan)
+  asr: "#B45309",     // Asar (Warm afternoon terracotta copper gold)
+  maghrib: "#BF3626", // Maghrib (Sunset glowing crimson)
+  isha: "#1E1B4B"     // Isya (Cosmic deep midnight indigo)
+};
+
 export async function applyThemeFromImage(image: HTMLImageElement, isDark: boolean = false, variant: ThemeVariant = "tonal_spot", contrastLevel: number = 0.0) {
   // themeFromImage returns Theme which we can get source color from
   const theme = await themeFromImage(image);
   const hct = Hct.fromInt(theme.source);
   const scheme = getScheme(hct, isDark, variant, contrastLevel);
   applyThemeColors(scheme, isDark);
+  document.documentElement.setAttribute('data-contrast', contrastLevel.toString());
   return scheme;
 }
 
@@ -99,6 +110,7 @@ export function applyThemeFromColor(color: number, isDark: boolean = false, vari
   const hct = Hct.fromInt(color);
   const scheme = getScheme(hct, isDark, variant, contrastLevel);
   applyThemeColors(scheme, isDark);
+  document.documentElement.setAttribute('data-contrast', contrastLevel.toString());
   return scheme;
 }
 

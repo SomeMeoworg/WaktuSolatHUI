@@ -13,14 +13,14 @@
     --font-serif: "Playfair Display", ui-serif, Georgia, serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-    /* Map Tailwind radiuses to M3 shape scale for global consistency */
-    --radius-sm: var(--md-sys-shape-corner-small, 8px);
-    --radius-md: var(--md-sys-shape-corner-medium, 16px);
-    --radius-lg: var(--md-sys-shape-corner-large, 24px);
-    --radius-xl: var(--md-sys-shape-corner-extra-large, 32px);
-    --radius-2xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 1.25);
-    --radius-3xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 1.5);
-    --radius-4xl: calc(var(--md-sys-shape-corner-extra-large, 32px) * 2);
+    /* Map Tailwind radiuses dynamically to use app radius scale for total visual cohesion */
+    --radius-sm: calc(6px * var(--app-radius-scale, 1.1));
+    --radius-md: calc(10px * var(--app-radius-scale, 1.1));
+    --radius-lg: calc(14px * var(--app-radius-scale, 1.1));
+    --radius-xl: calc(18px * var(--app-radius-scale, 1.1));
+    --radius-2xl: calc(24px * var(--app-radius-scale, 1.1));
+    --radius-3xl: calc(32px * var(--app-radius-scale, 1.1));
+    --radius-4xl: calc(40px * var(--app-radius-scale, 1.1));
 
     /* Material 3 Motion Tokens */
     --ease-m3-emphasized: cubic-bezier(0.2, 0.0, 0.0, 1.0);
@@ -33,23 +33,37 @@
 }
 
 :root {
-    --app-radius-scale: 1.2; /* Expressive Default rounded - Exaggerated */
+    --app-radius-scale: 1.1; /* Standard beautiful curved corners */
 }
 
 html[data-shape="boxy"] {
-    --app-radius-scale: 0.25; /* Boxy but still softly expressive */
+    --app-radius-scale: 0.0 !important; /* Flat sharp corners, neobrutalist style */
 }
 
 html[data-shape="semi"] {
-    --app-radius-scale: 0.75;
+    --app-radius-scale: 0.6 !important; /* Conservative, soft layout */
+}
+
+html[data-shape="rounded"] {
+    --app-radius-scale: 1.1 !important; /* Standard modern curved corners */
 }
 
 html[data-shape="pill"] {
-    --app-radius-scale: 1.5;
+    --app-radius-scale: 1.8 !important; /* Premium capsule rounded pill look */
+}
+
+html[data-shape="pill"] .bg-surface-container,
+html[data-shape="pill"] .bg-surface-container-low,
+html[data-shape="pill"] .bg-surface-container-high,
+html[data-shape="pill"] .bg-surface-container-highest,
+html[data-shape="pill"] section,
+html[data-shape="pill"] header,
+html[data-shape="pill"] footer {
+    border-radius: 40px !important; /* Dynamic elegant card roundness in Pill mode instead of sausage cylinders */
 }
 
 html[data-shape="pill"] *:where(.rounded-2xl, .rounded-3xl, .rounded-4xl) {
-    border-radius: 9999px; /* Force full pills for large containers */
+    border-radius: 9999px; /* Force full pills for small chips/buttons */
 }
 
 /* ============================================================
@@ -102,11 +116,9 @@ html[data-style="glass"] {
     --glass-blur: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-    html[data-style="glass"] {
-        --glass-bg: rgba(0, 0, 0, 0.3);
-        --glass-border: rgba(255, 255, 255, 0.1);
-    }
+html.dark[data-style="glass"] {
+    --glass-bg: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 html[data-style="glass"] body {
@@ -120,11 +132,9 @@ html[data-style="soft"] {
     --soft-shadow-dark: inset -4px -4px 8px rgba(255, 255, 255, 0.5), inset 4px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-    html[data-style="soft"] {
-        --soft-shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.05), 6px 6px 12px rgba(0, 0, 0, 0.5);
-        --soft-shadow-dark: inset -4px -4px 8px rgba(255, 255, 255, 0.03), inset 4px 4px 8px rgba(0, 0, 0, 0.4);
-    }
+html.dark[data-style="soft"] {
+    --soft-shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.05), 6px 6px 12px rgba(0, 0, 0, 0.5);
+    --soft-shadow-dark: inset -4px -4px 8px rgba(255, 255, 255, 0.03), inset 4px 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================================
@@ -634,46 +644,232 @@ html[data-style="soft"] {
         );
     }
 
-    /* Dark mode */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --md-sys-color-primary: #4bdf95;
-            --md-sys-color-on-primary: #00382a;
-            --md-sys-color-primary-container: #00513e;
-            --md-sys-color-on-primary-container: #6cfcbd;
+    /* Class-based Dark mode */
+    html.dark {
+        --md-sys-color-primary: #4bdf95;
+        --md-sys-color-on-primary: #00382a;
+        --md-sys-color-primary-container: #00513e;
+        --md-sys-color-on-primary-container: #6cfcbd;
 
-            --md-sys-color-secondary: #b1ccc0;
-            --md-sys-color-on-secondary: #1d352c;
-            --md-sys-color-secondary-container: #334b42;
-            --md-sys-color-on-secondary-container: #cce8db;
+        --md-sys-color-secondary: #b1ccc0;
+        --md-sys-color-on-secondary: #1d352c;
+        --md-sys-color-secondary-container: #334b42;
+        --md-sys-color-on-secondary-container: #cce8db;
 
-            --md-sys-color-tertiary: #a8cbe3;
-            --md-sys-color-on-tertiary: #0c3445;
-            --md-sys-color-tertiary-container: #264a5d;
-            --md-sys-color-on-tertiary-container: #c4e7fe;
+        --md-sys-color-tertiary: #a8cbe3;
+        --md-sys-color-on-tertiary: #0c3445;
+        --md-sys-color-tertiary-container: #264a5d;
+        --md-sys-color-on-tertiary-container: #c4e7fe;
 
-            --md-sys-color-error: #ffb4ab;
-            --md-sys-color-on-error: #690005;
-            --md-sys-color-error-container: #93000a;
-            --md-sys-color-on-error-container: #ffdad6;
+        --md-sys-color-error: #ffb4ab;
+        --md-sys-color-on-error: #690005;
+        --md-sys-color-error-container: #93000a;
+        --md-sys-color-on-error-container: #ffdad6;
 
-            --md-sys-color-background: #0e1512;
-            --md-sys-color-on-background: #dfe4e0;
-            --md-sys-color-surface: #111a16;
-            --md-sys-color-on-surface: #dfe4e0;
+        --md-sys-color-background: #0e1512;
+        --md-sys-color-on-background: #dfe4e0;
+        --md-sys-color-surface: #111a16;
+        --md-sys-color-on-surface: #dfe4e0;
 
-            --md-sys-color-surface-variant: #404944;
-            --md-sys-color-on-surface-variant: #bfc9c3;
+        --md-sys-color-surface-variant: #404944;
+        --md-sys-color-on-surface-variant: #bfc9c3;
 
-            --md-sys-color-outline: #89938e;
+        --md-sys-color-outline: #89938e;
 
-            /* Surface Containers Fallbacks */
-            --md-sys-color-surface-container-lowest: #0b110e;
-            --md-sys-color-surface-container-low: #111a16;
-            --md-sys-color-surface-container: #16221d;
-            --md-sys-color-surface-container-high: #1e2e27;
-            --md-sys-color-surface-container-highest: #283c32;
-        }
+        /* Surface Containers Fallbacks */
+        --md-sys-color-surface-container-lowest: #0b110e;
+        --md-sys-color-surface-container-low: #111a16;
+        --md-sys-color-surface-container: #16221d;
+        --md-sys-color-surface-container-high: #1e2e27;
+        --md-sys-color-surface-container-highest: #283c32;
+    }
+
+    /* ============================================================
+       CONTRAST MODE ADJUSTMENTS
+       Enhance legibility for medium and high contrast modes
+       ============================================================ */
+
+    /* Universal Contrast Variable Overrides */
+    html[data-contrast="0.5"] {
+        --md-sys-color-on-surface-variant: var(--md-sys-color-on-surface) !important;
+        --md-sys-color-outline-variant: var(--md-sys-color-outline) !important;
+        --md-sys-color-on-primary-container: var(--md-sys-color-on-primary) !important;
+        --md-sys-color-on-secondary-container: var(--md-sys-color-on-secondary) !important;
+        --md-sys-color-on-tertiary-container: var(--md-sys-color-on-tertiary) !important;
+        --tw-text-opacity: 1 !important;
+        --tw-border-opacity: 1 !important;
+        --tw-bg-opacity: 1 !important;
+    }
+    html[data-contrast="1.0"] {
+        --md-sys-color-on-surface-variant: var(--md-sys-color-on-surface) !important;
+        --md-sys-color-outline-variant: var(--md-sys-color-on-surface) !important;
+        --md-sys-color-outline: var(--md-sys-color-on-surface) !important;
+        --md-sys-color-on-primary-container: var(--md-sys-color-on-primary) !important;
+        --md-sys-color-on-secondary-container: var(--md-sys-color-on-secondary) !important;
+        --md-sys-color-on-tertiary-container: var(--md-sys-color-on-tertiary) !important;
+        --tw-text-opacity: 1 !important;
+        --tw-border-opacity: 1 !important;
+        --tw-bg-opacity: 1 !important;
+    }
+
+    /* Universal Opacity Overrides */
+    html[data-contrast="0.5"] [class*="opacity-"],
+    html[data-contrast="1.0"] [class*="opacity-"],
+    html[data-contrast="0.5"] [class*="text-white/"],
+    html[data-contrast="1.0"] [class*="text-white/"],
+    html[data-contrast="0.5"] [class*="text-black/"],
+    html[data-contrast="1.0"] [class*="text-black/"],
+    html[data-contrast="0.5"] *,
+    html[data-contrast="1.0"] * {
+        --tw-text-opacity: 1 !important;
+    }
+
+    html[data-contrast="0.5"] [class*="opacity-"],
+    html[data-contrast="1.0"] [class*="opacity-"] {
+        opacity: 1 !important;
+    }
+
+    /* Override low-contrast Tailwind text utility classes to force legibility under contrast mode */
+    html[data-contrast="0.5"] [class*="text-slate-"],
+    html[data-contrast="0.5"] [class*="text-neutral-"],
+    html[data-contrast="0.5"] [class*="text-gray-"],
+    html[data-contrast="0.5"] [class*="text-zinc-"] {
+        color: var(--md-sys-color-on-surface-variant) !important;
+    }
+    html[data-contrast="1.0"] [class*="text-slate-"],
+    html[data-contrast="1.0"] [class*="text-neutral-"],
+    html[data-contrast="1.0"] [class*="text-gray-"],
+    html[data-contrast="1.0"] [class*="text-zinc-"] {
+        color: var(--md-sys-color-on-surface) !important;
+    }
+
+    /* Glass visual style contrast overrides */
+    html[data-contrast="0.5"][data-style="glass"] {
+        --glass-bg: var(--md-sys-color-surface-container-high) !important;
+        --glass-border: var(--md-sys-color-outline) !important;
+    }
+    html[data-contrast="1.0"][data-style="glass"] {
+        --glass-bg: var(--md-sys-color-surface-container-highest) !important;
+        --glass-border: var(--md-sys-color-on-surface) !important;
+        --glass-blur: 0px !important;
+    }
+
+    /* Soft visual style contrast overrides */
+    html[data-contrast="1.0"][data-style="soft"] {
+        --soft-shadow-light: none !important;
+        --soft-shadow-dark: none !important;
+    }
+
+    /* Standard border indicators for legibility under contrast */
+    html[data-contrast="1.0"] [class*="bg-surface-container"],
+    html[data-contrast="1.0"] [class*="bg-[var(--md-sys-color-surface-container"],
+    html[data-contrast="1.0"] .bg-surface-variant,
+    html[data-contrast="1.0"] section,
+    html[data-contrast="1.0"] header,
+    html[data-contrast="1.0"] footer {
+        border: 2px solid var(--md-sys-color-on-surface) !important;
+    }
+
+    html[data-contrast="0.5"] [class*="bg-surface-container"],
+    html[data-contrast="0.5"] [class*="bg-[var(--md-sys-color-surface-container"],
+    html[data-contrast="0.5"] .bg-surface-variant,
+    html[data-contrast="0.5"] section,
+    html[data-contrast="0.5"] header,
+    html[data-contrast="0.5"] footer {
+        border: 1px solid var(--md-sys-color-outline) !important;
+    }
+
+    /* Force high contrast text elements to stand out sharply */
+    html[data-contrast="0.5"] .md3-headline-large,
+    html[data-contrast="0.5"] .md3-display-large,
+    html[data-contrast="0.5"] .font-black,
+    html[data-contrast="1.0"] .md3-headline-large,
+    html[data-contrast="1.0"] .md3-display-large,
+    html[data-contrast="1.0"] .font-black {
+        color: var(--md-sys-color-on-background) !important;
+    }
+
+    /* Automatically heavy-dim the wallpaper under high contrast mode for perfect legibility */
+    html[data-contrast="1.0"] .app-wallpaper-overlay {
+        background-color: var(--md-sys-color-background) !important;
+        opacity: 0.95 !important;
+    }
+    
+    /* --- Readability & Wallpaper Text Glow Styles --- */
+    .text-glow-boost,
+    .text-glow-boost * {
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5) !important;
+    }
+    html.dark .text-glow-boost,
+    html.dark .text-glow-boost * {
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(0, 0, 0, 0.85), 0 0 18px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Smart dynamic glass card styling when custom wallpaper is enabled */
+    html[data-wallpaper="true"] .bg-surface-container,
+    html[data-wallpaper="true"] .bg-surface-container-low,
+    html[data-wallpaper="true"] .bg-surface-container-high,
+    html[data-wallpaper="true"] .bg-surface-container-highest,
+    html[data-wallpaper="true"] section,
+    html[data-wallpaper="true"] header {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        background-color: color-mix(in srgb, var(--md-sys-color-surface-container) 75%, transparent) !important;
+        border: 1.5px solid color-mix(in srgb, var(--md-sys-color-outline-variant) 15%, transparent) !important;
+    }
+
+    /* Typography Polish overrides based on the active font data-font */
+    html[data-font*="Playfair"] body {
+        letter-spacing: -0.01em;
+    }
+    html[data-font*="Playfair"] .md3-display-large,
+    html[data-font*="Playfair"] .md3-headline-large {
+        font-family: var(--font-serif);
+        font-weight: 700;
+    }
+    html[data-font*="JetBrains"] body {
+        letter-spacing: -0.025em;
+    }
+
+    /* Wallpaper layer styles */
+    .app-wallpaper-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -10;
+        pointer-events: none;
+        overflow: hidden;
+        transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        background-color: var(--md-sys-color-background);
+    }
+
+    .app-wallpaper-image {
+        width: 110%;
+        height: 110%;
+        object-fit: cover;
+        object-position: center;
+        position: absolute;
+        top: -5%;
+        left: -5%;
+        transition: filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .app-wallpaper-vignette {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(circle, transparent 45%, rgba(0, 0, 0, 0.4) 100%);
+        transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    html.dark .app-wallpaper-vignette {
+        background: radial-gradient(circle, transparent 35%, rgba(0, 0, 0, 0.65) 100%);
+    }
+
+    .app-wallpaper-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        transition: background-color 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     html.theme-transitioning,

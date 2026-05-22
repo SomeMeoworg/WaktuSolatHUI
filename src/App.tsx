@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
 import { format, parse, isAfter, addDays, startOfDay } from "date-fns";
 import { motion, AnimatePresence } from "motion/react";
 import "@material/web/button/filled-tonal-button.js";
@@ -34,6 +34,8 @@ import { CalendarDays, CalendarRange } from "lucide-react";
 import { useAppContext } from "./AppContext";
 import { useVisualStyle } from "./hooks/useVisualStyle";
 import { cn } from "./lib/utils";
+import { getWallpaperBlob } from "./lib/db";
+import { applyThemeFromHex, applyThemeFromImage, PRAYER_COLORS } from "./lib/theme";
 
 const PRAYER_KEYS = [
   "imsak",
@@ -46,7 +48,7 @@ const PRAYER_KEYS = [
 ] as const;
 
 export default function App() {
-  const { settings, t } = useAppContext();
+  const { settings, updateSettings, t } = useAppContext();
   const visualStyle = useVisualStyle();
 
   const [selectedZone, setSelectedZone] = useState(() => {
@@ -493,6 +495,171 @@ export default function App() {
     }
   }
 
+  // ----------------------------------------------------
+  // premium theme & wallpaper customization engine
+  // ----------------------------------------------------
+  
+  // 1. IndexedDB custom wallpaper loader
+  const [dbWallpaperUrl, setDbWallpaperUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    if (settings.wallpaperEnabled && settings.wallpaperSource === 'upload') {
+      getWallpaperBlob().then((blob) => {
+        if (blob && active) {
+          const url = URL.createObjectURL(blob);
+          setDbWallpaperUrl(url);
+        }
+      });
+    } else {
+      setDbWallpaperUrl(null);
+    }
+    return () => {
+      active = false;
+    };
+  }, [settings.wallpaperEnabled, settings.wallpaperSource]);
+
+  // Clean up Object URLs to prevent leaks
+  useEffect(() => {
+    return () => {
+      if (dbWallpaperUrl) {
+        URL.revokeObjectURL(dbWallpaperUrl);
+      }
+    };
+  }, [dbWallpaperUrl]);
+
+  const activeWallpaperUrl = useMemo(() => {
+    if (!settings.wallpaperEnabled) return null;
+    if (settings.wallpaperSource === 'upload') {
+      return dbWallpaperUrl;
+    }
+    return settings.wallpaperUrl || null;
+  }, [settings.wallpaperEnabled, settings.wallpaperSource, dbWallpaperUrl, settings.wallpaperUrl]);
+
+  // 2. OS Device Settings Dark Mode Listener
+  const [systemDark, setSystemDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (settings.darkThemeMode !== "system") return;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => setSystemDark(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, [settings.darkThemeMode]);
+
+  // 3. Solar Sunrise / Sunset Dark Mode Engine
+  const solarDark = useMemo(() => {
+    if (!todayData) return false;
+    try {
+      const sunriseTime = getAdjustedTime(todayData, "syuruk", currentTime);
+      const sunsetTime = getAdjustedTime(todayData, "maghrib", currentTime);
+      return isAfter(currentTime, sunsetTime) || !isAfter(currentTime, sunriseTime);
+    } catch (e) {
+      return false;
+    }
+  }, [todayData, currentTime]);
+
+  // 4. Resolve Active Dark Mode state
+  const activeDark = useMemo(() => {
+    if (settings.darkThemeMode === "system") {
+      return systemDark;
+    } else if (settings.darkThemeMode === "solar") {
+      return solarDark;
+    } else if (settings.darkThemeMode === "prayer") {
+      if (!prevPrayerKey) return false;
+      const key = prevPrayerKey.toLowerCase();
+      // Fajr (Subuh), Maghrib, Isha, Imsak are dark
+      // Syuruk, Dhuhr (Zohor), Asr (Asar) are light
+      return ["fajr", "maghrib", "isha", "imsak"].includes(key);
+    }
+    return !!settings.themeDark;
+  }, [settings.darkThemeMode, systemDark, solarDark, settings.themeDark, prevPrayerKey]);
+
+  // 5. Dynamic Prayer-Time Colors calculation
+  const activeColor = useMemo(() => {
+    if (settings.colorThemeMode === "prayer" && prevPrayerKey) {
+      const key = prevPrayerKey.toLowerCase();
+      const colorKey = key in PRAYER_COLORS ? key : "fajr";
+      return PRAYER_COLORS[colorKey as keyof typeof PRAYER_COLORS] || settings.themeColor || "#006C54";
+    }
+    return settings.themeColor || "#006C54";
+  }, [settings.colorThemeMode, prevPrayerKey, settings.themeColor]);
+
+  // 6. Apply themes dynamically to DOM and Material 3 Tonal Spot scheme generator
+  useEffect(() => {
+    // A. Apply fonts dynamically
+    if (settings.themeFont) {
+      document.documentElement.style.setProperty("--app-font-sans", settings.themeFont);
+    }
+    
+    // B. Apply shape scale attributes
+    if (settings.themeShape) {
+      document.documentElement.setAttribute("data-shape", settings.themeShape);
+    }
+    
+    // C. Apply visual style attributes
+    if (settings.visualStyle) {
+      document.documentElement.setAttribute("data-style", settings.visualStyle);
+    }
+
+    // D. Apply wallpaper active attribute
+    document.documentElement.setAttribute(
+      "data-wallpaper",
+      settings.wallpaperEnabled && activeWallpaperUrl ? "true" : "false"
+    );
+
+    // E. Apply font attribute for CSS styling
+    if (settings.themeFont) {
+      document.documentElement.setAttribute("data-font", settings.themeFont);
+    }
+
+    // F. Apply generated colors & contrast
+    const variant = settings.themeVariant || "tonal_spot";
+    const contrast = settings.themeContrast !== undefined ? settings.themeContrast : 0.0;
+
+    const applyM3Theme = () => {
+      if (settings.wallpaperEnabled && activeWallpaperUrl) {
+        const img = new Image();
+        img.src = activeWallpaperUrl;
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          applyThemeFromImage(img, activeDark, variant, contrast).catch(() => {
+            applyThemeFromHex(activeColor, activeDark, variant, contrast);
+          });
+        };
+        img.onerror = () => {
+          applyThemeFromHex(activeColor, activeDark, variant, contrast);
+        };
+      } else {
+        applyThemeFromHex(activeColor, activeDark, variant, contrast);
+      }
+    };
+
+    // Smooth material transition wrapper
+    document.documentElement.classList.add("theme-transitioning");
+    applyM3Theme();
+    const timer = setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [
+    activeColor,
+    activeDark,
+    settings.themeVariant,
+    settings.themeContrast,
+    settings.themeFont,
+    settings.themeShape,
+    settings.visualStyle,
+    settings.wallpaperEnabled,
+    activeWallpaperUrl
+  ]);
+
   const [showNotificationSettings, setShowNotificationSettings] =
     useState(false);
 
@@ -564,11 +731,49 @@ export default function App() {
     );
   }
 
+  // Mosque Auto-Dimming calculation for the wallpaper overlay
+  const computedWallpaperDim = useMemo(() => {
+    let dim = settings.wallpaperDim ?? 40;
+    const isMosqueActive = azanAlertActive || iqamahCountdownActive || solatModeActive;
+    if (settings.wallpaperMosqueAutoDim && isMosqueActive) {
+      dim = Math.min(95, dim + 25);
+    }
+    return dim / 100;
+  }, [settings.wallpaperDim, settings.wallpaperMosqueAutoDim, azanAlertActive, iqamahCountdownActive, solatModeActive]);
+
   return (
     <div className={cn(
       "min-h-[100dvh] lg:h-[100dvh] flex flex-col w-full font-sans text-[var(--md-sys-color-on-background)] lg:overflow-hidden relative bg-[var(--md-sys-color-background)]",
-      visualStyle === 'glass' && "bg-gradient-to-br from-[var(--md-sys-color-background)] via-[var(--md-sys-color-surface-variant)] to-[var(--md-sys-color-primary-container)]"
+      visualStyle === 'glass' && "bg-gradient-to-br from-[var(--md-sys-color-background)] via-[var(--md-sys-color-surface-variant)] to-[var(--md-sys-color-primary-container)]",
+      settings.wallpaperEnabled && activeWallpaperUrl && settings.wallpaperTextGlow && "text-glow-boost"
     )}>
+      {/* Legible Custom Wallpaper Layer */}
+      {settings.wallpaperEnabled && activeWallpaperUrl && (
+        <div className="app-wallpaper-layer">
+          <img
+            src={activeWallpaperUrl}
+            alt=""
+            className="app-wallpaper-image"
+            style={{
+              filter: `blur(${settings.wallpaperBlur ?? 10}px)`,
+            }}
+          />
+          {settings.wallpaperVignette && <div className="app-wallpaper-vignette" />}
+          <div
+            className="app-wallpaper-overlay"
+            style={{
+              backgroundColor:
+                settings.wallpaperOverlayStyle === 'dark'
+                  ? '#0f172a'
+                  : settings.wallpaperOverlayStyle === 'light'
+                  ? '#ffffff'
+                  : 'var(--md-sys-color-background)',
+              opacity: computedWallpaperDim,
+            }}
+          />
+        </div>
+      )}
+
       <Suspense fallback={null}>
         <FullCalendar
           isOpen={showCalendar}

@@ -57,6 +57,25 @@ export interface GeneralSettings {
   backgroundNotifications?: boolean;
   iqamahCountdownSound?: 'chime' | 'tick' | 'none';
   solatModeDuaDuration?: number; // minutes for post-solat dua screensaver
+  // Dynamic customizer options
+  darkThemeMode?: 'manual' | 'system' | 'solar' | 'prayer';
+  colorThemeMode?: 'manual' | 'prayer';
+  wallpaperEnabled?: boolean;
+  wallpaperSource?: 'upload' | 'url';
+  wallpaperUrl?: string;
+  wallpaperBlur?: number;
+  wallpaperDim?: number;
+  wallpaperOverlayStyle?: 'tint' | 'dark' | 'light';
+  wallpaperTextGlow?: boolean;
+  wallpaperVignette?: boolean;
+  wallpaperMosqueAutoDim?: boolean;
+  // Core theme styles synced globally
+  themeDark?: boolean;
+  themeColor?: string;
+  themeVariant?: 'tonal_spot' | 'vibrant' | 'expressive' | 'fidelity' | 'neutral' | 'monochrome' | 'content';
+  themeContrast?: number;
+  themeFont?: string;
+  themeShape?: string;
 }
 
 // Default preferences
@@ -80,5 +99,22 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   backgroundNotifications: false,
   iqamahCountdownSound: 'chime',
   solatModeDuaDuration: 0,
+  darkThemeMode: 'manual',
+  colorThemeMode: 'manual',
+  wallpaperEnabled: false,
+  wallpaperSource: 'upload',
+  wallpaperUrl: '',
+  wallpaperBlur: 10,
+  wallpaperDim: 40,
+  wallpaperOverlayStyle: 'tint',
+  wallpaperTextGlow: false,
+  wallpaperVignette: true,
+  wallpaperMosqueAutoDim: true,
+  themeDark: false,
+  themeColor: '#006C54', // Emerald
+  themeVariant: 'tonal_spot',
+  themeContrast: 0.0,
+  themeFont: "'Plus Jakarta Sans', sans-serif",
+  themeShape: 'rounded',
 };
 
