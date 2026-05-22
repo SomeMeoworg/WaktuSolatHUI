@@ -169,149 +169,166 @@ export function FullCalendar({
            initial="hidden"
            animate="visible"
            exit="exit"
-           className="fixed inset-0 z-40 bg-[var(--md-sys-color-background)] overflow-y-auto w-full h-full p-2 sm:p-4 md:p-6 lg:p-8 flex flex-col"
+           className="fixed inset-0 z-40 bg-[var(--md-sys-color-background)] w-full h-full flex flex-col font-sans text-[var(--md-sys-color-on-background)]"
         >
-          <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full font-sans text-[var(--md-sys-color-on-background)] relative">
-            {/* Header section */}
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-              <div className="flex flex-col gap-2">
-                <h2 className="text-3xl lg:text-4xl font-black tracking-tight text-[var(--md-sys-color-primary)] flex items-center gap-3">
-                  <CalendarRange size={32} /> {t("calendar")}
-                </h2>
-                <p className="font-semibold text-[var(--md-sys-color-on-surface-variant)] text-sm md:text-base">
-                  {t("extensiveCalendarDesc")}
-                </p>
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 10 }}
-                whileTap={{ scale: 0.9, rotate: -10 }}
-                onClick={onClose}
-                className="p-3 bg-[var(--md-sys-color-surface-variant)] text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-error)] hover:text-white rounded-[1.25rem] transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--md-sys-color-error)] self-start shadow-sm"
-              >
-                <X size={24} strokeWidth={2.5} />
-              </motion.button>
-            </div>
-
-            {/* Tab navigation */}
-            {/* @ts-ignore */}
-            <md-tabs className="w-full shrink-0 border-b border-[var(--md-sys-color-outline)]/10" activeTabIndex={activeTab === 'grid' ? 0 : activeTab === 'list' ? 1 : activeTab === 'public_holidays' ? 2 : 3}>
-              {/* @ts-ignore */}
-              <md-primary-tab onClick={() => setActiveTab("grid")}>
-                <div className="flex items-center gap-2"><span slot="icon"><CalendarDays size={18} /></span> {t("calendarGrid")}</div>
-              </md-primary-tab>
-              {/* @ts-ignore */}
-              <md-primary-tab onClick={() => setActiveTab("list")}>
-                <div className="flex items-center gap-2"><span slot="icon"><ListTree size={18} /></span> {t("schedule")}</div>
-              </md-primary-tab>
-              {/* @ts-ignore */}
-              <md-primary-tab onClick={() => setActiveTab("public_holidays")}>
-                <div className="flex items-center gap-2"><span slot="icon"><PartyPopper size={18} /></span> {t("publicHolidays")}</div>
-              </md-primary-tab>
-              {/* @ts-ignore */}
-              <md-primary-tab onClick={() => setActiveTab("islamic_events")}>
-                <div className="flex items-center gap-2"><span slot="icon"><Moon size={18} /></span> {t("islamicEvents")}</div>
-              </md-primary-tab>
-            </md-tabs>
-
-            {/* Controls Row */}
-            {activeTab !== "public_holidays" && activeTab !== "islamic_events" && (
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--md-sys-color-surface-container)] p-3 px-5 rounded-[2rem] border border-[var(--md-sys-color-outline)]/10 shadow-sm">
-                {activeTab === "list" ? (
-                   <>
-                     {/* @ts-ignore */}
-                     <md-tabs className="min-w-[200px]" activeTabIndex={view === 'daily' ? 0 : view === 'weekly' ? 1 : 2}>
-                       {/* @ts-ignore */}
-                       <md-secondary-tab onClick={() => setView("daily")}>{t("daily")}</md-secondary-tab>
-                       {/* @ts-ignore */}
-                       <md-secondary-tab onClick={() => setView("weekly")}>{t("weekly")}</md-secondary-tab>
-                       {/* @ts-ignore */}
-                       <md-secondary-tab onClick={() => setView("monthly")}>{t("monthly")}</md-secondary-tab>
-                     </md-tabs>
-                   </>
-                ) : (
-                   <div className="text-sm font-bold opacity-0">.</div> // spacer
-                )}
-                
-                <div className="flex items-center gap-2 self-end sm:self-auto">
-                   {activeTab === 'list' && (
-                     <motion.button
-                       whileHover={{ scale: 1.05 }}
-                       whileTap={{ scale: 0.95 }}
-                       onClick={handleCopy}
-                       disabled={uniqueDisplayData.length === 0}
-                     className="mr-2 flex items-center gap-2 p-2 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] rounded-xl transition-colors font-bold disabled:opacity-50"
-                       title={t("copySchedule")}
-                     >
-                       {isCopied ? <Check size={18} /> : <Copy size={18} />}
-                       <span className="hidden lg:inline">{isCopied ? t("copied") : t("copy")}</span>
-                     </motion.button>
-                   )}
-                   <motion.button 
-                     whileHover={{ scale: 1.15, rotate: -10 }}
-                     whileTap={{ scale: 0.85, rotate: 10 }}
-                     onClick={handlePrev}
-                     className="p-3 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] rounded-[1.25rem] hover:bg-[var(--md-sys-color-secondary)] hover:text-[var(--md-sys-color-on-secondary)] transition-colors shadow-sm focus:ring-4 focus:ring-offset-2"
-                     disabled={isLoading}
-                   >
-                     <ChevronLeft size={24} strokeWidth={2.5} />
-                   </motion.button>
-                   
-                   <h3 className="text-sm md:text-base font-black min-w-[140px] text-center uppercase tracking-widest text-[var(--md-sys-color-primary)] bg-[var(--md-sys-color-surface)] py-2 px-4 rounded-[1rem] shadow-sm">
-                     {activeTab === "list" && view === "daily" 
-                       ? format(currentDate, "dd MMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })
-                       : activeTab === "list" && view === "weekly"
-                         ? `${t("week")} ${format(currentDate, "w")}, ${format(currentDate, "yyyy")}`
-                         : format(currentDate, "MMMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })}
-                   </h3>
-                   
-                   <motion.button 
-                     whileHover={{ scale: 1.15, rotate: 10 }}
-                     whileTap={{ scale: 0.85, rotate: -10 }}
-                     onClick={handleNext}
-                     className="p-3 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] rounded-[1.25rem] hover:bg-[var(--md-sys-color-secondary)] hover:text-[var(--md-sys-color-on-secondary)] transition-colors shadow-sm focus:ring-4 focus:ring-offset-2"
-                     disabled={isLoading}
-                   >
-                     <ChevronRight size={24} strokeWidth={2.5} />
-                   </motion.button>
-
-                   {isLoading && <Loader2 size={18} className="animate-spin text-[var(--md-sys-color-primary)] ml-1" />}
+          {/* STICKY HEADER ZONE */}
+          <div className="sticky top-0 z-50 bg-[var(--md-sys-color-surface)]/80 backdrop-blur-2xl border-b border-[var(--md-sys-color-outline)]/10 shadow-sm shrink-0">
+            <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+              
+              {/* Top Title & Close */}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-3xl lg:text-4xl font-black tracking-tighter text-[var(--md-sys-color-primary)] flex items-center gap-3">
+                    <CalendarRange size={36} className="stroke-[2.5]" /> {t("calendar")}
+                  </h2>
+                  <p className="font-bold text-[var(--md-sys-color-on-surface-variant)] text-sm md:text-base opacity-80">
+                    {t("extensiveCalendarDesc")}
+                  </p>
                 </div>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={onClose}
+                  className="w-12 h-12 flex items-center justify-center rounded-full text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-error-container)] hover:text-[var(--md-sys-color-on-error-container)] shrink-0 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-error)]"
+                >
+                  <X size={24} className="stroke-[3]" />
+                </motion.button>
               </div>
-            )}
 
-            {/* Error View */}
-            {error && (
-              <div className="max-w-7xl mx-auto w-full p-4 mb-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-2xl">
-                {error}
+              {/* Tab navigation */}
+              {/* @ts-ignore */}
+              <md-tabs className="w-full shrink-0 bg-transparent" activeTabIndex={activeTab === 'grid' ? 0 : activeTab === 'list' ? 1 : activeTab === 'public_holidays' ? 2 : 3}>
+                {/* @ts-ignore */}
+                <md-primary-tab onClick={() => setActiveTab("grid")}>
+                  <div className="flex items-center gap-2"><span slot="icon"><CalendarDays size={18} /></span> {t("calendarGrid")}</div>
+                </md-primary-tab>
+                {/* @ts-ignore */}
+                <md-primary-tab onClick={() => setActiveTab("list")}>
+                  <div className="flex items-center gap-2"><span slot="icon"><ListTree size={18} /></span> {t("schedule")}</div>
+                </md-primary-tab>
+                {/* @ts-ignore */}
+                <md-primary-tab onClick={() => setActiveTab("public_holidays")}>
+                  <div className="flex items-center gap-2"><span slot="icon"><PartyPopper size={18} /></span> {t("publicHolidays")}</div>
+                </md-primary-tab>
+                {/* @ts-ignore */}
+                <md-primary-tab onClick={() => setActiveTab("islamic_events")}>
+                  <div className="flex items-center gap-2"><span slot="icon"><Moon size={18} /></span> {t("islamicEvents")}</div>
+                </md-primary-tab>
+              </md-tabs>
+
+              {/* Controls Row */}
+              {activeTab !== "public_holidays" && activeTab !== "islamic_events" && (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--md-sys-color-surface-container-low)] p-3 px-5 rounded-[24px] border border-[var(--md-sys-color-outline)]/5 shadow-sm">
+                  {activeTab === "list" ? (
+                    <div className="flex bg-[var(--md-sys-color-surface-container-high)] p-1 rounded-[16px] shadow-inner shrink-0 overflow-x-auto no-scrollbar">
+                      {(["daily", "weekly", "monthly"] as const).map(v => (
+                        <button
+                          key={v}
+                          onClick={() => setView(v)}
+                          className={cn(
+                            "px-5 py-2 rounded-[12px] font-bold text-sm transition-all duration-300 whitespace-nowrap",
+                            view === v 
+                              ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md" 
+                              : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-highest)]"
+                          )}
+                        >
+                          {t(v as any)}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="hidden sm:block text-sm font-bold opacity-0">.</div> // spacer
+                  )}
+                  
+                  <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    {activeTab === 'list' && (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleCopy}
+                        disabled={uniqueDisplayData.length === 0}
+                        className="mr-auto sm:mr-2 flex items-center gap-2 px-5 py-2.5 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] rounded-[16px] transition-colors font-bold disabled:opacity-50 shadow-sm"
+                        title={t("copySchedule")}
+                      >
+                        {isCopied ? <Check size={18} className="stroke-[3]" /> : <Copy size={18} className="stroke-[2.5]" />}
+                        <span className="hidden lg:inline">{isCopied ? t("copied") : t("copy")}</span>
+                      </motion.button>
+                    )}
+                    
+                    <div className="flex items-center gap-2 bg-[var(--md-sys-color-surface-container-high)] p-1 rounded-[20px] shadow-inner shrink-0">
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handlePrev}
+                        className="p-3 bg-[var(--md-sys-color-surface)] text-[var(--md-sys-color-on-surface)] rounded-[16px] hover:text-[var(--md-sys-color-primary)] transition-colors shadow-sm"
+                        disabled={isLoading}
+                      >
+                        <ChevronLeft size={20} strokeWidth={3} />
+                      </motion.button>
+                      
+                      <h3 className="text-sm md:text-base font-black min-w-[140px] text-center uppercase tracking-widest text-[var(--md-sys-color-primary)] px-2">
+                        {activeTab === "list" && view === "daily" 
+                          ? format(currentDate, "dd MMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })
+                          : activeTab === "list" && view === "weekly"
+                            ? `${t("week")} ${format(currentDate, "w")}, ${format(currentDate, "yyyy")}`
+                            : format(currentDate, "MMMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })}
+                      </h3>
+                      
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleNext}
+                        className="p-3 bg-[var(--md-sys-color-surface)] text-[var(--md-sys-color-on-surface)] rounded-[16px] hover:text-[var(--md-sys-color-primary)] transition-colors shadow-sm"
+                        disabled={isLoading}
+                      >
+                        <ChevronRight size={20} strokeWidth={3} />
+                      </motion.button>
+                    </div>
+
+                    {isLoading && <Loader2 size={24} className="animate-spin text-[var(--md-sys-color-primary)] ml-2" strokeWidth={3} />}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* SCROLLABLE CONTENT ZONE */}
+          <div className="flex-1 overflow-y-auto w-full p-4 sm:p-6 lg:p-8 custom-scrollbar">
+            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
+              {/* Error View */}
+              {error && (
+                <div className="w-full p-6 mb-6 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-[24px] font-bold text-center shadow-sm">
+                  {error}
+                </div>
+              )}
+
+              {/* Content Switcher */}
+              <div className="flex-1 min-h-0 w-full animate-in fade-in zoom-in duration-300">
+                {activeTab === "grid" && (
+                  <div className="bg-[var(--md-sys-color-surface-container-low)] shadow-sm rounded-[32px] border border-[var(--md-sys-color-outline)]/10 p-4 sm:p-6 lg:p-8 h-full flex flex-col">
+                    <CalendarGridView 
+                      currentDate={currentDate} 
+                      monthData={uniqueDisplayData} 
+                      isLoading={isLoading}
+                      onSelectDay={(day) => setSelectedDayData(day)}
+                    />
+                  </div>
+                )}
+                {activeTab === "list" && (
+                  <PrayerTimesListView 
+                    data={uniqueDisplayData} 
+                    view={view}
+                    isLoading={isLoading} 
+                    onPrayerSelect={(p) => setSelectedPrayer(p)}
+                  />
+                )}
+                {activeTab === "public_holidays" && (
+                  <EventsListView currentDate={currentDate} type="public" />
+                )}
+                {activeTab === "islamic_events" && (
+                  <EventsListView currentDate={currentDate} type="islamic" />
+                )}
               </div>
-            )}
-
-            {/* Content Switcher */}
-            <div className="flex-1 min-h-0 w-full animate-in fade-in zoom-in duration-300">
-               {activeTab === "grid" && (
-                 <div className="bg-[var(--md-sys-color-surface)] shadow-sm rounded-4xl border border-[var(--md-sys-color-outline)]/20 p-4 sm:p-6 lg:p-8 h-full flex flex-col">
-                   <CalendarGridView 
-                     currentDate={currentDate} 
-                     monthData={uniqueDisplayData} 
-                     isLoading={isLoading}
-                     onSelectDay={(day) => setSelectedDayData(day)}
-                   />
-                 </div>
-               )}
-               {activeTab === "list" && (
-                 <PrayerTimesListView 
-                   data={uniqueDisplayData} 
-                   view={view}
-                   isLoading={isLoading} 
-                   onPrayerSelect={(p) => setSelectedPrayer(p)}
-                 />
-               )}
-               {activeTab === "public_holidays" && (
-                 <EventsListView currentDate={currentDate} type="public" />
-               )}
-               {activeTab === "islamic_events" && (
-                 <EventsListView currentDate={currentDate} type="islamic" />
-               )}
             </div>
           </div>
         </motion.div>
