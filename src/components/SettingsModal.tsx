@@ -24,7 +24,8 @@ import {
   Download,
   RefreshCw,
   Check,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { modalVariants } from "../lib/motion";
@@ -38,7 +39,7 @@ import {
 import { PRAYER_NAMES } from "./PrayerSchedule";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../AppContext";
-import { saveOfflinePrayers } from "../lib/db";
+import { saveOfflinePrayers, clearAllOfflinePrayers } from "../lib/db";
 
 function playSynthesizedSoundLocal(type: 'chime' | 'tick', pitchHz?: number) {
   try {
@@ -105,6 +106,8 @@ export function SettingsModal({
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [clearSuccess, setClearSuccess] = useState(false);
 
   const handleSaveOffline = async () => {
     if (!navigator.onLine) {
@@ -150,6 +153,37 @@ export function SettingsModal({
       setDownloadError(t("saveOfflineFailed" as any) || "Gagal menyimpan luar talian");
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handleClearCache = async () => {
+    setIsClearing(true);
+    try {
+      // 1. Clear IndexedDB prayer times
+      await clearAllOfflinePrayers();
+      
+      // 2. Clear localStorage prayer times cache
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("waktu-solat-data-")) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      // 3. Reset settings
+      updateSettings({
+        offlineCachedRange: undefined,
+        offlineCachedAt: undefined
+      });
+      
+      setClearSuccess(true);
+      setTimeout(() => setClearSuccess(false), 3000);
+    } catch (err) {
+      console.error("Failed to clear offline cache:", err);
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -538,7 +572,7 @@ export function SettingsModal({
                         </div>
                       </div>
 
-                      {/* Save Button */}
+                      {/* Save & Clear Buttons */}
                       <div className="flex flex-wrap items-center gap-3 pt-2">
                         <motion.button
                           whileHover={{ scale: 1.02 }}
@@ -546,7 +580,7 @@ export function SettingsModal({
                           disabled={isDownloading}
                           onClick={handleSaveOffline}
                           className={cn(
-                            "w-full sm:w-auto px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)]",
+                            "flex-1 sm:flex-none px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)]",
                             isDownloading
                               ? "bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-outline)] cursor-not-allowed"
                               : "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm hover:opacity-95"
@@ -565,6 +599,36 @@ export function SettingsModal({
                           )}
                         </motion.button>
 
+                        {settings.offlineCachedRange && (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            disabled={isClearing}
+                            onClick={handleClearCache}
+                            className={cn(
+                              "flex-1 sm:flex-none px-5 py-3 rounded-full font-bold flex items-center justify-center gap-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-error)]",
+                              isClearing
+                                ? "bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-outline)] cursor-not-allowed"
+                                : "bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] shadow-sm hover:opacity-90"
+                            )}
+                          >
+                            {isClearing ? (
+                              <>
+                                <RefreshCw size={16} className="animate-spin" />
+                                {settings.language === "ms" ? "Membersih..." : "Clearing..."}
+                              </>
+                            ) : (
+                              <>
+                                <Trash2 size={16} />
+                                {settings.language === "ms" ? "Padam Cache" : "Clear Cache"}
+                              </>
+                            )}
+                          </motion.button>
+                        )}
+                      </div>
+
+                      {/* Feedback Messages */}
+                      <div className="min-h-[20px]">
                         {downloadError && (
                           <span className="text-xs text-[var(--md-sys-color-error)] font-bold flex items-center gap-1">
                             <AlertCircle size={14} />
@@ -575,6 +639,12 @@ export function SettingsModal({
                           <span className="text-xs text-[var(--md-sys-color-primary)] font-bold flex items-center gap-1">
                             <Check size={14} className="stroke-[3]" />
                             {t("saveOfflineSuccess" as any)}
+                          </span>
+                        )}
+                        {clearSuccess && (
+                          <span className="text-xs text-[var(--md-sys-color-primary)] font-bold flex items-center gap-1">
+                            <Check size={14} className="stroke-[3]" />
+                            {settings.language === "ms" ? "Cache berjaya dipadam" : "Cache cleared successfully"}
                           </span>
                         )}
                       </div>

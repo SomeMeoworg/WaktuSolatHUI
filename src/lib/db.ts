@@ -184,7 +184,7 @@ export async function getOfflinePrayers(zone: string): Promise<CachedPrayerData 
 }
 
 /**
- * Clears stored offline prayer data from IndexedDB.
+ * Clears stored offline prayer data for a specific zone from IndexedDB.
  */
 export async function clearOfflinePrayers(zone: string): Promise<void> {
   try {
@@ -199,5 +199,24 @@ export async function clearOfflinePrayers(zone: string): Promise<void> {
     });
   } catch (e) {
     console.error("Failed to clear IndexedDB prayer-times:", e);
+  }
+}
+
+/**
+ * Clears ALL stored offline prayer data for all zones from IndexedDB.
+ */
+export async function clearAllOfflinePrayers(): Promise<void> {
+  try {
+    const db = await initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction('prayer-times', 'readwrite');
+      const store = transaction.objectStore('prayer-times');
+      const request = store.clear();
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  } catch (e) {
+    console.error("Failed to clear all IndexedDB prayer-times:", e);
   }
 }
