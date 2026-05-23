@@ -75,14 +75,14 @@ export function SelectedDayModal({ day, onClose, onPrayerSelect }: SelectedDayMo
                
                <p className="font-semibold text-[var(--md-sys-color-on-surface-variant)] mt-1.5 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && (
-                   <span className="font-black">{getHijriFormatted(day.hijri, "text", settings.language).split(" (")[0]}</span>
+                   <span className="font-black">{getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language).split(" (")[0]}</span>
                  )}
                  {(!settings.hijriFormat || settings.hijriFormat === 'both') && (
                    <span className="opacity-40">•</span>
                  )}
                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'number') && (
                    <span className="font-mono opacity-70 font-black">
-                     {getHijriFormatted(day.hijri, "number", settings.language)}
+                     {getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "number", settings.language)}
                    </span>
                  )}
                  <span className="opacity-40">•</span>

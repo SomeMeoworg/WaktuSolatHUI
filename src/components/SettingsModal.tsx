@@ -25,7 +25,9 @@ import {
   RefreshCw,
   Check,
   AlertCircle,
-  Trash2
+  Trash2,
+  Sliders,
+  MoonStar
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { modalVariants } from "../lib/motion";
@@ -101,7 +103,7 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const { settings, updateSettings, t } = useAppContext();
   const [activeTab, setActiveTab] = useState<
-    "general" | "notifications" | "adjustments" | "mosque"
+    "general" | "notifications" | "adjustments" | "mosque" | "advanced"
   >("general");
 
   const [downloadRange, setDownloadRange] = useState<'week' | 'month' | 'year'>('month');
@@ -233,6 +235,17 @@ export function SettingsModal({
     "maghrib",
     "isha",
   ];
+  
+  const SUNNAH_KEYS = [
+    "suhoor",
+    "morningForbidden",
+    "duha",
+    "middayForbidden",
+    "eveningForbidden",
+    "firstThird",
+    "midnight",
+    "tahajjud"
+  ] as const;
 
   return (
     <AnimatePresence>
@@ -272,7 +285,7 @@ export function SettingsModal({
 
             {/* Tabs */}
             {/* @ts-ignore */}
-            <md-tabs className="w-full shrink-0 border-b border-[var(--md-sys-color-outline)]/10" activeTabIndex={activeTab === 'general' ? 0 : activeTab === 'notifications' ? 1 : activeTab === 'adjustments' ? 2 : 3}>
+            <md-tabs className="w-full shrink-0 border-b border-[var(--md-sys-color-outline)]/10" activeTabIndex={activeTab === 'general' ? 0 : activeTab === 'notifications' ? 1 : activeTab === 'adjustments' ? 2 : activeTab === 'advanced' ? 3 : 4}>
               {/* @ts-ignore */}
               <md-primary-tab onClick={() => setActiveTab("general")}>
                 {t("general")}
@@ -287,6 +300,11 @@ export function SettingsModal({
               <md-primary-tab onClick={() => setActiveTab("adjustments")}>
                 {t("offset")}
                 <span slot="icon"><Clock size={18} /></span>
+              </md-primary-tab>
+              {/* @ts-ignore */}
+              <md-primary-tab onClick={() => setActiveTab("advanced")}>
+                {t("sunnahAndOptional" as any) || "Lanjutan"}
+                <span slot="icon"><Sliders size={18} /></span>
               </md-primary-tab>
               {/* @ts-ignore */}
               <md-primary-tab onClick={() => setActiveTab("mosque")}>
@@ -1113,6 +1131,215 @@ export function SettingsModal({
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+
+              {activeTab === "advanced" && (
+                <div className="space-y-6 max-w-2xl mx-auto pb-4">
+                  {/* Sunnah Settings */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[32px] p-6 sm:p-8 border border-[var(--md-sys-color-outline)]/5 shadow-sm space-y-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center">
+                        <MoonStar size={20} className="stroke-[2.5]" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black text-[var(--md-sys-color-on-surface)]">
+                          {t("showSunnahTimes" as any) || "Waktu Sunat"}
+                        </h3>
+                        <p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">
+                          Papar waktu-waktu ibadah sunat dan waktu haram solat.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {SUNNAH_KEYS.map((key) => (
+                        <div key={key} className="flex items-center justify-between p-4 bg-[var(--md-sys-color-surface)] rounded-2xl ring-1 ring-[var(--md-sys-color-outline)]/5 shadow-sm">
+                          <div>
+                            <span className="font-bold text-[var(--md-sys-color-on-surface)] text-sm block">
+                              {t(key as any)}
+                            </span>
+                            <span className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] leading-tight block mt-0.5">
+                              {t(`${key}Desc` as any)}
+                            </span>
+                          </div>
+                          {/* @ts-ignore */}
+                          <md-switch
+                            selected={!!settings.showSunnahTimes?.includes(key)}
+                            onChange={(e: any) => {
+                              const current = settings.showSunnahTimes || [];
+                              const isSelected = e.target.selected;
+                              if (isSelected && !current.includes(key as any)) {
+                                updateSettings({ showSunnahTimes: [...current, key as any] });
+                              } else if (!isSelected && current.includes(key as any)) {
+                                updateSettings({ showSunnahTimes: current.filter(k => k !== key) });
+                              }
+                            }}
+                            icons
+                          ></md-switch>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Advanced Calculation Rules */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[32px] p-6 sm:p-8 border border-[var(--md-sys-color-outline)]/5 shadow-sm space-y-6">
+                    <div>
+                      <h3 className="text-lg font-black text-[var(--md-sys-color-on-surface)]">
+                        {t("advancedCalculationRules" as any)}
+                      </h3>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
+                          {t("suhoorOffset" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {[15, 30, 45, 60].map((mins) => (
+                            /* @ts-ignore */
+                            <md-filter-chip
+                              key={`suhoor-${mins}`}
+                              label={`${mins} min`}
+                              selected={settings.suhoorOffset === mins || (!settings.suhoorOffset && mins === 30)}
+                              onClick={() => updateSettings({ suhoorOffset: mins })}
+                            ></md-filter-chip>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
+                          {t("imsakOffset" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {[2, 5, 10, 15].map((mins) => (
+                            /* @ts-ignore */
+                            <md-filter-chip
+                              key={`imsak-${mins}`}
+                              label={`${mins} min`}
+                              selected={settings.imsakOffset === mins || (!settings.imsakOffset && mins === 10)}
+                              onClick={() => updateSettings({ imsakOffset: mins })}
+                            ></md-filter-chip>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
+                          {t("midnightMethod" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {/* @ts-ignore */}
+                          <md-filter-chip
+                            label={t("midnightFajr" as any)}
+                            selected={!settings.midnightMode || settings.midnightMode === "fajr"}
+                            onClick={() => updateSettings({ midnightMode: "fajr" })}
+                          ></md-filter-chip>
+                          {/* @ts-ignore */}
+                          <md-filter-chip
+                            label={t("midnightSunrise" as any)}
+                            selected={settings.midnightMode === "sunrise"}
+                            onClick={() => updateSettings({ midnightMode: "sunrise" })}
+                          ></md-filter-chip>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
+                          {t("asrEnds" as any)}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {/* @ts-ignore */}
+                          <md-filter-chip
+                            label={t("asrEndsMaghrib" as any)}
+                            selected={!settings.asrEndsMode || settings.asrEndsMode === "maghrib"}
+                            onClick={() => updateSettings({ asrEndsMode: "maghrib" })}
+                          ></md-filter-chip>
+                          {/* @ts-ignore */}
+                          <md-filter-chip
+                            label={t("asrEndsSunset" as any)}
+                            selected={settings.asrEndsMode === "sunset"}
+                            onClick={() => updateSettings({ asrEndsMode: "sunset" })}
+                          ></md-filter-chip>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hijri Calendar Engine */}
+                  <div className="bg-[var(--md-sys-color-surface-container)] rounded-[32px] p-6 sm:p-8 border border-[var(--md-sys-color-outline)]/5 shadow-sm space-y-6">
+                    <div>
+                      <h3 className="text-lg font-black text-[var(--md-sys-color-on-surface)]">
+                        {t("hijriCalendarEngine" as any)}
+                      </h3>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
+                          {t("hijriMethod" as any)}
+                        </label>
+                        <div className="flex flex-col gap-2">
+                          {(["umalqura", "tbla", "civil", "rgsa"] as const).map((method) => (
+                            <div key={`hijri-${method}`} className="flex items-center gap-3">
+                              {/* @ts-ignore */}
+                              <md-radio
+                                name="hijri-method"
+                                value={method}
+                                checked={settings.hijriMethod === method || (!settings.hijriMethod && method === "umalqura")}
+                                onClick={() => updateSettings({ hijriMethod: method })}
+                              ></md-radio>
+                              <label className="text-sm font-bold cursor-pointer" onClick={() => updateSettings({ hijriMethod: method })}>
+                                {t(`method${method.charAt(0).toUpperCase() + method.slice(1)}` as any)}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-[var(--md-sys-color-surface)] rounded-[2rem] shadow-sm ring-1 ring-[var(--md-sys-color-outline)]/5 mt-4">
+                        <span className="font-bold text-[var(--md-sys-color-on-surface)] text-sm">
+                          {t("hijriAdjustment" as any)}
+                        </span>
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() =>
+                              updateSettings({
+                                hijriAdjustment: Math.max(-2, (settings.hijriAdjustment ?? 0) - 1),
+                              })
+                            }
+                            className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
+                          >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
+                            <Minus size={20} className="relative z-10" />
+                          </motion.button>
+                          <span className="w-16 flex font-mono text-lg sm:text-xl font-black items-center justify-center tabular-nums text-[var(--md-sys-color-primary)]">
+                            {(settings.hijriAdjustment ?? 0) > 0 ? "+" : ""}
+                            {settings.hijriAdjustment ?? 0}
+                          </span>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() =>
+                              updateSettings({
+                                hijriAdjustment: Math.min(2, (settings.hijriAdjustment ?? 0) + 1),
+                              })
+                            }
+                            className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
+                          >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
+                            <Plus size={20} className="relative z-10" />
+                          </motion.button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               )}
 

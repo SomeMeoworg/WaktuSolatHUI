@@ -28,7 +28,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
   const [copiedRowDate, setCopiedRowDate] = useState<string | null>(null);
 
   const handleCopyDaySchedule = (day: PrayerData) => {
-    const formattedHijri = getHijriFormatted(day.hijri, settings.hijriFormat || "both", settings.language);
+    const formattedHijri = getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, settings.hijriFormat || "both", settings.language);
     let text = `${day.date.replace(/-/g, " ")} (${formattedHijri} - ${day.day})\n`;
     timesToDisplay.forEach(k => {
       text += `${t(k)}: ${day[k] ? day[k].substring(0, 5) : "--:--"}\n`;
@@ -85,14 +85,14 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
           
           <div className="flex items-center gap-2 mt-1 px-5 py-2.5 bg-[var(--md-sys-color-surface-container-high)] rounded-full border border-[var(--md-sys-color-outline)]/8 text-[var(--md-sys-color-on-surface-variant)] shadow-inner text-xs font-bold transition-all">
              {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && (
-               <span className="font-black text-xs">{getHijriFormatted(day.hijri, "text", settings.language)}</span>
+               <span className="font-black text-xs">{getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language)}</span>
              )}
              {(!settings.hijriFormat || settings.hijriFormat === 'both') && (
                <span className="opacity-40">•</span>
              )}
              {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'number') && (
                <span className="font-mono font-black text-[10px] opacity-75">
-                 {getHijriFormatted(day.hijri, "number", settings.language)}
+                 {getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "number", settings.language)}
                </span>
              )}
           </div>
@@ -179,9 +179,10 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                   {format(parse(day.date, "dd-MMM-yyyy", new Date()), "EEEE", { locale: settings.language === 'ms' ? ms : enUS })}
                 </span>
                 <span className="text-[9px] font-mono font-black opacity-55 mt-1">
-                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && getHijriFormatted(day.hijri, "text", settings.language)}
-                  {(!settings.hijriFormat || settings.hijriFormat === 'both') && " • "}
-                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'number') && getHijriFormatted(day.hijri, "number", settings.language)}
+                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language)}
+                </span>
+                <span className="font-mono opacity-60 font-black">
+                  {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'number') && getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "number", settings.language)}
                 </span>
                 
                 {evt && (
@@ -290,11 +291,11 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                 <td className="py-3.5 px-4 select-none">
                   <div className="flex flex-col gap-0.5">
                     {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && (
-                      <span className="text-xs font-black whitespace-nowrap">{getHijriFormatted(day.hijri, "text", settings.language).split(" (")[0]}</span>
+                      <span className="text-xs font-black whitespace-nowrap">{getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language).split(" (")[0]}</span>
                     )}
                     {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'number') && (
                       <span className="text-[9px] font-mono font-black opacity-55 tabular-nums">
-                        {getHijriFormatted(day.hijri, "number", settings.language)}
+                        {getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "number", settings.language)}
                       </span>
                     )}
                   </div>

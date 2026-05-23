@@ -36,6 +36,8 @@ export interface PrayerPreference {
 export type PrayerKey = "imsak" | "fajr" | "syuruk" | "dhuhr" | "asr" | "maghrib" | "isha";
 export type Preferences = Record<PrayerKey, PrayerPreference>;
 
+export type SunnahTimeKey = "suhoor" | "morningForbidden" | "duha" | "middayForbidden" | "eveningForbidden" | "firstThird" | "midnight" | "tahajjud";
+
 export interface GeneralSettings {
   language: 'ms' | 'en';
   timeFormat: '12h' | '24h';
@@ -49,6 +51,15 @@ export interface GeneralSettings {
   locationMode?: 'auto' | 'manual';
   trackImsak?: boolean;
   showJumaat?: boolean;
+  // Sunnah & Optional Times
+  showSunnahTimes?: SunnahTimeKey[];
+  suhoorOffset?: number; // minutes before Fajr/Imsak
+  imsakOffset?: number; // minutes before Fajr
+  midnightMethod?: 'fajr' | 'sunrise';
+  asrEnds?: 'maghrib' | 'sunset';
+  // Hijri Calendar Engine
+  hijriMethod?: 'umalqura' | 'tbla' | 'civil' | 'rgsa';
+  hijriAdjustment?: number; // -2 to +2
   // Mosque / Surau Mode
   azanAlertStyle?: 'dramatic' | 'standard' | 'modern' | 'subtle' | 'minimal' | 'none';
   azanAlertDuration?: number; // seconds before auto-dismiss
@@ -98,6 +109,13 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   locationMode: 'manual',
   trackImsak: false,
   showJumaat: true,
+  showSunnahTimes: [],
+  suhoorOffset: 30,
+  imsakOffset: 10,
+  midnightMethod: 'fajr',
+  asrEnds: 'maghrib',
+  hijriMethod: 'umalqura',
+  hijriAdjustment: 0,
   azanAlertStyle: 'dramatic',
   azanAlertDuration: 20,
   solatModeEnabled: false,

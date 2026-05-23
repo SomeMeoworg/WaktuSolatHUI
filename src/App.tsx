@@ -1040,6 +1040,7 @@ export default function App() {
               </Suspense>
               <PrayerSchedule
                 todayData={todayData}
+                tomorrowData={tomorrowData}
                 nextPrayerKey={nextPrayerKey}
                 currentPrayerKey={prevPrayerKey}
                 preferences={preferences}

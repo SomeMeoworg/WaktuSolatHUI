@@ -18,9 +18,11 @@ export const ISLAMIC_EVENTS: Record<string, { title: string, color: string, isHo
   "09-17": { title: "Nuzul Quran", color: "bg-teal-500", isHoliday: true }, // (Certain states)
   "10-01": { title: "Hari Raya Aidilfitri", color: "bg-emerald-500", isHoliday: true },
   "10-02": { title: "Hari Raya Aidilfitri", color: "bg-emerald-400", isHoliday: true },
-  "12-09": { title: "Hari Arafah", color: "bg-orange-500", isHoliday: false },
+  "12-09": { title: "Hari Arafah (Sunat Puasa)", color: "bg-orange-500", isHoliday: false },
   "12-10": { title: "Hari Raya Aidiladha", color: "bg-rose-500", isHoliday: true },
-  "12-11": { title: "Hari Raya Aidiladha (Hari Kedua)", color: "bg-rose-400", isHoliday: true } // Certain states
+  "12-11": { title: "Hari Raya Aidiladha (Hari Kedua)", color: "bg-rose-400", isHoliday: true }, // Certain states
+  "01-09": { title: "Hari Tasu'a (Sunat Puasa)", color: "bg-cyan-500", isHoliday: false },
+  "01-10": { title: "Hari Asyura (Sunat Puasa)", color: "bg-indigo-600", isHoliday: false },
 };
 
 export function getFixedPublicHoliday(date: Date) {
@@ -32,13 +34,27 @@ export function getIslamicEvent(hijriDate: string) {
   if (!hijriDate) return null;
   const parts = hijriDate.split('-');
   if (parts.length === 3) {
-    const md = `${parts[1]}-${parts[2]}`;
+    const month = parts[1];
+    const day = parts[2];
+    const md = `${month}-${day}`;
+    
+    // Check dynamic Sunnah fasting events
+    // Ayyamul Bidh (White Days) - 13, 14, 15 of every month
+    // Except 13th of Zulhijjah (Tashreeq day - forbidden to fast)
+    if ((day === "13" || day === "14" || day === "15") && !(month === "12" && day === "13")) {
+      return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-sky-400", isHoliday: false };
+    }
+    
     return ISLAMIC_EVENTS[md] || null;
   }
   
   if (parts.length === 2) {
-      // In case the part is just MM-dd
-      return ISLAMIC_EVENTS[hijriDate] || null;
+      const md = hijriDate;
+      const [month, day] = md.split("-");
+      if ((day === "13" || day === "14" || day === "15") && !(month === "12" && day === "13")) {
+        return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-sky-400", isHoliday: false };
+      }
+      return ISLAMIC_EVENTS[md] || null;
   }
   return null;
 }
@@ -157,9 +173,48 @@ export const HIJRI_MONTHS_EN = [
   "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
 ];
 
-export function getHijriFormatted(hijriDateStr: string, formatType: "text" | "number" | "both" = "both", language: 'ms' | 'en' = 'ms') {
-  if (!hijriDateStr) return "";
-  const parts = hijriDateStr.split('-');
+export function getDynamicHijriDate(
+  gregorianDateStr: string,
+  method: 'umalqura' | 'tbla' | 'civil' | 'rgsa' = 'umalqura',
+  adjustment: number = 0
+): string {
+  if (!gregorianDateStr) return "";
+  const date = new Date(gregorianDateStr);
+  if (isNaN(date.getTime())) return "";
+
+  if (adjustment !== 0) {
+    date.setDate(date.getDate() + adjustment);
+  }
+
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-' + method, {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    });
+    const parts = formatter.formatToParts(date);
+    const day = parts.find(p => p.type === 'day')?.value || '1';
+    const month = parts.find(p => p.type === 'month')?.value || '1';
+    let year = parts.find(p => p.type === 'year')?.value || '1445';
+    year = year.replace(/\D/g, ''); // strip ' AH'
+    
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  } catch (e) {
+    return "";
+  }
+}
+
+export function getHijriFormatted(
+  gregorianDateStr: string,
+  method: 'umalqura' | 'tbla' | 'civil' | 'rgsa' = 'umalqura',
+  adjustment: number = 0,
+  formatType: "text" | "number" | "both" = "both",
+  language: 'ms' | 'en' = 'ms'
+) {
+  const dynamicHijriStr = getDynamicHijriDate(gregorianDateStr, method, adjustment);
+  if (!dynamicHijriStr) return "";
+  
+  const parts = dynamicHijriStr.split('-');
   if (parts.length === 3) {
     const [year, month, day] = parts;
     const mIndex = parseInt(month, 10) - 1;
@@ -172,5 +227,5 @@ export function getHijriFormatted(hijriDateStr: string, formatType: "text" | "nu
       return `${dayNum} ${monthName} ${year}H (${dayNum}/${monthNum}/${year}H)`;
     }
   }
-  return hijriDateStr;
+  return dynamicHijriStr;
 }

@@ -6,7 +6,7 @@ import "@material/web/elevation/elevation.js";
 import "@material/web/ripple/ripple.js";
 import { Compass, Sunrise, Moon, Calendar, Play, Pause, Plus } from "lucide-react";
 import { useAppContext } from "../AppContext";
-import { getHijriFormatted, HIJRI_MONTHS, HIJRI_MONTHS_EN } from "../lib/holidays";
+import { getHijriFormatted, getDynamicHijriDate, HIJRI_MONTHS, HIJRI_MONTHS_EN } from "../lib/holidays";
 import { useVisualStyle, useThemeShape, getStyleClasses } from "../hooks/useVisualStyle";
 import { cn } from "../lib/utils";
 import { PrayerData } from "../types";
@@ -191,8 +191,14 @@ export function ClockPanel({
   let hijriMonthYear = "";
   let hijriLabel = settings.language === "ms" ? "Hijriah" : "Hijri";
 
-  if (todayHijri) {
-    const parts = todayHijri.split("-");
+  const dynamicHijriStr = getDynamicHijriDate(
+    todayData?.date || currentTime.toISOString(),
+    settings.hijriMethod,
+    settings.hijriAdjustment
+  );
+
+  if (dynamicHijriStr) {
+    const parts = dynamicHijriStr.split("-");
     if (parts.length === 3) {
       const [year, month, day] = parts;
       const mIndex = parseInt(month, 10) - 1;
@@ -221,9 +227,9 @@ export function ClockPanel({
     }
   }
 
-  if (!hijriDayNum && todayHijri) {
+  if (!hijriDayNum) {
     hijriDayNum = "•";
-    hijriMonthYear = getHijriFormatted(todayHijri, settings.hijriFormat || "both", settings.language);
+    hijriMonthYear = "---";
   }
 
   return (

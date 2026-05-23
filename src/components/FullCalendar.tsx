@@ -157,7 +157,7 @@ export function FullCalendar({
     let text = `${t("schedule")} - ${selectedZone}\n\n`;
     
     uniqueDisplayData.forEach(day => {
-      const formattedHijri = getHijriFormatted(day.hijri, settings.hijriFormat || "both", settings.language);
+      const formattedHijri = getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, settings.hijriFormat || "both", settings.language);
       text += `${t("date")}: ${day.date.replace(/-/g, " ")} (${formattedHijri} - ${day.day})\n`;
       timesToDisplay.forEach(k => {
         text += `${t(k)}: ${day[k] ? day[k].substring(0, 5) : "--:--"}\n`;
@@ -449,7 +449,7 @@ export function FullCalendar({
                     {selectedPrayer.time}
                   </div>
                   <div className="text-[11px] opacity-85 mt-2 font-black uppercase tracking-wider">
-                    {selectedPrayer.dateValue.replace(/-/g, " ")} • {getHijriFormatted(selectedPrayer.hijriValue, settings.hijriFormat || "both", settings.language).split(" (")[0]}
+                    {selectedPrayer.dateValue.replace(/-/g, " ")} • {getHijriFormatted(selectedPrayer.dateValue, settings.hijriMethod, settings.hijriAdjustment, settings.hijriFormat || "both", settings.language).split(" (")[0]}
                   </div>
                 </div>
                 

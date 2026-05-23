@@ -21,6 +21,7 @@ import {
 import { useAppContext } from "../AppContext";
 import { parse, startOfDay, format } from "date-fns";
 import { useVisualStyle } from "../hooks/useVisualStyle";
+import { calculateSunnahTimes } from "../lib/sunnah";
 
 export const PRAYER_NAMES: Record<string, string> = {
   imsak: "Imsak",
@@ -49,10 +50,19 @@ type PrayerKey =
   | "dhuhr"
   | "asr"
   | "maghrib"
-  | "isha";
+  | "isha"
+  | "suhoor"
+  | "morningForbidden"
+  | "duha"
+  | "middayForbidden"
+  | "eveningForbidden"
+  | "firstThird"
+  | "midnight"
+  | "tahajjud";
 
 export function PrayerSchedule({
   todayData,
+  tomorrowData,
   nextPrayerKey,
   currentPrayerKey,
   preferences,
@@ -64,6 +74,7 @@ export function PrayerSchedule({
   currentTime,
 }: {
   todayData: PrayerData | null;
+  tomorrowData?: PrayerData | null;
   nextPrayerKey: string | null;
   currentPrayerKey?: string | null;
   preferences: Record<PrayerKey, PrayerPreference>;
@@ -104,7 +115,24 @@ export function PrayerSchedule({
     );
   }
 
-  const allTimes: PrayerKey[] = [
+  const baseTimes: Record<string, string> = {
+    imsak: todayData.imsak,
+    fajr: todayData.fajr,
+    syuruk: todayData.syuruk,
+    dhuhr: todayData.dhuhr,
+    asr: todayData.asr,
+    maghrib: todayData.maghrib,
+    isha: todayData.isha,
+  };
+
+  const sunnahCalculated = calculateSunnahTimes(todayData, tomorrowData || null, {
+    suhoorOffset: settings.suhoorOffset || 30,
+    midnightMethod: settings.midnightMode || 'fajr'
+  });
+
+  const mergedData = { ...baseTimes, ...sunnahCalculated };
+
+  let allKeys = [
     ...(settings.trackImsak ? ["imsak" as PrayerKey] : []),
     "fajr",
     "syuruk",
@@ -113,20 +141,48 @@ export function PrayerSchedule({
     "maghrib",
     "isha",
   ];
+
+  if (settings.showSunnahTimes && settings.showSunnahTimes.length > 0) {
+    allKeys = Array.from(new Set([...allKeys, ...settings.showSunnahTimes] as PrayerKey[]));
+    
+    // Sort allKeys chronologically based on their calculated time string in mergedData
+    allKeys.sort((a, b) => {
+      // Handling times crossing midnight can be tricky if we don't know if it's PM or AM for the next day.
+      // But standard time format is 24h: HH:mm.
+      // For firstThird, midnight, tahajjud they happen after Isha but technically early morning next day or late night.
+      // Easiest is to compare by mapping them to minutes relative to today's midnight.
+      const getMins = (k: string) => {
+        const timeStr = mergedData[k as keyof typeof mergedData] || "00:00";
+        const [h, m] = timeStr.split(":").map(Number);
+        let mins = h * 60 + m;
+        // If the key is a night/Sunnah time that typically falls after Maghrib, and its hours are small (e.g. 0-6), it belongs to tomorrow.
+        if (["firstThird", "midnight", "tahajjud"].includes(k) && h < 12) {
+          mins += 24 * 60;
+        }
+        return mins;
+      };
+      
+      return getMins(a) - getMins(b);
+    });
+  }
+
+  const allTimes: PrayerKey[] = allKeys as PrayerKey[];
   const fardhuTimes: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
-  const sunnahTimes: PrayerKey[] = [
+  const sunnahTimesFilter: PrayerKey[] = [
     ...(settings.trackImsak ? ["imsak" as PrayerKey] : []),
-    "syuruk"
-  ];
+    "syuruk",
+    ...(settings.showSunnahTimes || []) as PrayerKey[]
+  ].sort((a, b) => allKeys.indexOf(a) - allKeys.indexOf(b)) as PrayerKey[];
 
   const timesToDisplay: PrayerKey[] =
     filter === "fardu"
       ? fardhuTimes
       : filter === "sunnah"
-        ? sunnahTimes
+        ? sunnahTimesFilter
         : allTimes;
+
   const hasAnyNotificationEnabled = Object.values(preferences).some(
-    (p) => p.enabled,
+    (p) => p?.enabled,
   );
 
   const isFriday = currentTime.getDay() === 5;
@@ -140,9 +196,13 @@ export function PrayerSchedule({
   };
 
   const formatTime = (key: PrayerKey) => {
-    if (!todayData[key]) return "--:--";
-    let pTime = parse(todayData[key], "HH:mm:ss", startOfDay(currentTime));
-    const pref = preferences[key];
+    if (!mergedData[key as keyof typeof mergedData]) return "--:--";
+    let pTime = parse(mergedData[key as keyof typeof mergedData], "HH:mm:ss", startOfDay(currentTime));
+    // If parsing fails because of HH:mm instead of HH:mm:ss
+    if (isNaN(pTime.getTime())) {
+      pTime = parse(mergedData[key as keyof typeof mergedData], "HH:mm", startOfDay(currentTime));
+    }
+    const pref = preferences[key as any];
     if (pref && pref.offset)
       pTime = new Date(pTime.getTime() + pref.offset * 60000);
     if (key === "asr" && settings.mazhab === "hanafi")
@@ -152,9 +212,13 @@ export function PrayerSchedule({
   };
 
   const formatIqamahTime = (key: PrayerKey, iqamahOffset: number) => {
-    if (!todayData[key]) return "--:--";
-    let pTime = parse(todayData[key], "HH:mm:ss", startOfDay(currentTime));
-    const pref = preferences[key];
+    if (!mergedData[key as keyof typeof mergedData]) return "--:--";
+    let pTime = parse(mergedData[key as keyof typeof mergedData], "HH:mm:ss", startOfDay(currentTime));
+    // If parsing fails because of HH:mm instead of HH:mm:ss
+    if (isNaN(pTime.getTime())) {
+      pTime = parse(mergedData[key as keyof typeof mergedData], "HH:mm", startOfDay(currentTime));
+    }
+    const pref = preferences[key as any];
     if (pref && pref.offset)
       pTime = new Date(pTime.getTime() + pref.offset * 60000);
     if (key === "asr" && settings.mazhab === "hanafi")
@@ -259,8 +323,8 @@ export function PrayerSchedule({
             key,
           );
           const timeLabel = formatTime(key);
-          const Icon = PRAYER_ICONS[key];
-          const pref = preferences[key] || {
+          const Icon = PRAYER_ICONS[key] || Bell;
+          const pref = preferences[key as any] || {
             enabled: false,
             preAlert: 0,
             sound: "default",
@@ -416,7 +480,7 @@ export function PrayerSchedule({
                 </div>
 
                 <md-icon-button
-                  onClick={() => onTogglePreference(key)}
+                  onClick={() => onTogglePreference(key as any)}
                   className={cn(
                     "flex items-center justify-center shrink-0",
                     pref.enabled &&

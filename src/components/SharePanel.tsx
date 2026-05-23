@@ -379,8 +379,8 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
       day: "numeric",
       month: "short",
     });
-    const rawHijri = previewTodayData?.hijri || "";
-    const hijriDateStr = getHijriFormatted(rawHijri, "text", settings.language as any).split(" (")[0];
+    const rawGreg = previewTodayData?.date || targetDate.toISOString();
+    const hijriDateStr = getHijriFormatted(rawGreg, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language as any).split(" (")[0];
 
     ctx.textAlign = "center";
     ctx.fillStyle = colorOnSecondaryContainer;
@@ -983,7 +983,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                             </span>
                             {previewTodayData?.hijri && (
                               <span className="text-[8px] sm:text-[9px] font-black text-[var(--md-sys-color-tertiary)] mt-1 tracking-wide uppercase">
-                                {getHijriFormatted(previewTodayData.hijri, "text", settings.language as any).split(" (")[0]}
+                                {getHijriFormatted(previewTodayData.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language as any).split(" (")[0]}
                               </span>
                             )}
                           </div>
