@@ -1028,6 +1028,7 @@ export default function App() {
         isOpen={showSharePanel}
         onClose={() => setShowSharePanel(false)}
         currentZone={selectedZone}
+        currentZoneData={todayData}
       />
 
       <AnimatePresence>
