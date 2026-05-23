@@ -329,12 +329,11 @@ export default function App() {
         })
         .then((data: JakimResponse) => {
           if (isMounted) {
-            setWeekData(data.prayerTime);
-            setIsOfflineModeActive(false);
-            localStorage.setItem(
-              `waktu-solat-data-${selectedZone}`,
-              JSON.stringify(data.prayerTime),
-            );
+            if (data && data.prayerTime) {
+              setWeekData(data.prayerTime);
+              setIsOfflineModeActive(false);
+              localStorage.setItem(`waktu-solat-data-${selectedZone}`, JSON.stringify(data.prayerTime));
+            }
             setError(null);
           }
         })

@@ -639,6 +639,19 @@ export function ZoneSelector({
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDetecting, setIsDetecting] = useState(false);
+  const [locationPermission, setLocationPermission] = useState<PermissionState | null>(null);
+
+  useEffect(() => {
+    if ('permissions' in navigator) {
+      navigator.permissions.query({ name: 'geolocation' }).then(result => {
+        setLocationPermission(result.state);
+        result.onchange = () => {
+          setLocationPermission(result.state);
+        };
+      }).catch(() => {});
+    }
+  }, []);
+
   const [userCoords, setUserCoords] = useState<{
     lat: number;
     lng: number;
@@ -1114,6 +1127,22 @@ export function ZoneSelector({
                     {t('modeAuto' as any) || "Auto Tracking"}
                   </button>
                 </div>
+
+                <AnimatePresence mode="wait">
+                  {locationPermission === 'denied' && (
+                    <motion.div
+                      initial={{ opacity: 0, scaleY: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scaleY: 1, y: 0 }}
+                      exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      style={{ transformOrigin: "top" }}
+                      className="bg-[var(--md-sys-color-error-container)]/80 text-[var(--md-sys-color-on-error-container)] px-5 py-4 rounded-2xl mb-2 text-sm shadow-sm"
+                    >
+                      <h4 className="font-bold mb-1">Akses Lokasi Ditolak</h4>
+                      <p className="opacity-90 leading-tight">Sila benarkan akses lokasi dalam tetapan pelayar web anda untuk menggunakan ciri kemas kini zon automatik.</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <AnimatePresence mode="wait">
                   {settings.locationMode !== 'auto' && (
