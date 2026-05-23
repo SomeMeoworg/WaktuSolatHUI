@@ -78,9 +78,9 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
       <div className="flex-1 min-h-0 w-full overflow-hidden relative">
         <motion.div 
           key={currentDate.toISOString()} // Key resets animation on month change
-          initial={{ opacity: 0, x: 25 }}
+          initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }} // Highly optimized out-quintic bezier
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }} // Highly optimized out-quintic bezier
           style={{ willChange: "transform, opacity" }}
           className="grid grid-cols-7 grid-rows-6 gap-1.5 sm:gap-2.5 h-full w-full justify-items-center items-center sm:justify-items-stretch sm:items-stretch"
         >

@@ -220,7 +220,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
     window.open(`https://t.me/share/url?url=${url}&text=${text}`, "_blank");
   };
 
-  // Canvas-based Postcard image drawing pipeline (crisp, vector-sharp offline drawing)
+  // Canvas-based Postcard image drawing pipeline (crisp, vector-sharp dynamic offline drawing)
   const drawPostcard = async (): Promise<HTMLCanvasElement> => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -234,17 +234,39 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
     canvas.height = height * scale;
     ctx.scale(scale, scale);
 
-    // 1. Signature Sunset Gradient (matches postcard preview exactly)
+    // Dynamic Material 3 style retriever helper
+    const getCssVar = (name: string, fallback: string): string => {
+      if (typeof window === "undefined") return fallback;
+      const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return val || fallback;
+    };
+
+    // Query active theme M3 dynamic colors
+    const colorPrimary = getCssVar("--md-sys-color-primary", "#6750A4");
+    const colorOnPrimary = getCssVar("--md-sys-color-on-primary", "#FFFFFF");
+    const colorPrimaryContainer = getCssVar("--md-sys-color-primary-container", "#EADDFF");
+    const colorSecondaryContainer = getCssVar("--md-sys-color-secondary-container", "#E8DEF8");
+    const colorOnSecondaryContainer = getCssVar("--md-sys-color-on-secondary-container", "#1D192B");
+    const colorTertiary = getCssVar("--md-sys-color-tertiary", "#7D5260");
+    const colorSurface = getCssVar("--md-sys-color-surface", "#FEF7FF");
+    const colorSurfaceContainer = getCssVar("--md-sys-color-surface-container", "#F3EDF7");
+    const colorSurfaceContainerHigh = getCssVar("--md-sys-color-surface-container-high", "#ECE6F0");
+    const colorSurfaceContainerLow = getCssVar("--md-sys-color-surface-container-low", "#F7F2FA");
+    const colorOnSurface = getCssVar("--md-sys-color-on-surface", "#1D1B20");
+    const colorOnSurfaceVariant = getCssVar("--md-sys-color-on-surface-variant", "#49454F");
+    const colorOutline = getCssVar("--md-sys-color-outline", "#79747E");
+
+    // 1. Premium Dynamic Theme Gradient Background (Material 3 Expressive)
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, "#F2994A");    // Coral orange
-    bgGrad.addColorStop(0.32, "#EB5757"); // Sunset rose
-    bgGrad.addColorStop(0.68, "#251816"); // Deep chocolate brown
-    bgGrad.addColorStop(1, "#100B0A");    // Dark velvet brown
+    bgGrad.addColorStop(0, colorPrimaryContainer);
+    bgGrad.addColorStop(0.35, colorSurfaceContainerLow);
+    bgGrad.addColorStop(1, colorSurfaceContainerHigh);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    // Decorative Islamic grid dots
-    ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+    // Decorative Islamic grid dots (adapts dynamically to outline contrast)
+    ctx.fillStyle = colorOutline;
+    ctx.globalAlpha = 0.08;
     for (let x = 30; x < width; x += 40) {
       for (let y = 30; y < height; y += 40) {
         ctx.beginPath();
@@ -252,8 +274,9 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
         ctx.fill();
       }
     }
+    ctx.globalAlpha = 1.0; // Reset
 
-    // Reset shadow state for branding text to keep it vector sharp
+    // Reset shadow state to keep vector text perfectly crisp
     ctx.shadowColor = "transparent";
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 0;
@@ -261,10 +284,12 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
 
     // 2. Branding Header (Left Aligned)
     ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+    ctx.fillStyle = colorOnSurfaceVariant;
+    ctx.globalAlpha = 0.7;
     ctx.font = "bold 13px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.letterSpacing = "6px";
     ctx.fillText("ALURWAKTU", 75, 75);
+    ctx.globalAlpha = 1.0;
 
     // 3. Zone details (Left Aligned)
     const zoneName = getZoneLabel(shareZone);
@@ -272,28 +297,24 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
     const maxLabelLen = 28;
     const truncatedZoneName = zoneName.length > maxLabelLen ? zoneName.slice(0, maxLabelLen) + "..." : zoneName;
 
-    // Set premium soft drop shadow for legibility before drawing main texts
-    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 4;
-    ctx.shadowOffsetX = 0;
-
     // Draw main zone code big and bold
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colorPrimary;
     ctx.font = "900 64px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.fillText(shareZone, 75, 148);
 
     // Draw truncated zone name (district)
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colorOnSurface;
     ctx.font = "bold 24px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.letterSpacing = "0px";
     ctx.fillText(truncatedZoneName, 75, 192);
 
     // Draw state name
-    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+    ctx.fillStyle = colorOnSurfaceVariant;
+    ctx.globalAlpha = 0.8;
     ctx.font = "bold 12px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.letterSpacing = "3px";
     ctx.fillText(stateName.toUpperCase(), 75, 222);
+    ctx.globalAlpha = 1.0;
 
     // 4. Draw elegant Pill Badge (Top Right)
     const badgeW = 80;
@@ -301,37 +322,36 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
     const badgeX = width - 75 - badgeW;
     const badgeY = 53;
 
-    ctx.shadowColor = "transparent";
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
-
-    ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+    ctx.fillStyle = colorPrimary;
     ctx.beginPath();
     ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 14);
     ctx.fill();
     
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+    ctx.strokeStyle = colorPrimary;
     ctx.lineWidth = 1;
     ctx.stroke();
 
     ctx.textAlign = "center";
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colorOnPrimary;
     ctx.font = "bold 10px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.letterSpacing = "2px";
     ctx.fillText(isMalay ? "POSTER" : "CARD", badgeX + badgeW / 2, badgeY + 17);
 
-    // 5. Dates Section (Centered Pill Capsule - High Contrast)
+    // 5. Dates Section (Centered Pill Capsule - Dynamic High Contrast)
     const datesY = 258;
     const datePillW = 380;
     const datePillH = 80;
     const datePillX = width / 2 - datePillW / 2;
 
-    ctx.fillStyle = "rgba(18, 12, 11, 0.85)"; // High contrast darkened container
+    ctx.fillStyle = colorSecondaryContainer;
     ctx.beginPath();
     ctx.roundRect(datePillX, datesY, datePillW, datePillH, 20);
     ctx.fill();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+    ctx.strokeStyle = colorOutline;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.15;
     ctx.stroke();
+    ctx.globalAlpha = 1.0;
 
     const gregDateStr = new Date().toLocaleDateString(isMalay ? "ms-MY" : "en-US", {
       weekday: "short",
@@ -342,29 +362,31 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
     const hijriDateStr = getHijriFormatted(rawHijri, "text", settings.language as any).split(" (")[0];
 
     ctx.textAlign = "center";
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colorOnSecondaryContainer;
     ctx.font = "bold 18px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.fillText(`📅 ${gregDateStr}`, width / 2, datesY + 34);
 
     if (hijriDateStr) {
-      ctx.fillStyle = "#FFD700"; // Signature gold Hijri display
+      ctx.fillStyle = colorTertiary;
       ctx.font = "bold 13px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
       ctx.fillText(hijriDateStr, width / 2, datesY + 60);
     }
 
-    // 6. Obligatory Prayer Times Table (Clean, borderless and solid container)
+    // 6. Obligatory Prayer Times Table (Clean, dynamic surface container)
     const tableY = 368;
     const tableWidth = 650;
     const tableHeight = 470;
     const tableX = width / 2 - tableWidth / 2;
 
-    ctx.fillStyle = "rgba(18, 12, 11, 0.76)"; // Solid deep dark brown-charcoal matching card container
+    ctx.fillStyle = colorSurfaceContainer;
     ctx.beginPath();
     ctx.roundRect(tableX, tableY, tableWidth, tableHeight, 32);
     ctx.fill();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+    ctx.strokeStyle = colorOutline;
     ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.15;
     ctx.stroke();
+    ctx.globalAlpha = 1.0;
 
     const rowHeight = tableHeight / activeKeys.length;
 
@@ -392,27 +414,29 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
 
       const pLabel = (isMalay ? t(key as any) : key).toUpperCase();
 
-      // Name Text (Left aligned, no icons)
+      // Name Text (Left aligned)
       ctx.textAlign = "left";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      ctx.fillStyle = colorOnSurfaceVariant;
       ctx.font = "bold 20px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
       ctx.letterSpacing = "1.5px";
       ctx.fillText(pLabel, tableX + 50, rowY + rowHeight / 2 + 7);
 
       // Time Text (Right aligned, highly readable mono font)
       ctx.textAlign = "right";
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = colorOnSurface;
       ctx.font = "900 22px 'JetBrains Mono', monospace, sans-serif";
       ctx.letterSpacing = "0px";
       ctx.fillText(formattedTime, tableX + tableWidth - 50, rowY + rowHeight / 2 + 7);
     });
 
-    // 7. Footer Branding (Perfect clean look - "Jadual dijana" text removed completely)
+    // 7. Footer Branding
     ctx.textAlign = "center";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.fillStyle = colorOnSurfaceVariant;
+    ctx.globalAlpha = 0.5;
     ctx.font = "bold 13px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif";
     ctx.letterSpacing = "4px";
     ctx.fillText("ALURWAKTU.PAGES.DEV", width / 2, 905);
+    ctx.globalAlpha = 1.0;
 
     return canvas;
   };
@@ -642,10 +666,11 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
               <AnimatePresence>
                 {showZonePicker && (
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                    initial={{ opacity: 0, scaleY: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scaleY: 1, y: 0 }}
+                    exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
+                    transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ transformOrigin: "top", willChange: "transform, opacity" }}
                     className="overflow-hidden"
                   >
                     <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 shadow-xl overflow-hidden">
@@ -860,44 +885,44 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                         )}
                       </div>
 
-                      {/* Poster Ticket card - Redesigned to left aligned sunset signature layout */}
+                      {/* Poster Ticket card - Redesigned to left aligned dynamic dynamic theme layout */}
                       <div
                         className={cn(
-                          "relative rounded-[32px] overflow-hidden text-white shadow-xl shadow-black/40 border border-white/10 select-none bg-gradient-to-b from-[#F2994A] via-[#EB5757] to-[#1a110f] p-6 aspect-[4/5] flex flex-col justify-between w-full max-w-[260px] xs:max-w-[290px] sm:max-w-[310px] mx-auto transition-all",
+                          "relative rounded-[32px] overflow-hidden text-[var(--md-sys-color-on-surface)] shadow-xl shadow-black/5 border border-[var(--md-sys-color-outline)]/12 select-none bg-gradient-to-br from-[var(--md-sys-color-primary-container)]/18 to-[var(--md-sys-color-surface-container-high)] p-6 aspect-[4/5] flex flex-col justify-between w-full max-w-[260px] xs:max-w-[290px] sm:max-w-[310px] mx-auto transition-all",
                           loadingData && "animate-pulse"
                         )}
                       >
-                        {/* Background subtle glowing overlays */}
-                        <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
+                        {/* Background subtle dynamic dots */}
+                        <div className="absolute inset-0 bg-grid opacity-[0.03] dark:opacity-[0.06] pointer-events-none" />
 
                         {/* Top Branding & Zone Header (Left Aligned matching Canvas perfectly!) */}
                         <div className="flex justify-between items-start shrink-0 relative z-10 w-full text-left">
                           <div className="flex-1 min-w-0">
-                            <span className="text-[9.5px] uppercase tracking-[0.25em] font-black text-white/70 block">
+                            <span className="text-[9.5px] uppercase tracking-[0.25em] font-black text-[var(--md-sys-color-on-surface-variant)]/80 block">
                               ALURWAKTU
                             </span>
-                            <span className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1 block">
+                            <span className="text-2xl sm:text-3xl font-black text-[var(--md-sys-color-primary)] tracking-tight mt-1 block">
                               {shareZone}
                             </span>
-                            <h4 className="text-xs sm:text-sm font-black text-white leading-snug truncate mt-1 max-w-[170px] xs:max-w-[190px] sm:max-w-[210px]">
+                            <h4 className="text-xs sm:text-sm font-black text-[var(--md-sys-color-on-surface)] leading-snug truncate mt-1 max-w-[170px] xs:max-w-[190px] sm:max-w-[210px]">
                               {getZoneLabel(shareZone)}
                             </h4>
-                            <span className="text-[9px] text-white/60 font-semibold uppercase tracking-widest mt-0.5 block">
+                            <span className="text-[9px] text-[var(--md-sys-color-on-surface-variant)]/80 font-bold uppercase tracking-widest mt-0.5 block">
                               {getStateLabel(shareZone)}
                             </span>
                           </div>
                           
                           {/* Elegant Badge top right */}
-                          <div className="px-3 py-1 rounded-full bg-white/12 text-white border border-white/20 text-[8px] font-black tracking-widest uppercase shrink-0">
+                          <div className="px-3 py-1 rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border border-[var(--md-sys-color-primary)]/10 text-[8px] font-black tracking-widest uppercase shrink-0 shadow-sm">
                             {isMalay ? "POSTER" : "CARD"}
                           </div>
                         </div>
 
-                        {/* Centered Date Pill Capsule (High Contrast) */}
+                        {/* Centered Date Pill Capsule (High Contrast Dynamic) */}
                         <div className="my-2 text-center relative z-10 flex justify-center w-full">
-                          <div className="inline-flex flex-col items-center py-2 px-4 rounded-2xl bg-[#120c0b]/80 border border-white/12 min-w-[170px] sm:min-w-[190px] shadow-md">
-                            <span className="text-[10px] sm:text-[11px] font-black text-white flex items-center gap-1.5 justify-center">
-                              <Calendar size={11} className="text-white/85" />
+                          <div className="inline-flex flex-col items-center py-2 px-4 rounded-2xl bg-[var(--md-sys-color-secondary-container)] border border-[var(--md-sys-color-outline)]/10 min-w-[170px] sm:min-w-[190px] shadow-sm">
+                            <span className="text-[10px] sm:text-[11px] font-black text-[var(--md-sys-color-on-secondary-container)] flex items-center gap-1.5 justify-center">
+                              <Calendar size={11} className="text-[var(--md-sys-color-on-secondary-container)]/85" />
                               {new Date().toLocaleDateString(isMalay ? "ms-MY" : "en-US", {
                                 weekday: "short",
                                 day: "numeric",
@@ -905,19 +930,19 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                               })}
                             </span>
                             {previewTodayData?.hijri && (
-                              <span className="text-[8px] sm:text-[9px] font-black text-[#FFD700] mt-1 tracking-wide uppercase">
+                              <span className="text-[8px] sm:text-[9px] font-black text-[var(--md-sys-color-tertiary)] mt-1 tracking-wide uppercase">
                                 {getHijriFormatted(previewTodayData.hijri, "text", settings.language as any).split(" (")[0]}
                               </span>
                             )}
                           </div>
                         </div>
 
-                        {/* Solid Dark Prayers Schedule Container */}
-                        <div className="bg-[#120c0b]/76 rounded-[24px] p-4 border border-white/5 space-y-1 relative z-10 flex-1 flex flex-col justify-center my-1.5 max-h-[160px] sm:max-h-[185px]">
+                        {/* Dynamic Material 3 Prayers Schedule Container */}
+                        <div className="bg-[var(--md-sys-color-surface-container)]/95 rounded-[24px] p-4 border border-[var(--md-sys-color-outline)]/10 space-y-1 relative z-10 flex-1 flex flex-col justify-center my-1.5 max-h-[160px] sm:max-h-[185px] shadow-inner">
                           {loadingData ? (
                             <div className="flex flex-col items-center justify-center h-full py-4 space-y-1.5">
-                              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              <span className="text-[9px] font-black text-white/60">
+                              <div className="w-5 h-5 border-2 border-[var(--md-sys-color-primary)]/30 border-t-[var(--md-sys-color-primary)] rounded-full animate-spin" />
+                              <span className="text-[9px] font-black text-[var(--md-sys-color-on-surface-variant)]/60">
                                 {t("loading" as any)}
                               </span>
                             </div>
@@ -943,12 +968,12 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                               return (
                                 <div
                                   key={key}
-                                  className="flex items-center justify-between px-2.5 py-0.5 rounded-lg hover:bg-white/5 transition-all text-[11px] font-black"
+                                  className="flex items-center justify-between px-2.5 py-0.5 rounded-lg hover:bg-[var(--md-sys-color-primary)]/8 hover:text-[var(--md-sys-color-primary)] transition-all text-[11px] font-black"
                                 >
-                                  <span className="text-white/85 text-[9px] sm:text-[10px] tracking-wide">
+                                  <span className="text-[var(--md-sys-color-on-surface-variant)] text-[9px] sm:text-[10px] tracking-wide">
                                     {(isMalay ? t(key as any) : key).toUpperCase()}
                                   </span>
-                                  <span className="font-mono text-white tracking-normal text-[10px] sm:text-[11px] font-extrabold">{formatted}</span>
+                                  <span className="font-mono text-[var(--md-sys-color-on-surface)] tracking-normal text-[10px] sm:text-[11px] font-extrabold">{formatted}</span>
                                 </div>
                               );
                             })
@@ -957,7 +982,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
 
                         {/* Centered minimalist branding footer */}
                         <div className="text-center shrink-0 pt-0.5 relative z-10 w-full">
-                          <span className="text-[8px] text-white/45 tracking-[0.25em] font-black uppercase">
+                          <span className="text-[8px] text-[var(--md-sys-color-on-surface-variant)]/50 tracking-[0.25em] font-black uppercase">
                             ALURWAKTU.PAGES.DEV
                           </span>
                         </div>
