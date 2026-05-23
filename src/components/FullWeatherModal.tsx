@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Droplets, Wind, Sun, Sunrise, Sunset, Umbrella, MapPin, Search } from "lucide-react";
+import { X, Droplets, Wind, Sun, Sunrise, Sunset, Umbrella, MapPin, Search, Thermometer } from "lucide-react";
 import { cn } from "../lib/utils";
 import { M3_MOTION } from "../lib/motion";
 import { useAppContext } from "../AppContext";
