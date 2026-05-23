@@ -209,9 +209,20 @@ export default function App() {
     const cached = localStorage.getItem(`waktu-solat-data-${zone}`);
     return !cached;
   });
+  const [showSkeleton, setShowSkeleton] = useState(isLoading);
   const [error, setError] = useState<string | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showSharePanel, setShowSharePanel] = useState(false);
+
+  useEffect(() => {
+    let timer: any;
+    if (isLoading) {
+      timer = setTimeout(() => setShowSkeleton(true), 200);
+    } else {
+      setShowSkeleton(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -793,7 +804,12 @@ export default function App() {
   const [showNotificationSettings, setShowNotificationSettings] =
     useState(false);
 
-  if (!weekData.length && isLoading) {
+  // Show blank or nothing for 200ms to prevent flashing skeletons on fast connections
+  if (!weekData.length && isLoading && !showSkeleton) {
+    return <div className="min-h-[100dvh] bg-[var(--md-sys-color-background)]" />;
+  }
+
+  if (!weekData.length && showSkeleton) {
     return (
       <div className="min-h-[100dvh] lg:h-[100dvh] flex flex-col w-full font-sans text-[var(--md-sys-color-on-background)] lg:overflow-hidden relative bg-[var(--md-sys-color-background)]">
         <main className="flex-1 w-full max-w-[1920px] mx-auto relative z-10 flex flex-col lg:flex-row px-3 sm:px-6 lg:px-8 xl:px-12 py-2 sm:py-3 lg:py-4 gap-4 sm:gap-6 lg:gap-8 xl:gap-12 lg:overflow-hidden min-h-0">

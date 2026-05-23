@@ -341,7 +341,6 @@ export function PrayerSchedule({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{
-                delay: index * 0.05,
                 type: "spring",
                 stiffness: 400,
                 damping: 25,

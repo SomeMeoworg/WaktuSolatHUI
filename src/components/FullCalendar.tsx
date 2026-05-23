@@ -58,6 +58,7 @@ export function FullCalendar({
   });
   
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoadingState, setShowLoadingState] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [selectedDayData, setSelectedDayData] = useState<PrayerData | null>(null);
@@ -72,6 +73,16 @@ export function FullCalendar({
   const getPrayerDesc = (key: string) => {
     return t(`${key}Desc` as any);
   };
+
+  useEffect(() => {
+    let timer: any;
+    if (isLoading) {
+      timer = setTimeout(() => setShowLoadingState(true), 200);
+    } else {
+      setShowLoadingState(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -329,7 +340,7 @@ export function FullCalendar({
                       </motion.button>
                     </div>
 
-                    {isLoading && <Loader2 size={18} className="animate-spin text-[var(--md-sys-color-primary)] shrink-0 ml-1" strokeWidth={3} />}
+                    {showLoadingState && <Loader2 size={18} className="animate-spin text-[var(--md-sys-color-primary)] shrink-0 ml-1" strokeWidth={3} />}
                   </div>
                 </div>
               )}
@@ -366,7 +377,7 @@ export function FullCalendar({
                     <CalendarGridView 
                       currentDate={currentDate} 
                       monthData={uniqueDisplayData} 
-                      isLoading={isLoading}
+                      isLoading={showLoadingState}
                       onSelectDay={(day) => setSelectedDayData(day)}
                     />
                   </div>
@@ -375,7 +386,7 @@ export function FullCalendar({
                   <PrayerTimesListView 
                     data={uniqueDisplayData} 
                     view={view}
-                    isLoading={isLoading} 
+                    isLoading={showLoadingState}
                     onPrayerSelect={(p) => setSelectedPrayer(p)}
                   />
                 )}
