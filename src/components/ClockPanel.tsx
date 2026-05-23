@@ -29,6 +29,7 @@ import { DashboardClock } from "./clocks/DashboardClock";
 import { SwissStationClock } from "./clocks/SwissStationClock";
 import { BauhausClock } from "./clocks/BauhausClock";
 import { LayeredClock } from "./clocks/LayeredClock";
+import { AnimatedNumber } from "./AnimatedDigit";
 
 function playSynthesizedSound(type: 'chime' | 'tick', pitchHz?: number) {
   try {
@@ -121,12 +122,12 @@ export function ClockPanel({
     };
   }, [visualStyle]);
 
-  const [countdownString, setCountdownString] = useState("");
+  const [countdownParts, setCountdownParts] = useState({ h: 0, m: 0, s: 0, active: false });
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (!nextPrayerTime) {
-      setCountdownString("");
+      setCountdownParts({ h: 0, m: 0, s: 0, active: false });
       setProgress(0);
       return;
     }
@@ -134,7 +135,7 @@ export function ClockPanel({
     const diffInSecs = differenceInSeconds(nextPrayerTime, currentTime);
 
     if (diffInSecs <= 0) {
-      setCountdownString(t("now"));
+      setCountdownParts({ h: 0, m: 0, s: 0, active: false });
       setProgress(100);
       return;
     }
@@ -143,12 +144,7 @@ export function ClockPanel({
     const m = Math.floor((diffInSecs % 3600) / 60);
     const s = diffInSecs % 60;
 
-    let parts = [];
-    if (h > 0) parts.push(`${h}${t("hoursShort")}`);
-    if (m > 0 || h > 0) parts.push(`${m}${t("minutesShort")}`);
-    parts.push(`${s}${t("secondsShort")}`);
-
-    setCountdownString(parts.join(" "));
+    setCountdownParts({ h, m, s, active: true });
 
     if (prevPrayerTime) {
       const total = nextPrayerTime.getTime() - prevPrayerTime.getTime();
@@ -244,81 +240,104 @@ export function ClockPanel({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               className={cn(
-                "relative w-full mb-1.5 lg:mb-2 bg-[var(--md-sys-color-primary-container)] rounded-[24px] p-2.5 sm:p-3 lg:p-3.5 flex flex-col gap-1.5 sm:gap-2",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)]",
-                visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
+                "relative w-full mb-1.5 lg:mb-2 rounded-[28px] lg:rounded-[32px] overflow-hidden flex flex-col gap-1 sm:gap-0 bg-[var(--md-sys-color-surface-container-highest)]/30",
+                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)]/50 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20"
               )}
             >
               {/* @ts-ignore */}
               <md-elevation level="1"></md-elevation>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 relative z-10">
-                <div className="flex items-center gap-3 px-1 sm:px-2 w-full sm:w-auto">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] flex items-center justify-center shrink-0 shadow-sm relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-[var(--md-sys-color-on-primary)] animate-pulse relative z-10" />
+              
+              <div className="flex flex-col md:flex-row w-full relative z-10 gap-1.5 sm:gap-2 lg:gap-3 p-1.5 sm:p-2 lg:p-2.5">
+                {/* Left Pane: Current Prayer */}
+                {prevPrayerName && (
+                  <div className="bg-[var(--md-sys-color-tertiary-container)]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-3.5 sm:p-4 md:w-[35%] lg:w-[30%] xl:w-[25%] flex flex-col justify-between border border-white/10 dark:border-white/5 relative overflow-hidden group">
+                    {/* Decorative blurred blob */}
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-[var(--md-sys-color-tertiary)]/20 rounded-full blur-2xl group-hover:bg-[var(--md-sys-color-tertiary)]/30 transition-colors duration-1000" />
+                    
+                    <div className="flex items-center gap-2 mb-3 md:mb-6 relative z-10">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--md-sys-color-tertiary)] animate-pulse shadow-[0_0_8px_var(--md-sys-color-tertiary)]" />
+                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-on-tertiary-container)]/80">
+                        {t("now")}
+                      </span>
+                    </div>
+                    <div className="flex flex-col relative z-10">
+                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-[var(--md-sys-color-on-tertiary-container)] leading-none tracking-tight">
+                        {prevPrayerName}
+                      </span>
+                    </div>
                   </div>
-                    <div className="flex flex-col flex-1">
-                    <span className="md3-label-small font-bold uppercase tracking-widest text-[var(--md-sys-color-on-primary-container)]/80 mb-0">
-                      {t("nextPrayer")}
-                    </span>
-                    <div className="flex items-baseline gap-2 sm:gap-3">
-                      <span className="md3-headline-large font-black text-[var(--md-sys-color-on-primary-container)] tracking-tight leading-none text-lg sm:text-xl lg:text-2xl">
+                )}
+
+                {/* Right Pane: Next Prayer & Countdown */}
+                <div className={cn(
+                  "bg-[var(--md-sys-color-primary-container)]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-4 sm:p-5 md:p-6 flex-1 flex flex-col sm:flex-row justify-between items-start sm:items-center border border-white/10 dark:border-white/5 relative overflow-hidden group min-h-[100px]",
+                  !prevPrayerName && "w-full"
+                )}>
+                  {/* Atmospheric Background Graphic */}
+                  <div className="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[var(--md-sys-color-primary)]/20 to-transparent rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition-opacity duration-1000 pointer-events-none" />
+                  <div className="absolute -left-10 -bottom-20 w-48 h-48 bg-gradient-to-tr from-[var(--md-sys-color-primary)]/10 to-transparent rounded-full blur-2xl opacity-40 pointer-events-none" />
+                  
+                  <div className="flex flex-col relative z-10 w-full sm:w-auto">
+                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                      <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[var(--md-sys-color-primary)]">
+                        {t("nextPrayer")}
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                      <span className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--md-sys-color-on-primary-container)] tracking-tighter leading-none drop-shadow-sm">
                         {nextPrayerName}
                       </span>
                       {nextPrayerTime && (
-                        <span className="text-sm sm:text-base font-bold text-[var(--md-sys-color-on-primary-container)]/60 tracking-tight leading-none">
-                          {format(
-                            nextPrayerTime,
-                            settings.timeFormat === "12h" ? "hh:mm a" : "HH:mm",
-                          )}
+                        <span className="text-sm sm:text-base font-bold text-[var(--md-sys-color-on-primary-container)]/60 tracking-tight">
+                          {format(nextPrayerTime, settings.timeFormat === "12h" ? "hh:mm a" : "HH:mm")}
                         </span>
                       )}
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col items-center sm:items-end w-full sm:w-auto mt-0.5 sm:mt-0 pt-1.5 sm:pt-0 border-t border-[var(--md-sys-color-on-primary-container)]/10 sm:border-0 pl-0 sm:pl-4">
-                  <div className="flex items-center gap-2 mb-0.5 flex-wrap justify-center sm:justify-end">
-                    {prevPrayerName && (
-                      <>
-                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-primary)] flex items-center gap-1.5 bg-[var(--md-sys-color-primary)]/10 px-2 py-0.5 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--md-sys-color-primary)] animate-pulse"></span>
-                          {t("now")}: {prevPrayerName}
-                        </span>
-                        <span className="text-[var(--md-sys-color-on-primary-container)]/30 text-xs hidden sm:inline-block">
-                          â€¢
-                        </span>
-                      </>
-                    )}
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-on-primary-container)]/70">
+                  <div className="flex flex-col items-start sm:items-end mt-4 sm:mt-0 relative z-10 w-full sm:w-auto">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-on-primary-container)]/70 mb-1">
                       {t("timeRemaining")}
                     </span>
+                    <div className="flex items-baseline font-mono text-[var(--md-sys-color-primary)] text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter drop-shadow-sm">
+                      {countdownParts.active ? (
+                        <>
+                          {countdownParts.h > 0 && (
+                            <div className="flex items-baseline">
+                              <AnimatedNumber value={countdownParts.h} padZero={false} />
+                              <span className="text-sm sm:text-base md:text-lg opacity-60 ml-0.5 mr-1.5 font-sans font-bold">{t("hoursShort")}</span>
+                            </div>
+                          )}
+                          {(countdownParts.m > 0 || countdownParts.h > 0) && (
+                            <div className="flex items-baseline">
+                              <AnimatedNumber value={countdownParts.m} padZero={true} />
+                              <span className="text-sm sm:text-base md:text-lg opacity-60 ml-0.5 mr-1.5 font-sans font-bold">{t("minutesShort")}</span>
+                            </div>
+                          )}
+                          <div className="flex items-baseline">
+                            <AnimatedNumber value={countdownParts.s} padZero={true} />
+                            <span className="text-sm sm:text-base md:text-lg opacity-60 ml-0.5 font-sans font-bold">{t("secondsShort")}</span>
+                          </div>
+                        </>
+                      ) : (
+                         <span className="text-3xl sm:text-4xl md:text-5xl font-sans font-black uppercase tracking-widest text-[var(--md-sys-color-error)] animate-pulse">{t("now")}</span>
+                      )}
+                    </div>
                   </div>
-                  <span className="text-xl sm:text-2xl lg:text-3xl font-sans font-black tracking-tight text-[var(--md-sys-color-primary)] drop-shadow-sm leading-none tabular-nums">
-                    {countdownString}
-                  </span>
-                </div>
-              </div>
-
-              {/* Squiggly Progress bar */}
-              <div className="px-1 sm:px-2 w-full mt-0.5">
-                <div className="w-full h-2.5 lg:h-3 bg-[var(--md-sys-color-on-primary-container)]/10 text-[var(--md-sys-color-primary)] rounded-full relative flex items-center">
-                  <div
-                    className="absolute inset-y-0 left-0 bg-current transition-all duration-1000 ease-linear animate-squiggle"
-                    style={{
-                      width: `${progress}%`,
-                      maskImage: `url("data:image/svg+xml,%3Csvg width='40' height='16' viewBox='0 0 40 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 8 Q 10 2 20 8 T 40 8' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-                      maskRepeat: "repeat-x",
-                      WebkitMaskImage: `url("data:image/svg+xml,%3Csvg width='40' height='16' viewBox='0 0 40 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 8 Q 10 2 20 8 T 40 8' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-                      WebkitMaskRepeat: "repeat-x",
-                    }}
-                  />
-                  {/* End ball */}
-                  <div
-                    className="absolute h-2.5 w-2.5 lg:h-3 lg:w-3 bg-current rounded-full transition-all duration-1000 ease-linear shadow-sm"
-                    style={{ left: `calc(${progress}% - 6px)` }}
-                  />
+                  
+                  {/* Modernized Progress Bar overlay directly on the Next Prayer card */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 sm:h-1.5 bg-[var(--md-sys-color-primary)]/10">
+                    <div 
+                      className="h-full bg-[var(--md-sys-color-primary)] relative shadow-[0_0_12px_var(--md-sys-color-primary)] transition-all duration-1000 ease-linear rounded-r-full"
+                      style={{ width: `${progress}%` }}
+                    >
+                      {/* Active tracking dot */}
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.9)] animate-ping" style={{ animationDuration: '2s' }} />
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[var(--md-sys-color-primary)] border border-white" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
