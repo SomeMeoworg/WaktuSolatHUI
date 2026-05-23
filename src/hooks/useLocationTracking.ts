@@ -58,6 +58,7 @@ export function useLocationTracking(
   
   const [currentLocationName, setCurrentLocationName] = useState<string | null>(null);
   const [isDetecting, setIsDetecting] = useState(false);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const lastCheckTime = useRef<number>(0);
   
@@ -84,6 +85,7 @@ export function useLocationTracking(
       async (position) => {
         lastCheckTime.current = Date.now();
         const { latitude, longitude } = position.coords;
+        setUserCoords({ lat: latitude, lng: longitude });
         try {
           const res = await fetch(
             `/api/geocode?lat=${latitude}&lng=${longitude}`,
@@ -179,5 +181,5 @@ export function useLocationTracking(
     setPromptLocationName(null);
   };
 
-  return { promptZone, promptLocationName, autoUpdatedZone, autoUpdatedLocationName, currentLocationName, isDetecting, acceptPrompt, dismissPrompt };
+  return { promptZone, promptLocationName, autoUpdatedZone, autoUpdatedLocationName, currentLocationName, isDetecting, acceptPrompt, dismissPrompt, userCoords };
 }

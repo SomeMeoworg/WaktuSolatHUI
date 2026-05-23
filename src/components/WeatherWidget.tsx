@@ -57,7 +57,7 @@ export interface WeatherData {
   daily?: DailyForecast;
 }
 
-export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
+export function WeatherWidget({ selectedZone, userCoords, currentLocationName }: { selectedZone: string, userCoords?: {lat: number, lng: number} | null, currentLocationName?: string | null }) {
   const { t, settings } = useAppContext();
   const visualStyle = useVisualStyle();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,8 +96,8 @@ export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
   useEffect(() => {
     if (!selectedZone) return;
 
-    // Default to KL if not found
-    const coords = ZONE_COORDINATES[selectedZone] || [3.13, 101.68];
+    // Default to KL if not found, or use user's exact coords if available
+    const coords = userCoords ? [userCoords.lat, userCoords.lng] : (ZONE_COORDINATES[selectedZone] || [3.13, 101.68]);
     const [lat, lng] = coords;
 
     let isMounted = true;
@@ -157,7 +157,7 @@ export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, [selectedZone, settings.weatherProvider]);
+  }, [selectedZone, settings.weatherProvider, userCoords]);
 
   if (!isOnline) {
     return (
@@ -204,12 +204,14 @@ export function WeatherWidget({ selectedZone }: { selectedZone: string }) {
   if (isLoading && !weather) return null;
   if (!weather) return null;
 
-  let locationName = selectedZone;
-  for (const state of JAKIM_ZONES) {
-    const zone = state.zones.find(z => z.v === selectedZone);
-    if (zone) {
-      locationName = zone.l.split(',')[0];
-      break;
+  let locationName = currentLocationName || selectedZone;
+  if (!currentLocationName) {
+    for (const state of JAKIM_ZONES) {
+      const zone = state.zones.find(z => z.v === selectedZone);
+      if (zone) {
+        locationName = zone.l.split(',')[0];
+        break;
+      }
     }
   }
 

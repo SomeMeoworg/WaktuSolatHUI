@@ -70,7 +70,7 @@ export default function App() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const { promptZone, promptLocationName, autoUpdatedZone, autoUpdatedLocationName, currentLocationName, isDetecting, acceptPrompt, dismissPrompt } = useLocationTracking(
+  const { promptZone, promptLocationName, autoUpdatedZone, autoUpdatedLocationName, currentLocationName, isDetecting, acceptPrompt, dismissPrompt, userCoords } = useLocationTracking(
     selectedZone,
     setSelectedZone,
     settings.locationMode || 'manual'
@@ -1051,7 +1051,7 @@ export default function App() {
                   <div className="h-[200px] bg-[var(--md-sys-color-surface-container)] rounded-3xl animate-pulse w-full"></div>
                 }
               >
-                <WeatherWidget selectedZone={selectedZone} />
+                <WeatherWidget selectedZone={selectedZone} userCoords={userCoords} currentLocationName={currentLocationName} />
               </Suspense>
               <PrayerSchedule
                 todayData={todayData}
