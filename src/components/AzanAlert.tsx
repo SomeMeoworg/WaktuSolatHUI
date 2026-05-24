@@ -84,12 +84,10 @@ export function AzanAlert({
             </div>
           </div>
           
-          <button
-            onClick={onDismiss}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/5 hover:bg-[var(--md-sys-color-primary)]/10 dark:hover:bg-white/10 text-[var(--md-sys-color-on-surface-variant)] dark:text-zinc-300 hover:text-[var(--md-sys-color-primary)] dark:hover:text-white shrink-0 transition-all cursor-pointer hover:scale-105 active:scale-95"
-          >
-            <X size={15} strokeWidth={2.5} />
-          </button>
+          {/* @ts-ignore */}
+          <md-icon-button onClick={onDismiss}>
+            <md-icon>close</md-icon>
+          </md-icon-button>
 
           {/* Glowing slide timeline at the bottom */}
           <div className="absolute bottom-0 inset-x-0 h-1 bg-[var(--md-sys-color-primary)]/10 dark:bg-white/5">

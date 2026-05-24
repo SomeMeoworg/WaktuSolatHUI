@@ -24,6 +24,11 @@ import { M3_EASING } from "../lib/motion";
 import { motion, AnimatePresence } from "motion/react";
 import { useAppContext } from "../AppContext";
 import { saveWallpaper, clearWallpaper, getWallpaperBlob } from "../lib/db";
+import "@material/web/slider/slider.js";
+import "@material/web/switch/switch.js";
+import "@material/web/iconbutton/filled-tonal-icon-button.js";
+import "@material/web/textfield/outlined-text-field.js";
+import "@material/web/icon/icon.js";
 
 const PRESET_COLORS = [
   "#006C54", // Emerald
@@ -560,15 +565,18 @@ export function ThemeControl() {
                               <label className="text-[10px] font-black uppercase text-[var(--md-sys-color-on-surface-variant)] tracking-wider">
                                 {t("wallpaperSourceUrl")}
                               </label>
-                              <div className="relative flex items-center bg-[var(--md-sys-color-surface-container-high)] rounded-xl border border-[var(--md-sys-color-outline)]/10 px-3">
-                                <LinkIcon size={14} className="text-[var(--md-sys-color-on-surface-variant)] shrink-0" />
-                                <input
+                              <div className="w-full mt-1">
+                                {/* @ts-ignore */}
+                                <md-outlined-text-field
                                   type="url"
-                                  className="w-full bg-transparent border-0 outline-none text-xs font-medium py-2 pl-2 text-[var(--md-sys-color-on-surface)] placeholder-[var(--md-sys-color-outline)]"
-                                  placeholder={t("wallpaperUrlPlaceholder")}
+                                  label={t("wallpaperUrlPlaceholder")}
                                   value={settings.wallpaperUrl || ""}
-                                  onChange={(e) => updateSettings({ wallpaperUrl: e.target.value })}
-                                />
+                                  onInput={(e: any) => updateSettings({ wallpaperUrl: e.target.value })}
+                                  className="w-full"
+                                  style={{ '--md-outlined-text-field-container-shape': '12px' } as any}
+                                >
+                                  <md-icon slot="leading-icon">link</md-icon>
+                                </md-outlined-text-field>
                               </div>
                             </div>
                           )}

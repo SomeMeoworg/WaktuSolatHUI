@@ -27,6 +27,8 @@ import "@material/web/iconbutton/icon-button.js";
 import "@material/web/icon/icon.js";
 import "@material/web/textfield/filled-text-field.js";
 import "@material/web/button/text-button.js";
+import "@material/web/tabs/tabs.js";
+import "@material/web/tabs/primary-tab.js";
 import { useAppContext } from "../AppContext";
 import { getHijriFormatted } from "../lib/holidays";
 import { useVisualStyle, useIconStroke } from "../hooks/useVisualStyle";
@@ -765,33 +767,25 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
             {/* Scrollable Contents Section */}
             <div className="flex-1 overflow-y-auto px-5 py-3 sm:px-6 sm:py-4 space-y-3 sm:space-y-4 no-scrollbar">
               {/* Tab Selector */}
-              <div className="flex p-1 rounded-2xl bg-[var(--md-sys-color-surface-container-high)]/60 ring-1 ring-white/5">
-                {(["link", "image", "qr"] as const).map((tab) => {
-                  const isActive = activeTab === tab;
-                  const label =
-                    tab === "link"
-                      ? t("smartLink" as any)
-                      : tab === "image"
-                        ? t("scheduleCard" as any)
-                        : t("offlineQR" as any);
-                  const Icon = tab === "link" ? Link2 : tab === "image" ? ImageIcon : QrCode;
-
-                  return (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={cn(
-                        "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl font-black text-[11px] transition-all cursor-pointer relative",
-                        isActive
-                          ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md"
-                          : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-highest)]/40"
-                      )}
-                    >
-                      <Icon size={13} strokeWidth={iconStroke} />
-                      {label}
-                    </button>
-                  );
-                })}
+              <div className="mb-2 w-full bg-[var(--md-sys-color-surface-container)] rounded-[20px] overflow-hidden">
+                {/* @ts-ignore */}
+                <md-tabs active-tab-index={activeTab === 'link' ? 0 : activeTab === 'image' ? 1 : 2}>
+                  {/* @ts-ignore */}
+                  <md-primary-tab onClick={() => setActiveTab('link')}>
+                    {t("smartLink" as any)}
+                    <md-icon slot="icon">link</md-icon>
+                  </md-primary-tab>
+                  {/* @ts-ignore */}
+                  <md-primary-tab onClick={() => setActiveTab('image')}>
+                    {t("scheduleCard" as any)}
+                    <md-icon slot="icon">image</md-icon>
+                  </md-primary-tab>
+                  {/* @ts-ignore */}
+                  <md-primary-tab onClick={() => setActiveTab('qr')}>
+                    {t("offlineQR" as any)}
+                    <md-icon slot="icon">qr_code_2</md-icon>
+                  </md-primary-tab>
+                </md-tabs>
               </div>
 
               {/* Interactive Displays */}
