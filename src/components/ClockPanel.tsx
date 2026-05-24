@@ -76,13 +76,13 @@ function ExternalDigitalComplication() {
 
   return (
     <div className={cn(
-      "relative z-10 mt-4 sm:mt-6 lg:mt-0 lg:ml-10",
+      "relative z-10 -mt-4 sm:-mt-6 lg:mt-0 lg:ml-10",
       "flex flex-col items-center justify-center"
     )}>
       <div className={cn(
-        "relative overflow-hidden flex items-center justify-center px-6 py-3 lg:px-10 lg:py-6 rounded-[2rem] lg:rounded-[3rem] font-black tracking-tighter text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[6rem] leading-none",
+        "relative overflow-hidden flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 lg:px-10 lg:py-6 rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[3rem] font-black tracking-tighter text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[6rem] leading-none",
         "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]",
-        visualStyle === 'retro' && "border-[3px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+        visualStyle === 'retro' && "border-[3px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] lg:shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
         visualStyle === 'glass' && "bg-[var(--glass-bg)]/80 backdrop-blur-2xl border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
         visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-heavy)] border-0"
       )}>
@@ -90,7 +90,7 @@ function ExternalDigitalComplication() {
         <md-elevation level={visualStyle === 'retro' || visualStyle === 'soft' ? '0' : '2'}></md-elevation>
         
         <span className="font-mono drop-shadow-sm tabular-nums">{timeString}</span>
-        {ampm && <span className="ml-2 lg:ml-4 text-sm md:text-xl lg:text-3xl xl:text-4xl opacity-75 font-sans font-extrabold uppercase tracking-widest">{ampm}</span>}
+        {ampm && <span className="ml-1.5 sm:ml-2 lg:ml-4 text-xs sm:text-sm md:text-xl lg:text-3xl xl:text-4xl opacity-75 font-sans font-extrabold uppercase tracking-widest">{ampm}</span>}
       </div>
     </div>
   );
