@@ -46,6 +46,7 @@ export interface GeneralSettings {
   hijriFormat?: 'text' | 'number' | 'both';
   showIqamah?: boolean;
   clockFace?: 'digital' | 'analog' | 'anadigi' | 'chronograph' | 'flip' | 'word' | 'minimal' | 'orbit' | 'typographic' | 'prayer-ring' | 'analog-numeric' | 'analog-roman' | 'analog-arabic' | 'dashboard' | 'abstract' | 'swiss-station' | 'bauhaus' | 'layered';
+  showExternalDigitalClock?: boolean;
   clockMovement?: 'tick' | 'sweep';
   visualStyle?: 'default' | 'retro' | 'glass' | 'soft';
   locationMode?: 'auto' | 'manual';
@@ -101,10 +102,11 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   language: 'ms',
   timeFormat: '12h',
   mazhab: 'shafii',
-  notificationType: 'both',
+  notificationType: 'in-app',
   hijriFormat: 'both',
   showIqamah: false,
   clockFace: 'digital',
+  showExternalDigitalClock: true,
   clockMovement: 'sweep',
   visualStyle: 'default',
   locationMode: 'manual',

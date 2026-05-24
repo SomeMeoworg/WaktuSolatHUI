@@ -72,20 +72,22 @@ function ExternalDigitalComplication() {
   const timeString = format(time, settings.timeFormat === '12h' ? "h:mm" : "HH:mm");
   const ampm = settings.timeFormat === '12h' ? format(time, "a") : "";
 
+  if (settings.showExternalDigitalClock === false) return null;
+
   return (
     <div className={cn(
-      "relative z-10 mt-3 sm:mt-4",
+      "relative z-10 mt-3 sm:mt-4 lg:mt-0 lg:ml-8",
       "flex flex-col items-center justify-center"
     )}>
       <div className={cn(
-        "px-3 py-1 rounded-full font-bold tracking-widest text-[11px] sm:text-xs shadow-sm border border-[var(--md-sys-color-outline-variant)]/20",
+        "px-5 py-2 lg:px-8 lg:py-4 rounded-full font-black tracking-widest text-xs sm:text-sm md:text-2xl lg:text-5xl xl:text-6xl shadow-md border border-[var(--md-sys-color-outline-variant)]/20",
         "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'retro' && "border-[1.5px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[2px_2px_0px_0px_var(--md-sys-color-on-surface)] rounded-none text-xs font-black",
-        visualStyle === 'glass' && "bg-[var(--glass-bg)]/60 backdrop-blur-md border-[var(--glass-border)] shadow-[var(--glass-shadow)] text-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-light)] border-0"
+        visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none text-sm md:text-2xl lg:text-5xl xl:text-6xl",
+        visualStyle === 'glass' && "bg-[var(--glass-bg)]/60 backdrop-blur-xl border border-[var(--glass-border)] shadow-lg text-[var(--md-sys-color-on-surface)]",
+        visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-medium)] border-0"
       )}>
         {timeString}
-        {ampm && <span className="ml-1 text-[9px] opacity-70">{ampm}</span>}
+        {ampm && <span className="ml-1.5 lg:ml-3 text-[10px] md:text-sm lg:text-2xl xl:text-3xl opacity-70 font-bold">{ampm}</span>}
       </div>
     </div>
   );
@@ -390,7 +392,7 @@ export function ClockPanel({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="w-full flex flex-col items-center justify-center mt-1 mb-1 relative"
+            className="w-full flex flex-col lg:flex-row items-center justify-center mt-1 mb-1 lg:mb-4 relative"
           >
             {(!settings.clockFace || settings.clockFace === 'digital') && (
               <DigitalClock />

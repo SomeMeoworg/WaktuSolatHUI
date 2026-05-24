@@ -125,30 +125,39 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
       setIsLoading(true);
       if (force) setIsRefreshing(true);
       try {
-        const provider = settings.weatherProvider || 'best_match';
+        let provider = settings.weatherProvider || 'best_match';
         
-        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,weather_code,wind_speed_10m,surface_pressure,uv_index&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=Asia%2FSingapore&models=${provider}`;
-        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi&timezone=Asia%2FSingapore`;
-
-        const [weatherRes, aqiRes] = await Promise.allSettled([
-          fetch(weatherUrl),
-          fetch(aqiUrl)
-        ]);
-
-        if (weatherRes.status === 'rejected' || !weatherRes.value.ok) throw new Error("Failed to fetch weather");
-
-        let weatherData = await weatherRes.value.json();
-        let aqiData = null;
-        if (aqiRes.status === 'fulfilled' && aqiRes.value.ok) {
-          try {
-            aqiData = await aqiRes.value.json();
-          } catch (e) {}
-        }
-
-        if (isMounted && weatherData.current) {
-          if (typeof weatherData.current.temperature_2m !== 'number' || typeof weatherData.current.weather_code !== 'number') {
+        const fetchWithProvider = async (p: string) => {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,weather_code,wind_speed_10m,surface_pressure,uv_index&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=Asia%2FSingapore&models=${p}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Failed to fetch weather");
+          const data = await res.json();
+          if (!data.current || typeof data.current.temperature_2m !== 'number' || typeof data.current.weather_code !== 'number') {
             throw new Error("Invalid weather data from provider");
           }
+          return data;
+        };
+
+        let weatherData;
+        try {
+          weatherData = await fetchWithProvider(provider);
+        } catch (e) {
+          if (provider !== 'best_match') {
+            console.warn(`Provider ${provider} failed, falling back to best_match`);
+            weatherData = await fetchWithProvider('best_match');
+          } else {
+            throw e;
+          }
+        }
+
+        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi&timezone=Asia%2FSingapore`;
+        let aqiData = null;
+        try {
+          const aqiRes = await fetch(aqiUrl);
+          if (aqiRes.ok) aqiData = await aqiRes.json();
+        } catch (e) {}
+
+        if (isMounted && weatherData.current) {
           const newData: WeatherData = {
             temperature: Math.round(weatherData.current.temperature_2m),
             apparentTemperature: Math.round(weatherData.current.apparent_temperature),

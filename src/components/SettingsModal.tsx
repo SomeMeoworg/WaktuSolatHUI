@@ -492,6 +492,24 @@ export function SettingsModal({
                             ></md-filter-chip>
                           ))}
                         </div>
+
+                        {['analog', 'analog-numeric', 'analog-roman', 'analog-arabic', 'dashboard', 'minimal', 'orbit', 'swiss-station', 'bauhaus', 'layered'].includes(settings.clockFace || '') && (
+                          <div className="flex items-center justify-between mt-6">
+                            <div>
+                              <div className="md3-label-large font-bold text-[var(--md-sys-color-on-surface)]">
+                                {t("showExternalDigitalClock" as any)}
+                              </div>
+                              <div className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-1">
+                                {t("showExternalDigitalClockDesc" as any)}
+                              </div>
+                            </div>
+                            {/* @ts-ignore */}
+                            <md-switch
+                              selected={settings.showExternalDigitalClock}
+                              onClick={() => updateSettings({ showExternalDigitalClock: !settings.showExternalDigitalClock })}
+                            ></md-switch>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
