@@ -9,7 +9,8 @@ import "@material/web/iconbutton/icon-button.js";
 import "@material/web/button/filled-tonal-button.js";
 import "@material/web/ripple/ripple.js";
 import "@material/web/switch/switch.js";
-import "@material/web/switch/switch.js";
+import "@material/web/tabs/tabs.js";
+import "@material/web/tabs/primary-tab.js";
 import { useAppContext } from "../AppContext";
 import { MapModal } from "./MapModal";
 import { useVisualStyle } from "../hooks/useVisualStyle";
@@ -1090,42 +1091,29 @@ export function ZoneSelector({
                       {t("selectZoneDesc")}
                     </p>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsOpen(false)}
-                    className="w-12 h-12 flex items-center justify-center rounded-full text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-error-container)] hover:text-[var(--md-sys-color-on-error-container)] shrink-0 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-error)]"
-                  >
-                    <X size={24} className="stroke-[3]" />
-                  </motion.button>
+                  {/* @ts-ignore */}
+                  <md-icon-button onClick={() => setIsOpen(false)}>
+                    <md-icon>close</md-icon>
+                  </md-icon-button>
                 </div>
 
-                <div className="flex bg-[var(--md-sys-color-surface-container-high)] p-1.5 rounded-[20px] mb-2 shadow-inner">
-                  <button 
-                    onClick={() => updateSettings({ locationMode: 'manual' })}
-                    className={cn(
-                      "flex-1 py-3 rounded-2xl font-bold text-sm md:text-base transition-all duration-300",
-                      settings.locationMode !== 'auto' 
-                        ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md" 
-                        : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-highest)]"
-                    )}
-                  >
-                    {t('modeManual' as any) || "Manual Selection"}
-                  </button>
-                  <button 
-                    onClick={() => {
+                <div className="mb-2 w-full bg-[var(--md-sys-color-surface-container)] rounded-[20px] overflow-hidden">
+                  {/* @ts-ignore */}
+                  <md-tabs active-tab-index={settings.locationMode === 'auto' ? 1 : 0}>
+                    {/* @ts-ignore */}
+                    <md-primary-tab onClick={() => updateSettings({ locationMode: 'manual' })}>
+                      {t('modeManual' as any) || "Manual Selection"}
+                      <md-icon slot="icon">search</md-icon>
+                    </md-primary-tab>
+                    {/* @ts-ignore */}
+                    <md-primary-tab onClick={() => {
                       updateSettings({ locationMode: 'auto' });
                       setSearchQuery("");
-                    }}
-                    className={cn(
-                      "flex-1 py-3 rounded-2xl font-bold text-sm md:text-base transition-all duration-300",
-                      settings.locationMode === 'auto' 
-                        ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md" 
-                        : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-highest)]"
-                    )}
-                  >
-                    {t('modeAuto' as any) || "Auto Tracking"}
-                  </button>
+                    }}>
+                      {t('modeAuto' as any) || "Auto Tracking"}
+                      <md-icon slot="icon">my_location</md-icon>
+                    </md-primary-tab>
+                  </md-tabs>
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -1157,26 +1145,31 @@ export function ZoneSelector({
                     >
                       <div className="relative group w-full mb-2">
                         {/* @ts-ignore */}
-                        <md-outlined-text-field
+                        <md-filled-text-field
                           type="text"
-                          label={t("searchPlaceholder")}
+                          placeholder={t("searchPlaceholder")}
                           value={searchQuery}
                           onInput={(e: any) => setSearchQuery(e.target.value)}
                           className="w-full"
-                          style={{ '--md-outlined-text-field-container-shape': '24px' } as any}
+                          style={{ 
+                            '--md-filled-text-field-container-shape': '28px',
+                            '--md-filled-text-field-active-indicator-height': '0px',
+                            '--md-filled-text-field-hover-active-indicator-height': '0px',
+                            '--md-filled-text-field-focus-active-indicator-height': '0px',
+                            '--md-sys-color-surface-variant': 'var(--md-sys-color-surface-container-high)'
+                          } as any}
                         >
                           <md-icon slot="leading-icon">search</md-icon>
                           {searchQuery && (
+                            /* @ts-ignore */
                             <md-icon-button
                               slot="trailing-icon"
-                              onClick={() => {
-                                setSearchQuery("");
-                              }}
+                              onClick={() => setSearchQuery("")}
                             >
                               <md-icon>close</md-icon>
                             </md-icon-button>
                           )}
-                        </md-outlined-text-field>
+                        </md-filled-text-field>
                       </div>
 
                       {!searchQuery && (

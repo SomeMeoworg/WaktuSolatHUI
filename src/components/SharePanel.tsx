@@ -629,14 +629,10 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                   </p>
                 </div>
               </div>
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={onClose}
-                className="w-9 h-9 flex items-center justify-center rounded-full text-[var(--md-sys-color-on-surface-variant)] bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-error-container)] hover:text-[var(--md-sys-color-on-error-container)] transition-all cursor-pointer"
-              >
-                <X size={18} strokeWidth={iconStroke} />
-              </motion.button>
+              {/* @ts-ignore */}
+              <md-icon-button onClick={onClose}>
+                <md-icon>close</md-icon>
+              </md-icon-button>
             </div>
 
             {/* Searchable Zone Selector */}
@@ -647,12 +643,10 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                   {t("selectShareZone" as any)}
                 </span>
                 {shareZone !== currentZone && (
-                  <button
-                    onClick={() => setShareZone(currentZone)}
-                    className="text-[9px] font-black text-[var(--md-sys-color-outline)] hover:text-[var(--md-sys-color-primary)] uppercase tracking-wide cursor-pointer transition-colors"
-                  >
+                  /* @ts-ignore */
+                  <md-text-button onClick={() => setShareZone(currentZone)}>
                     {t("resetDefault" as any)}
-                  </button>
+                  </md-text-button>
                 )}
               </div>
 
@@ -697,23 +691,27 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                     <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 shadow-xl overflow-hidden">
                       <div className="px-3 py-2 border-b border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container-low)]">
                         {/* @ts-ignore */}
-                        <md-outlined-text-field
+                        <md-filled-text-field
                           value={searchQuery}
                           onInput={(e: any) => setSearchQuery(e.target.value)}
                           placeholder={t("searchZonePlaceholder" as any)}
-                          style={{ width: "100%" }}
+                          className="w-full"
+                          style={{ 
+                            '--md-filled-text-field-container-shape': '28px',
+                            '--md-filled-text-field-active-indicator-height': '0px',
+                            '--md-filled-text-field-hover-active-indicator-height': '0px',
+                            '--md-filled-text-field-focus-active-indicator-height': '0px',
+                            '--md-sys-color-surface-variant': 'var(--md-sys-color-surface-container-high)'
+                          } as any}
                         >
-                          {/* @ts-ignore */}
-                          <md-icon slot="leading-icon">
-                            <Search size={18} />
-                          </md-icon>
+                          <md-icon slot="leading-icon">search</md-icon>
                           {searchQuery && (
                             /* @ts-ignore */
                             <md-icon-button slot="trailing-icon" onClick={() => setSearchQuery("")}>
-                              <X size={18} />
+                              <md-icon>close</md-icon>
                             </md-icon-button>
                           )}
-                        </md-outlined-text-field>
+                        </md-filled-text-field>
                       </div>
 
                       {/* Scrollable Zones List */}
