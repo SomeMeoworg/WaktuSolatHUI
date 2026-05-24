@@ -52,10 +52,10 @@ const WeatherParticles = ({ weatherCode, isDay }: { weatherCode: number, isDay: 
 };
 
 const PROVIDERS = [
-  { id: "best_match", name: "Auto (Best Match)", desc: "Pilih model terbaik secara automatik" },
-  { id: "ecmwf_ifs04", name: "ECMWF", desc: "Model Eropah (Sangat Tepat)" },
-  { id: "gfs_seamless", name: "GFS", desc: "Model Amerika Syarikat (NOAA)" },
-  { id: "jma_seamless", name: "JMA", desc: "Agensi Meteorologi Jepun" }
+  { id: "best_match", name: "weatherAuto", desc: "weatherAutoDesc" },
+  { id: "ecmwf_ifs04", name: "weatherECMWF", desc: "weatherECMWFDesc" },
+  { id: "gfs_seamless", name: "weatherGFS", desc: "weatherGFSDesc" },
+  { id: "jma_seamless", name: "weatherJMA", desc: "weatherJMADesc" }
 ];
 
 export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRefresh, isRefreshing }: FullWeatherModalProps) {
@@ -177,13 +177,13 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                 </h2>
 
                 <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold bg-white/20 backdrop-blur-md px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-sm max-w-[95%] mx-auto">
-                  <span className="flex items-center gap-1 sm:gap-1.5"><Thermometer size={14} className="sm:w-4 sm:h-4" /> Terasa Seperti: {weather.apparentTemperature ?? weather.temperature}°</span>
+                  <span className="flex items-center gap-1 sm:gap-1.5"><Thermometer size={14} className="sm:w-4 sm:h-4" /> {t("weatherFeelsLike" as any)}{weather.apparentTemperature ?? weather.temperature}°</span>
                   <span className="flex items-center gap-1 sm:gap-1.5"><Droplets size={14} className="sm:w-4 sm:h-4" /> {weather.humidity}%</span>
                   <span className="flex items-center gap-1 sm:gap-1.5"><Wind size={14} className="sm:w-4 sm:h-4" /> {weather.windSpeed} km/j</span>
                 </div>
 
                 <div className="mt-4 text-[10px] sm:text-xs font-bold opacity-60">
-                  Dikemas kini {weather.lastUpdated ? Math.max(0, Math.floor((Date.now() - weather.lastUpdated) / 60000)) : 0} minit lepas
+                  {t("weatherUpdated" as any)} {weather.lastUpdated ? Math.max(0, Math.floor((Date.now() - weather.lastUpdated) / 60000)) : 0} {t("weatherMinsAgo" as any)}
                 </div>
               </div>
             </div>
@@ -216,33 +216,33 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
               <section className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 px-1 sm:px-2">
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
-                    <Activity className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> Kualiti Udara (AQI)
+                    <Activity className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherAQI" as any)}
                   </div>
                   <div>
                     <div className="text-3xl sm:text-4xl font-black mb-1" style={{ color: weather.aqi ? (weather.aqi > 150 ? '#ef4444' : weather.aqi > 100 ? '#f97316' : weather.aqi > 50 ? '#eab308' : '#22c55e') : 'inherit' }}>
                       {weather.aqi ?? '--'}
                     </div>
                     <div className="text-xs sm:text-sm font-medium opacity-80 leading-tight">
-                      {(weather.aqi ?? 0) > 150 ? "Tidak Sihat" : (weather.aqi ?? 0) > 100 ? "Sederhana (Sensitif)" : (weather.aqi ?? 0) > 50 ? "Sederhana" : "Baik"}
+                      {(weather.aqi ?? 0) > 150 ? t("weatherUnhealthy" as any) : (weather.aqi ?? 0) > 100 ? t("weatherModerateSensitive" as any) : (weather.aqi ?? 0) > 50 ? t("weatherModerate" as any) : t("weatherGood" as any)}
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
-                    <Sun className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> UV Index
+                    <Sun className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherUVIndex" as any)}
                   </div>
                   <div>
                     <div className="text-3xl sm:text-4xl font-black mb-1">{weather.uvIndex ?? '--'}</div>
                     <div className="text-xs sm:text-sm font-medium opacity-80 leading-tight">
-                      {(weather.uvIndex ?? 0) > 7 ? "Tinggi" : (weather.uvIndex ?? 0) > 3 ? "Sederhana" : "Rendah"}
+                      {(weather.uvIndex ?? 0) > 7 ? t("weatherHigh" as any) : (weather.uvIndex ?? 0) > 3 ? t("weatherModerate" as any) : t("weatherLow" as any)}
                     </div>
                   </div>
                 </div>
                 
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base leading-tight">
-                    <Sunrise className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> Matahari Terbit
+                    <Sunrise className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherSunrise" as any)}
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl md:text-3xl font-black mb-1 leading-tight">
@@ -253,7 +253,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                 
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base leading-tight">
-                    <Sunset className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> Matahari Terbenam
+                    <Sunset className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherSunset" as any)}
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl md:text-3xl font-black mb-1 leading-tight">
@@ -264,7 +264,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                 
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
-                    <Wind className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> Tekanan
+                    <Wind className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherPressure" as any)}
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl md:text-3xl font-black mb-1">
@@ -276,7 +276,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
 
               {/* 7-Day Forecast */}
               <section className="px-1 sm:px-2">
-                <h3 className="text-lg font-black tracking-tight mb-4">{t("7DayForecast" as any) || "Ramalan 7 Hari"}</h3>
+                <h3 className="text-lg font-black tracking-tight mb-4">{t("weather7Day" as any)}</h3>
                 <div className="flex flex-col gap-2">
                   {dailyForecasts.map((day, idx) => {
                     const { Icon: DayIcon } = getWeatherDetails(day.code, true, t);
@@ -289,7 +289,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                     return (
                       <div key={idx} className="flex items-center justify-between p-3 sm:p-4 bg-[var(--md-sys-color-surface-container-low)] rounded-[1.5rem]">
                         <div className="w-[70px] sm:w-24 font-bold text-[13px] sm:text-base shrink-0 truncate">
-                          {isToday ? "Hari Ini" : format(day.date, "EEEE", { locale: settings.language === 'ms' ? ms : undefined })}
+                          {isToday ? t("weatherToday" as any) : format(day.date, "EEEE", { locale: settings.language === 'ms' ? ms : undefined })}
                         </div>
                         <div className="flex items-center justify-center gap-2 sm:gap-4 flex-1">
                           <DayIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--md-sys-color-primary)] shrink-0" />
@@ -316,8 +316,8 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
               {/* Provider Selection */}
               <section className="px-1 sm:px-2 mt-2 sm:mt-4 pb-8">
                 <div className="bg-[var(--md-sys-color-surface-container-high)] p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem]">
-                  <h3 className="text-base sm:text-lg font-black tracking-tight mb-1 sm:mb-2">Penyedia Cuaca / Model</h3>
-                  <p className="text-xs sm:text-sm opacity-70 mb-4 sm:mb-6">Pilih model kaji cuaca percuma yang paling tepat untuk lokasi anda.</p>
+                  <h3 className="text-base sm:text-lg font-black tracking-tight mb-1 sm:mb-2">{t("weatherProvider" as any)}</h3>
+                  <p className="text-xs sm:text-sm opacity-70 mb-4 sm:mb-6">{t("weatherProviderDesc" as any)}</p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {PROVIDERS.map(p => (
@@ -331,8 +331,8 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                             : "border-transparent bg-[var(--md-sys-color-surface)] hover:border-[var(--md-sys-color-outline-variant)]"
                         )}
                       >
-                        <span className="font-black text-sm sm:text-base mb-0.5 sm:mb-1">{p.name}</span>
-                        <span className="text-[10px] sm:text-xs font-medium opacity-80">{p.desc}</span>
+                        <span className="font-black text-sm sm:text-base mb-0.5 sm:mb-1">{t(p.name as any)}</span>
+                        <span className="text-[10px] sm:text-xs font-medium opacity-80">{t(p.desc as any)}</span>
                       </button>
                     ))}
                   </div>

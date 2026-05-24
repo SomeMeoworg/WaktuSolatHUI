@@ -47,7 +47,7 @@ export function LocationToast({
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
                 <h4 className="font-bold text-[var(--md-sys-color-on-surface)] text-lg leading-tight">
-                  {autoUpdatedZone ? "Lokasi Dikemaskini" : "Lokasi Baru Dikesan"}
+                  {autoUpdatedZone ? t("locationUpdated" as any) : t("locationNewDetected" as any)}
                 </h4>
                 <p className="text-[var(--md-sys-color-on-surface-variant)] text-sm mt-1">
                   {autoUpdatedZone

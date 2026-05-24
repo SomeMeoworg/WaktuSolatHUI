@@ -146,6 +146,9 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
         }
 
         if (isMounted && weatherData.current) {
+          if (typeof weatherData.current.temperature_2m !== 'number' || typeof weatherData.current.weather_code !== 'number') {
+            throw new Error("Invalid weather data from provider");
+          }
           const newData: WeatherData = {
             temperature: Math.round(weatherData.current.temperature_2m),
             apparentTemperature: Math.round(weatherData.current.apparent_temperature),

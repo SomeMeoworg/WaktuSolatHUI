@@ -5,7 +5,7 @@ import { translations, LangKey } from "./translations";
 interface AppContextType {
   settings: GeneralSettings;
   updateSettings: (newSettings: Partial<GeneralSettings>) => void;
-  t: (key: LangKey) => string;
+  t: (key: LangKey, params?: Record<string, string | number>) => string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -31,8 +31,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSettings(prev => ({ ...prev, ...updates }));
   };
 
-  const t = (key: LangKey) => {
-    return translations[settings.language][key] || key;
+  const t = (key: LangKey, params?: Record<string, string | number>) => {
+    let str = translations[settings.language]?.[key] || key;
+    if (params && typeof str === 'string') {
+      Object.entries(params).forEach(([k, v]) => {
+        str = str.replace(new RegExp(`{${k}}`, 'g'), String(v));
+      });
+    }
+    return str;
   };
 
   return (
