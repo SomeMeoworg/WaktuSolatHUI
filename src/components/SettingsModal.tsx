@@ -1282,21 +1282,20 @@ export function SettingsModal({
                         <label className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-primary)] ml-1">
                           {t("hijriMethod" as any)}
                         </label>
-                        <div className="flex flex-col gap-2">
-                          {(["jakim", "umalqura", "tbla", "civil", "islamic"] as const).map((method) => (
-                            <div key={`hijri-${method}`} className="flex items-center gap-3">
-                              {/* @ts-ignore */}
-                              <md-radio
-                                name="hijri-method"
-                                value={method}
-                                checked={settings.hijriMethod === method || (!settings.hijriMethod && method === "jakim")}
-                                onClick={() => updateSettings({ hijriMethod: method })}
-                              ></md-radio>
-                              <label className="text-sm font-bold cursor-pointer" onClick={() => updateSettings({ hijriMethod: method })}>
-                                {t(`method${method.charAt(0).toUpperCase() + method.slice(1)}` as any)}
-                              </label>
-                            </div>
-                          ))}
+                        <div className="w-full">
+                          {/* @ts-ignore */}
+                          <md-outlined-select
+                            value={settings.hijriMethod || "jakim"}
+                            onInput={(e: any) => updateSettings({ hijriMethod: e.target.value })}
+                            style={{ width: "100%" }}
+                          >
+                            {(["jakim", "umalqura", "tbla", "civil", "islamic"] as const).map((method) => (
+                              /* @ts-ignore */
+                              <md-select-option key={`hijri-${method}`} value={method}>
+                                <div slot="headline">{t(`method${method.charAt(0).toUpperCase() + method.slice(1)}` as any)}</div>
+                              </md-select-option>
+                            ))}
+                          </md-outlined-select>
                         </div>
                       </div>
 
@@ -1305,38 +1304,30 @@ export function SettingsModal({
                           {t("hijriAdjustment" as any)}
                         </span>
                         <div className="flex items-center gap-3 sm:gap-4">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                          {/* @ts-ignore */}
+                          <md-filled-tonal-icon-button
                             onClick={() =>
                               updateSettings({
                                 hijriAdjustment: Math.max(-2, (settings.hijriAdjustment ?? 0) - 1),
                               })
                             }
-                            className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
-                            <Minus size={20} className="relative z-10" />
-                          </motion.button>
+                            <Minus size={20} />
+                          </md-filled-tonal-icon-button>
                           <span className="w-16 flex font-mono text-lg sm:text-xl font-black items-center justify-center tabular-nums text-[var(--md-sys-color-primary)]">
                             {(settings.hijriAdjustment ?? 0) > 0 ? "+" : ""}
                             {settings.hijriAdjustment ?? 0}
                           </span>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                          {/* @ts-ignore */}
+                          <md-filled-tonal-icon-button
                             onClick={() =>
                               updateSettings({
                                 hijriAdjustment: Math.min(2, (settings.hijriAdjustment ?? 0) + 1),
                               })
                             }
-                            className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
-                            <Plus size={20} className="relative z-10" />
-                          </motion.button>
+                            <Plus size={20} />
+                          </md-filled-tonal-icon-button>
                         </div>
                       </div>
 

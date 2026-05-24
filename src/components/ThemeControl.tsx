@@ -579,15 +579,14 @@ export function ThemeControl() {
                               <span>{t("wallpaperBlurLabel")}</span>
                               <span className="font-black text-[var(--md-sys-color-primary)]">{settings.wallpaperBlur ?? 10}px</span>
                             </div>
-                            <input
-                              type="range"
+                            {/* @ts-ignore */}
+                            <md-slider
                               min="0"
                               max="40"
                               step="2"
-                              className="w-full h-1.5 bg-[var(--md-sys-color-surface-container-high)] rounded-lg appearance-none cursor-pointer accent-[var(--md-sys-color-primary)]"
                               value={settings.wallpaperBlur ?? 10}
-                              onChange={(e) => updateSettings({ wallpaperBlur: parseInt(e.target.value) })}
-                            />
+                              onInput={(e: any) => updateSettings({ wallpaperBlur: parseInt(e.target.value) })}
+                            ></md-slider>
                           </div>
 
                           {/* Overlay Dim Intensity Slider */}
@@ -596,15 +595,14 @@ export function ThemeControl() {
                               <span>{t("wallpaperDimLabel")}</span>
                               <span className="font-black text-[var(--md-sys-color-primary)]">{settings.wallpaperDim ?? 40}%</span>
                             </div>
-                            <input
-                              type="range"
+                            {/* @ts-ignore */}
+                            <md-slider
                               min="0"
                               max="90"
                               step="5"
-                              className="w-full h-1.5 bg-[var(--md-sys-color-surface-container-high)] rounded-lg appearance-none cursor-pointer accent-[var(--md-sys-color-primary)]"
                               value={settings.wallpaperDim ?? 40}
-                              onChange={(e) => updateSettings({ wallpaperDim: parseInt(e.target.value) })}
-                            />
+                              onInput={(e: any) => updateSettings({ wallpaperDim: parseInt(e.target.value) })}
+                            ></md-slider>
                           </div>
 
                           {/* Overlay Color Style Selector */}

@@ -76,18 +76,21 @@ function ExternalDigitalComplication() {
 
   return (
     <div className={cn(
-      "relative z-10 mt-3 sm:mt-4 lg:mt-0 lg:ml-8",
+      "relative z-10 mt-4 sm:mt-6 lg:mt-0 lg:ml-10",
       "flex flex-col items-center justify-center"
     )}>
       <div className={cn(
-        "px-5 py-2 lg:px-8 lg:py-4 rounded-full font-black tracking-widest text-xs sm:text-sm md:text-2xl lg:text-5xl xl:text-6xl shadow-md border border-[var(--md-sys-color-outline-variant)]/20",
-        "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none text-sm md:text-2xl lg:text-5xl xl:text-6xl",
-        visualStyle === 'glass' && "bg-[var(--glass-bg)]/60 backdrop-blur-xl border border-[var(--glass-border)] shadow-lg text-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-medium)] border-0"
+        "relative overflow-hidden flex items-center justify-center px-6 py-3 lg:px-10 lg:py-6 rounded-[2rem] lg:rounded-[3rem] font-black tracking-tighter text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[6rem] leading-none",
+        "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]",
+        visualStyle === 'retro' && "border-[3px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+        visualStyle === 'glass' && "bg-[var(--glass-bg)]/80 backdrop-blur-2xl border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
+        visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-heavy)] border-0"
       )}>
-        {timeString}
-        {ampm && <span className="ml-1.5 lg:ml-3 text-[10px] md:text-sm lg:text-2xl xl:text-3xl opacity-70 font-bold">{ampm}</span>}
+        {/* @ts-ignore */}
+        <md-elevation level={visualStyle === 'retro' || visualStyle === 'soft' ? '0' : '2'}></md-elevation>
+        
+        <span className="font-mono drop-shadow-sm tabular-nums">{timeString}</span>
+        {ampm && <span className="ml-2 lg:ml-4 text-sm md:text-xl lg:text-3xl xl:text-4xl opacity-75 font-sans font-extrabold uppercase tracking-widest">{ampm}</span>}
       </div>
     </div>
   );

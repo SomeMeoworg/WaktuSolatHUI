@@ -695,23 +695,25 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                     className="overflow-hidden"
                   >
                     <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 shadow-xl overflow-hidden">
-                      {/* Search Bar */}
-                      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container-low)]">
-                        <Search size={15} className="text-[var(--md-sys-color-outline)]" />
-                        <input
-                          type="text"
+                      <div className="px-3 py-2 border-b border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container-low)]">
+                        {/* @ts-ignore */}
+                        <md-outlined-text-field
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onInput={(e: any) => setSearchQuery(e.target.value)}
                           placeholder={t("searchZonePlaceholder" as any)}
-                          className="w-full bg-transparent border-0 outline-none text-xs text-[var(--md-sys-color-on-surface)] placeholder-[var(--md-sys-color-outline)] py-1"
-                        />
-                        {searchQuery && (
-                          <X
-                            size={15}
-                            onClick={() => setSearchQuery("")}
-                            className="text-[var(--md-sys-color-outline)] hover:text-[var(--md-sys-color-on-surface)] cursor-pointer"
-                          />
-                        )}
+                          style={{ width: "100%" }}
+                        >
+                          {/* @ts-ignore */}
+                          <md-icon slot="leading-icon">
+                            <Search size={18} />
+                          </md-icon>
+                          {searchQuery && (
+                            /* @ts-ignore */
+                            <md-icon-button slot="trailing-icon" onClick={() => setSearchQuery("")}>
+                              <X size={18} />
+                            </md-icon-button>
+                          )}
+                        </md-outlined-text-field>
                       </div>
 
                       {/* Scrollable Zones List */}
