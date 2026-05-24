@@ -756,6 +756,10 @@ export const translations = {
     weatherJMADesc: "Agensi Meteorologi Jepun",
     locationUpdated: "Lokasi Dikemaskini",
     locationNewDetected: "Lokasi Baru Dikesan",
+    locationAutoUpdatedDesc: "Zon telah ditukar secara automatik ke {zoneName} ({locationName}).",
+    locationPromptDesc: "Anda berada di {locationName} ({zoneName}). Tukar zon?",
+    ignore: "Abaikan",
+    changeZone: "Tukar Zon",
   },
   en: {
     appTitle: "Waktu Solat",
@@ -995,6 +999,10 @@ export const translations = {
     weatherJMADesc: "Japan Meteorological Agency",
     locationUpdated: "Location Updated",
     locationNewDetected: "New Location Detected",
+    locationAutoUpdatedDesc: "Zone was automatically updated to {zoneName} ({locationName}).",
+    locationPromptDesc: "You are currently in {locationName} ({zoneName}). Change zone?",
+    ignore: "Ignore",
+    changeZone: "Change Zone",
   }
 };
 

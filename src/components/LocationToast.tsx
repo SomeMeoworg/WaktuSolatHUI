@@ -12,6 +12,8 @@ function getZoneName(zoneCode: string) {
   return zoneCode;
 }
 
+import { useAppContext } from "../AppContext";
+
 export function LocationToast({
   promptZone,
   promptLocationName,
@@ -27,6 +29,8 @@ export function LocationToast({
   onAccept: () => void;
   onDismiss: () => void;
 }) {
+  const { t } = useAppContext();
+
   return (
     <AnimatePresence>
       {(promptZone || autoUpdatedZone) && (
@@ -51,8 +55,8 @@ export function LocationToast({
                 </h4>
                 <p className="text-[var(--md-sys-color-on-surface-variant)] text-sm mt-1">
                   {autoUpdatedZone
-                    ? `Zon telah ditukar secara automatik ke ${getZoneName(autoUpdatedZone)} (${autoUpdatedLocationName || "GPS Semasa"}).`
-                    : `Anda berada di ${promptLocationName || "lokasi baharu"} (${getZoneName(promptZone!)}). Tukar zon?`}
+                    ? t("locationAutoUpdatedDesc" as any, { zoneName: getZoneName(autoUpdatedZone), locationName: autoUpdatedLocationName || "GPS Semasa" })
+                    : t("locationPromptDesc" as any, { locationName: promptLocationName || "lokasi baharu", zoneName: getZoneName(promptZone!) })}
                 </p>
               </div>
             </div>
@@ -62,13 +66,13 @@ export function LocationToast({
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                    {/* @ts-ignore */}
                   <md-outlined-button onClick={onDismiss}>
-                    Abaikan
+                    {t("ignore" as any)}
                   </md-outlined-button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                    {/* @ts-ignore */}
                   <md-filled-button onClick={onAccept}>
-                    Tukar Zon
+                    {t("changeZone" as any)}
                   </md-filled-button>
                 </motion.div>
               </div>
