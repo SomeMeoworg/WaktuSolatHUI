@@ -44,15 +44,18 @@ export interface DailyForecast {
 
 export interface WeatherData {
   temperature: number;
+  apparentTemperature: number; // Feels like
   weatherCode: number;
   humidity: number;
   windSpeed: number;
   isDay: boolean;
+  uvIndex?: number;
+  surfacePressure?: number;
   minTemp?: number;
   maxTemp?: number;
   precipitationProb?: number;
-  uvIndex?: number;
-  surfacePressure?: number;
+  aqi?: number;
+  lastUpdated: number; // Timestamp
   hourly?: HourlyForecast;
   daily?: DailyForecast;
 }
@@ -61,6 +64,7 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
   const { t, settings } = useAppContext();
   const visualStyle = useVisualStyle();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
   const [isOnline, setIsOnline] = useState(() => typeof navigator !== "undefined" ? navigator.onLine : true);
 
@@ -102,62 +106,92 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
     let isMounted = true;
 
-    const fetchWeather = async () => {
+    const fetchWeather = async (force = false) => {
+      // Smart caching check (15 mins)
+      if (!force) {
+        const cachedStr = localStorage.getItem(`weather-${selectedZone}`);
+        if (cachedStr) {
+          try {
+            const cached: WeatherData = JSON.parse(cachedStr);
+            if (cached && cached.lastUpdated && Date.now() - cached.lastUpdated < 15 * 60 * 1000) {
+              setWeather(cached);
+              setIsLoading(false);
+              return;
+            }
+          } catch (e) {}
+        }
+      }
+
       setIsLoading(true);
+      if (force) setIsRefreshing(true);
       try {
         const provider = settings.weatherProvider || 'best_match';
-        const res = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,surface_pressure,uv_index&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=Asia%2FSingapore&models=${provider}`,
-        );
-        if (!res.ok) throw new Error("Failed to fetch weather");
+        
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,weather_code,wind_speed_10m,surface_pressure,uv_index&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=Asia%2FSingapore&models=${provider}`;
+        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi&timezone=Asia%2FSingapore`;
 
-        let data;
-        try {
-          data = await res.json();
-        } catch (e) {
-          throw new Error("Invalid weather JSON");
+        const [weatherRes, aqiRes] = await Promise.allSettled([
+          fetch(weatherUrl),
+          fetch(aqiUrl)
+        ]);
+
+        if (weatherRes.status === 'rejected' || !weatherRes.value.ok) throw new Error("Failed to fetch weather");
+
+        let weatherData = await weatherRes.value.json();
+        let aqiData = null;
+        if (aqiRes.status === 'fulfilled' && aqiRes.value.ok) {
+          try {
+            aqiData = await aqiRes.value.json();
+          } catch (e) {}
         }
 
-        if (isMounted && data.current) {
+        if (isMounted && weatherData.current) {
           const newData: WeatherData = {
-            temperature: Math.round(data.current.temperature_2m),
-            weatherCode: data.current.weather_code,
-            humidity: data.current.relative_humidity_2m,
-            windSpeed: data.current.wind_speed_10m,
-            isDay: data.current.is_day === 1,
-            uvIndex: data.current.uv_index,
-            surfacePressure: data.current.surface_pressure,
-            minTemp: data.daily?.temperature_2m_min?.[0]
-              ? Math.round(data.daily.temperature_2m_min[0])
-              : undefined,
-            maxTemp: data.daily?.temperature_2m_max?.[0]
-              ? Math.round(data.daily.temperature_2m_max[0])
-              : undefined,
-            precipitationProb: data.daily?.precipitation_probability_max?.[0],
-            hourly: data.hourly,
-            daily: data.daily,
+            temperature: Math.round(weatherData.current.temperature_2m),
+            apparentTemperature: Math.round(weatherData.current.apparent_temperature),
+            weatherCode: weatherData.current.weather_code,
+            humidity: weatherData.current.relative_humidity_2m,
+            windSpeed: weatherData.current.wind_speed_10m,
+            isDay: weatherData.current.is_day === 1,
+            uvIndex: weatherData.current.uv_index,
+            surfacePressure: weatherData.current.surface_pressure,
+            minTemp: weatherData.daily?.temperature_2m_min?.[0] ? Math.round(weatherData.daily.temperature_2m_min[0]) : undefined,
+            maxTemp: weatherData.daily?.temperature_2m_max?.[0] ? Math.round(weatherData.daily.temperature_2m_max[0]) : undefined,
+            precipitationProb: weatherData.daily?.precipitation_probability_max?.[0],
+            aqi: aqiData?.current?.us_aqi ? Math.round(aqiData.current.us_aqi) : undefined,
+            lastUpdated: Date.now(),
+            hourly: weatherData.hourly,
+            daily: weatherData.daily,
           };
+          
           setWeather(newData);
-          localStorage.setItem(
-            `weather-${selectedZone}`,
-            JSON.stringify(newData),
-          );
+          localStorage.setItem(`weather-${selectedZone}`, JSON.stringify(newData));
         }
       } catch (err) {
         console.error("Open-Meteo fetch error:", err);
       } finally {
-        if (isMounted) setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+          setIsRefreshing(false);
+        }
       }
     };
 
+    (window as any).refreshWeatherFn = () => { fetchWeather(true); };
+
     fetchWeather();
-    const intervalId = setInterval(fetchWeather, 30 * 60 * 1000); // 30 minutes
+    const intervalId = setInterval(() => fetchWeather(), 30 * 60 * 1000); // 30 minutes
 
     return () => {
       isMounted = false;
       clearInterval(intervalId);
+      (window as any).refreshWeatherFn = undefined;
     };
   }, [selectedZone, settings.weatherProvider, userCoords]);
+
+  const handleRefresh = () => {
+    if ((window as any).refreshWeatherFn) (window as any).refreshWeatherFn();
+  };
 
   if (!isOnline) {
     return (
@@ -217,13 +251,31 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
   const { label, Icon } = getWeatherDetails(weather.weatherCode, weather.isDay, t);
 
+  // Determine background class based on weather code and day/night
+  const getWidgetBgClass = () => {
+    if (!weather) return "bg-[var(--md-sys-color-surface-container)]";
+    if (weather.weatherCode >= 61 && weather.weatherCode <= 67) {
+      // Rain
+      return weather.isDay 
+        ? "bg-gradient-to-br from-blue-300/30 to-[var(--md-sys-color-surface-container)]"
+        : "bg-gradient-to-br from-indigo-900/30 to-[var(--md-sys-color-surface-container)]";
+    }
+    if (weather.weatherCode === 0) {
+      // Clear
+      return weather.isDay
+        ? "bg-gradient-to-br from-amber-200/30 to-[var(--md-sys-color-surface-container)]"
+        : "bg-gradient-to-br from-indigo-900/30 to-[var(--md-sys-color-surface-container)]";
+    }
+    return "bg-[var(--md-sys-color-surface-container)]";
+  };
 
   return (
     <>
     <motion.button
       onClick={() => setIsModalOpen(true)}
       className={cn(
-        "flex w-full items-center justify-between bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface)] rounded-[var(--md-sys-shape-corner-extra-large)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-primary)]",
+        "flex w-full items-center justify-between text-[var(--md-sys-color-on-surface)] rounded-[var(--md-sys-shape-corner-extra-large)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-primary)]",
+        getWidgetBgClass(),
         visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]",
         visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[8px] border border-[var(--glass-border)]",
         visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
@@ -316,6 +368,8 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
       onClose={() => setIsModalOpen(false)}
       weather={weather}
       locationName={locationName}
+      onRefresh={handleRefresh}
+      isRefreshing={isRefreshing}
     />
     </>
   );

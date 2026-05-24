@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Droplets, Wind, Sun, Sunrise, Sunset, Umbrella, MapPin, Search, Thermometer } from "lucide-react";
+import { X, Droplets, Wind, Sun, Sunrise, Sunset, Umbrella, MapPin, Search, Thermometer, RefreshCcw, Activity } from "lucide-react";
 import { cn } from "../lib/utils";
 import { M3_MOTION } from "../lib/motion";
 import { useAppContext } from "../AppContext";
@@ -14,7 +14,42 @@ interface FullWeatherModalProps {
   onClose: () => void;
   weather: WeatherData;
   locationName: string;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
+
+const WeatherParticles = ({ weatherCode, isDay }: { weatherCode: number, isDay: boolean }) => {
+  // Simple ambient animation based on weather
+  if (weatherCode >= 61 && weatherCode <= 67) {
+    // Rain
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={`rain-${i}`}
+            className="absolute w-[2px] h-[20px] bg-blue-300 rounded-full"
+            style={{ left: `${Math.random() * 100}%`, top: `-20px` }}
+            animate={{ top: ['0%', '100%'], opacity: [0, 1, 0] }}
+            transition={{ duration: 0.8 + Math.random() * 0.5, repeat: Infinity, delay: Math.random(), ease: "linear" }}
+          />
+        ))}
+      </div>
+    );
+  }
+  if (weatherCode === 0 && isDay) {
+    // Clear day - slow rotating sun rays
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 flex items-center justify-center">
+        <motion.div 
+          className="w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border-[40px] border-amber-200 border-dashed"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+    );
+  }
+  return null;
+};
 
 const PROVIDERS = [
   { id: "best_match", name: "Auto (Best Match)", desc: "Pilih model terbaik secara automatik" },
@@ -23,7 +58,7 @@ const PROVIDERS = [
   { id: "jma_seamless", name: "JMA", desc: "Agensi Meteorologi Jepun" }
 ];
 
-export function FullWeatherModal({ isOpen, onClose, weather, locationName }: FullWeatherModalProps) {
+export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRefresh, isRefreshing }: FullWeatherModalProps) {
   const { t, settings, updateSettings } = useAppContext();
   const { label: currentLabel, Icon: CurrentIcon } = getWeatherDetails(weather.weatherCode, weather.isDay, t);
 
@@ -55,6 +90,16 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
     }));
   }, [weather.daily]);
 
+  const { weekMin, weekMax } = useMemo(() => {
+    let min = Infinity;
+    let max = -Infinity;
+    dailyForecasts.forEach(d => {
+      if (d.minTemp < min) min = d.minTemp;
+      if (d.maxTemp > max) max = d.maxTemp;
+    });
+    return { weekMin: min !== Infinity ? min : 0, weekMax: max !== -Infinity ? max : 100 };
+  }, [dailyForecasts]);
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -83,6 +128,22 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
             className="bg-[var(--md-sys-color-surface)] w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[900px] flex flex-col rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden shadow-2xl sm:my-auto text-[var(--md-sys-color-on-surface)]"
           >
             <div className="relative p-5 sm:p-6 md:p-10 shrink-0 bg-gradient-to-br from-[var(--md-sys-color-primary-container)] to-[var(--md-sys-color-surface-variant)] flex flex-col items-center justify-center text-center overflow-hidden">
+              {onRefresh && (
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={onRefresh}
+                  className="absolute top-3 left-3 sm:top-4 sm:left-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-[var(--md-sys-color-on-surface)] backdrop-blur-md transition-colors z-20"
+                >
+                  <motion.div
+                    animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
+                    transition={isRefreshing ? { duration: 1, repeat: Infinity, ease: "linear" } : {}}
+                  >
+                    <RefreshCcw size={18} className="stroke-[3]" />
+                  </motion.div>
+                </motion.button>
+              )}
+
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
@@ -92,6 +153,8 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
                 <X size={20} className="stroke-[3]" />
               </motion.button>
               
+              <WeatherParticles weatherCode={weather.weatherCode} isDay={weather.isDay} />
+
               <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
                  <CurrentIcon className="w-[200px] h-[200px] sm:w-[300px] sm:h-[300px]" strokeWidth={1} />
               </div>
@@ -114,9 +177,13 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
                 </h2>
 
                 <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold bg-white/20 backdrop-blur-md px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-sm max-w-[95%] mx-auto">
-                  <span className="flex items-center gap-1 sm:gap-1.5"><Thermometer size={14} className="sm:w-4 sm:h-4" /> H: {weather.maxTemp ?? '--'}° L: {weather.minTemp ?? '--'}°</span>
+                  <span className="flex items-center gap-1 sm:gap-1.5"><Thermometer size={14} className="sm:w-4 sm:h-4" /> Terasa Seperti: {weather.apparentTemperature ?? weather.temperature}°</span>
                   <span className="flex items-center gap-1 sm:gap-1.5"><Droplets size={14} className="sm:w-4 sm:h-4" /> {weather.humidity}%</span>
                   <span className="flex items-center gap-1 sm:gap-1.5"><Wind size={14} className="sm:w-4 sm:h-4" /> {weather.windSpeed} km/j</span>
+                </div>
+
+                <div className="mt-4 text-[10px] sm:text-xs font-bold opacity-60">
+                  Dikemas kini {weather.lastUpdated ? Math.max(0, Math.floor((Date.now() - weather.lastUpdated) / 60000)) : 0} minit lepas
                 </div>
               </div>
             </div>
@@ -146,7 +213,21 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
                 </div>
               </section>
 
-              <section className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 px-1 sm:px-2">
+              <section className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 px-1 sm:px-2">
+                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                  <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
+                    <Activity className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> Kualiti Udara (AQI)
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black mb-1" style={{ color: weather.aqi ? (weather.aqi > 150 ? '#ef4444' : weather.aqi > 100 ? '#f97316' : weather.aqi > 50 ? '#eab308' : '#22c55e') : 'inherit' }}>
+                      {weather.aqi ?? '--'}
+                    </div>
+                    <div className="text-xs sm:text-sm font-medium opacity-80 leading-tight">
+                      {(weather.aqi ?? 0) > 150 ? "Tidak Sihat" : (weather.aqi ?? 0) > 100 ? "Sederhana (Sensitif)" : (weather.aqi ?? 0) > 50 ? "Sederhana" : "Baik"}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
                     <Sun className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> UV Index
@@ -200,6 +281,11 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
                   {dailyForecasts.map((day, idx) => {
                     const { Icon: DayIcon } = getWeatherDetails(day.code, true, t);
                     const isToday = idx === 0;
+                    
+                    const range = weekMax - weekMin || 1;
+                    const leftPercent = Math.max(0, ((day.minTemp - weekMin) / range) * 100);
+                    const widthPercent = Math.max(5, ((day.maxTemp - day.minTemp) / range) * 100);
+
                     return (
                       <div key={idx} className="flex items-center justify-between p-3 sm:p-4 bg-[var(--md-sys-color-surface-container-low)] rounded-[1.5rem]">
                         <div className="w-[70px] sm:w-24 font-bold text-[13px] sm:text-base shrink-0 truncate">
@@ -211,10 +297,13 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName }: Ful
                             <span className="text-[10px] sm:text-xs font-bold text-blue-500 w-8 sm:w-10 text-center">{day.precip}%</span>
                           )}
                         </div>
-                        <div className="w-[100px] sm:w-32 flex items-center justify-end gap-2 sm:gap-3 font-black text-[13px] sm:text-base shrink-0">
+                        <div className="w-[120px] sm:w-48 flex items-center justify-end gap-2 sm:gap-3 font-black text-[13px] sm:text-base shrink-0">
                           <span className="opacity-60 text-right w-6 sm:w-8">{day.minTemp}°</span>
-                          <div className="flex-1 max-w-[40px] sm:max-w-[64px] h-1.5 sm:h-2 bg-[var(--md-sys-color-surface-container-highest)] rounded-full overflow-hidden shrink-0">
-                             <div className="h-full bg-gradient-to-r from-blue-400 to-red-400 opacity-80" />
+                          <div className="relative flex-1 max-w-[60px] sm:max-w-[100px] h-1.5 sm:h-2 bg-[var(--md-sys-color-surface-container-highest)] rounded-full overflow-hidden shrink-0">
+                             <div 
+                               className="absolute h-full bg-gradient-to-r from-blue-400 to-[var(--md-sys-color-error)] opacity-90 rounded-full" 
+                               style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
+                             />
                           </div>
                           <span className="text-right w-6 sm:w-8">{day.maxTemp}°</span>
                         </div>
