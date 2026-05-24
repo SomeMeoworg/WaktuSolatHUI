@@ -1048,7 +1048,10 @@ export default function App() {
             <div className="flex flex-col gap-2 min-h-full lg:flex-1 lg:min-h-0">
               <Suspense
                 fallback={
-                  <div className="h-[200px] bg-[var(--md-sys-color-surface-container)] rounded-3xl animate-pulse w-full"></div>
+                  <div className="h-[100px] sm:h-[130px] flex items-center justify-center bg-[var(--md-sys-color-surface-container)] rounded-3xl w-full">
+                    {/* @ts-ignore */}
+                    <md-circular-progress indeterminate></md-circular-progress>
+                  </div>
                 }
               >
                 <WeatherWidget selectedZone={selectedZone} userCoords={userCoords} currentLocationName={currentLocationName} />

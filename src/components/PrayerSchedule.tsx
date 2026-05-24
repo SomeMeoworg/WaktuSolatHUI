@@ -365,6 +365,8 @@ export function PrayerSchedule({
             >
               {/* @ts-ignore */}
               <md-ripple></md-ripple>
+              {/* @ts-ignore */}
+              <md-elevation level={isNext ? "2" : isCurrent ? "1" : "0"}></md-elevation>
               <div className="flex items-center gap-2 sm:gap-3 z-10 h-full pl-0.5 sm:pl-1">
                 <motion.div
                   className={cn(

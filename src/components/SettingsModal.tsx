@@ -845,39 +845,21 @@ export function SettingsModal({
                             <span className="font-bold text-[var(--md-sys-color-on-surface)] text-sm">
                               {t("azanAlertDuration" as any)}
                             </span>
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() =>
-                                  updateSettings({
-                                    azanAlertDuration: Math.max(5, (settings.azanAlertDuration ?? 20) - 5),
-                                  })
-                                }
-                                className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
-                              >
-                                {/* @ts-ignore */}
-                                <md-ripple></md-ripple>
-                                <Minus size={20} className="relative z-10" />
-                              </motion.button>
-                              <span className="w-16 flex font-mono text-lg sm:text-2xl font-black items-center justify-center tabular-nums text-[var(--md-sys-color-primary)]">
-                                {settings.azanAlertDuration ?? 20} {t("seconds" as any)}
-                              </span>
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() =>
-                                  updateSettings({
-                                    azanAlertDuration: Math.min(120, (settings.azanAlertDuration ?? 20) + 5),
-                                  })
-                                }
-                                className="relative overflow-hidden w-10 h-10 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)]"
-                              >
-                                {/* @ts-ignore */}
-                                <md-ripple></md-ripple>
-                                <Plus size={20} className="relative z-10" />
-                              </motion.button>
+                            <div className="flex-1 px-2 sm:px-4">
+                              {/* @ts-ignore */}
+                              <md-slider
+                                min="5"
+                                max="120"
+                                step="5"
+                                value={settings.azanAlertDuration ?? 20}
+                                labeled
+                                ticks
+                                onChange={(e: any) => updateSettings({ azanAlertDuration: e.target.value })}
+                              ></md-slider>
                             </div>
+                            <span className="w-20 text-right font-mono text-lg font-black text-[var(--md-sys-color-primary)]">
+                              {settings.azanAlertDuration ?? 20}s
+                            </span>
                           </div>
 
                           <motion.button
@@ -1510,35 +1492,21 @@ export function SettingsModal({
                                 Serene dhikr interval before exit.
                               </span>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() =>
-                                  updateSettings({
-                                    solatModeDuaDuration: Math.max(0, (settings.solatModeDuaDuration ?? 0) - 1),
-                                  })
-                                }
-                                className="relative overflow-hidden w-8 h-8 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] transition-colors"
-                              >
-                                <Minus size={16} />
-                              </motion.button>
-                              <span className="w-12 flex font-mono font-bold items-center justify-center text-[var(--md-sys-color-primary)] tabular-nums">
-                                {settings.solatModeDuaDuration ?? 0} m
-                              </span>
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() =>
-                                  updateSettings({
-                                    solatModeDuaDuration: Math.min(10, (settings.solatModeDuaDuration ?? 0) + 1),
-                                  })
-                                }
-                                className="relative overflow-hidden w-8 h-8 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] transition-colors"
-                              >
-                                <Plus size={16} />
-                              </motion.button>
+                            <div className="flex-1 px-4 max-w-[200px]">
+                              {/* @ts-ignore */}
+                              <md-slider
+                                min="0"
+                                max="10"
+                                step="1"
+                                value={settings.solatModeDuaDuration ?? 0}
+                                labeled
+                                ticks
+                                onChange={(e: any) => updateSettings({ solatModeDuaDuration: e.target.value })}
+                              ></md-slider>
                             </div>
+                            <span className="w-12 text-right font-mono font-bold text-[var(--md-sys-color-primary)] tabular-nums">
+                              {settings.solatModeDuaDuration ?? 0}m
+                            </span>
                           </div>
 
                           {/* Individual Prayer Durations */}
@@ -1557,43 +1525,29 @@ export function SettingsModal({
                                     <span className="font-bold text-[var(--md-sys-color-on-surface)] tracking-wider uppercase text-xs w-24 pl-1">
                                       {t(key as any)}
                                     </span>
-                                    <div className="flex items-center gap-3">
-                                      <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => {
+                                    <div className="flex-1 px-4">
+                                      {/* @ts-ignore */}
+                                      <md-slider
+                                        min="1"
+                                        max="60"
+                                        step="1"
+                                        value={duration}
+                                        labeled
+                                        ticks
+                                        onChange={(e: any) => {
                                           const currentDurations = settings.solatModeDuration ?? { fajr: 10, dhuhr: 10, asr: 10, maghrib: 10, isha: 10 };
                                           updateSettings({
                                             solatModeDuration: {
                                               ...currentDurations,
-                                              [key]: Math.max(1, duration - 1),
+                                              [key]: e.target.value,
                                             },
                                           });
                                         }}
-                                        className="relative overflow-hidden w-8 h-8 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] transition-colors"
-                                      >
-                                        <Minus size={14} />
-                                      </motion.button>
-                                      <span className="w-12 flex font-mono font-bold items-center justify-center text-[var(--md-sys-color-primary)] tabular-nums text-sm">
-                                        {duration} m
-                                      </span>
-                                      <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => {
-                                          const currentDurations = settings.solatModeDuration ?? { fajr: 10, dhuhr: 10, asr: 10, maghrib: 10, isha: 10 };
-                                          updateSettings({
-                                            solatModeDuration: {
-                                              ...currentDurations,
-                                              [key]: Math.min(60, duration + 1),
-                                            },
-                                          });
-                                        }}
-                                        className="relative overflow-hidden w-8 h-8 rounded-full flex items-center justify-center bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] transition-colors"
-                                      >
-                                        <Plus size={14} />
-                                      </motion.button>
+                                      ></md-slider>
                                     </div>
+                                    <span className="w-12 text-right font-mono font-bold text-[var(--md-sys-color-primary)] tabular-nums text-sm">
+                                      {duration}m
+                                    </span>
                                   </div>
                                 );
                               })}

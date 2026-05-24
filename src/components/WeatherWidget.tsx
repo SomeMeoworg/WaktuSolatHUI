@@ -298,6 +298,8 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
     >
       {/* @ts-ignore */}
       <md-ripple></md-ripple>
+      {/* @ts-ignore */}
+      <md-elevation level="1"></md-elevation>
       <div className="flex items-center gap-3 sm:gap-4 z-10 w-full pr-2 lg:pr-3 relative">
         <motion.div
           className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--md-sys-shape-corner-large)] flex items-center justify-center shrink-0 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]"

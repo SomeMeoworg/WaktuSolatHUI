@@ -1155,35 +1155,28 @@ export function ZoneSelector({
                       style={{ transformOrigin: "top", willChange: "transform, opacity" }}
                       className="flex flex-col gap-4"
                     >
-                      <div className="relative group">
-                        <div className="absolute inset-y-0 left-6 flex flex-col justify-center pointer-events-none">
-                          <Search
-                            className="text-[var(--md-sys-color-primary)] opacity-60 group-focus-within:opacity-100 group-focus-within:scale-110 transition-all duration-300"
-                            size={28}
-                            strokeWidth={2.5}
-                          />
-                        </div>
-                        <input
-                          ref={inputRef}
+                      <div className="relative group w-full mb-2">
+                        {/* @ts-ignore */}
+                        <md-outlined-text-field
                           type="text"
-                          placeholder={t("searchPlaceholder")}
+                          label={t("searchPlaceholder")}
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-16 pr-12 py-5 md:py-7 bg-[var(--md-sys-color-surface-container-high)] rounded-full focus:bg-[var(--md-sys-color-surface-container-highest)] border-[3px] border-transparent focus:border-[var(--md-sys-color-primary)] focus:outline-none transition-all font-black text-xl text-[var(--md-sys-color-on-surface)] placeholder-[var(--md-sys-color-on-surface-variant)]/50 shadow-sm"
-                        />
-                        {searchQuery && (
-                          <motion.button
-                            whileHover={{ scale: 1.1, rotate: 90 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => {
-                              setSearchQuery("");
-                              inputRef.current?.focus();
-                            }}
-                            className="absolute inset-y-0 right-4 flex flex-col justify-center text-[var(--md-sys-color-on-surface-variant)] opacity-70 hover:opacity-100"
-                          >
-                            <X size={18} />
-                          </motion.button>
-                        )}
+                          onInput={(e: any) => setSearchQuery(e.target.value)}
+                          className="w-full"
+                          style={{ '--md-outlined-text-field-container-shape': '24px' } as any}
+                        >
+                          <md-icon slot="leading-icon">search</md-icon>
+                          {searchQuery && (
+                            <md-icon-button
+                              slot="trailing-icon"
+                              onClick={() => {
+                                setSearchQuery("");
+                              }}
+                            >
+                              <md-icon>close</md-icon>
+                            </md-icon-button>
+                          )}
+                        </md-outlined-text-field>
                       </div>
 
                       {!searchQuery && (
@@ -1260,7 +1253,8 @@ export function ZoneSelector({
                                 <span className="opacity-60">🕐</span>
                                 {t('recentLocations' as any) || "Recent Locations"}
                               </h3>
-                              <div className="flex flex-col gap-2">
+                              {/* @ts-ignore */}
+                              <md-list className="bg-transparent overflow-visible flex flex-col gap-2 p-0">
                                 {filtered.map((code: string) => {
                                   let label = code;
                                   let stateName = "";
@@ -1269,20 +1263,18 @@ export function ZoneSelector({
                                     if (found) { label = found.l; stateName = state.state; break; }
                                   }
                                   return (
-                                    <motion.button
-                                      whileHover={{ scale: 1.01 }}
-                                      whileTap={{ scale: 0.98 }}
+                                    /* @ts-ignore */
+                                    <md-list-item
                                       key={`recent-${code}`}
+                                      type="button"
                                       onClick={() => {
                                         onZoneSelect(code);
                                         setIsOpen(false);
                                       }}
-                                      className="relative overflow-hidden bg-[var(--md-sys-color-surface-container)] hover:bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-surface)] px-4 py-3 rounded-2xl text-left font-bold shadow-sm transition-all border border-[var(--md-sys-color-outline)]/5 flex items-center gap-3 group"
+                                      className="bg-[var(--md-sys-color-surface-container)] rounded-2xl overflow-hidden shadow-sm border border-[var(--md-sys-color-outline)]/5"
                                     >
-                                      {/* @ts-ignore */}
-                                      <md-ripple></md-ripple>
                                       {STATE_FLAGS[stateName] && (
-                                        <div className="w-[24px] h-[16px] bg-white overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] shrink-0 rounded-[2px]">
+                                        <div slot="start" className="w-[32px] h-[20px] bg-white overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] shrink-0 rounded-[2px] mr-2">
                                           <img
                                             src={STATE_FLAGS[stateName]}
                                             alt=""
@@ -1290,21 +1282,15 @@ export function ZoneSelector({
                                           />
                                         </div>
                                       )}
-                                      <div className="flex flex-col min-w-0 flex-1">
-                                        <span className="text-sm font-bold truncate group-hover:text-[var(--md-sys-color-on-secondary-container)] transition-colors">
-                                          {label}
-                                        </span>
-                                        <span className="text-[10px] opacity-60 truncate">
-                                          {stateName}
-                                        </span>
-                                      </div>
-                                      <span className="text-[11px] font-mono font-black tracking-wider bg-[var(--md-sys-color-surface-variant)]/50 px-2 py-0.5 rounded-md text-[var(--md-sys-color-on-surface-variant)] shrink-0 opacity-70">
+                                      <div slot="headline" className="font-bold text-sm text-[var(--md-sys-color-on-surface)] truncate">{label}</div>
+                                      <div slot="supporting-text" className="text-[10px] opacity-80 truncate">{stateName}</div>
+                                      <div slot="end" className="text-[11px] font-mono font-black tracking-wider bg-[var(--md-sys-color-surface-variant)]/50 px-2 py-0.5 rounded-md text-[var(--md-sys-color-on-surface-variant)] shrink-0 opacity-70">
                                         {code}
-                                      </span>
-                                    </motion.button>
+                                      </div>
+                                    </md-list-item>
                                   );
                                 })}
-                              </div>
+                              </md-list>
                             </div>
                           );
                         }
@@ -1368,7 +1354,8 @@ export function ZoneSelector({
                           <h3 className="text-[var(--md-sys-color-primary)] font-black uppercase tracking-widest text-sm sm:text-base pr-2 inline-block">
                             {state.state}
                           </h3>
-                          <div className="h-px bg-[var(--md-sys-color-outline)]/20 flex-1" />
+                          {/* @ts-ignore */}
+                          <md-divider className="flex-1"></md-divider>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 px-4 md:px-6 pt-3">
                           {state.zones.map((zone) => {

@@ -178,32 +178,32 @@ html.dark[data-style="soft"] {
         --md-sys-typescale-headline-large-font: var(--font-sans);
         --md-sys-typescale-headline-large-size: 32px;
         --md-sys-typescale-headline-large-line-height: 40px;
-        --md-sys-typescale-headline-large-weight: 400;
+        --md-sys-typescale-headline-large-weight: 700;
         --md-sys-typescale-headline-large-tracking: 0;
 
         --md-sys-typescale-headline-medium-font: var(--font-sans);
         --md-sys-typescale-headline-medium-size: 28px;
         --md-sys-typescale-headline-medium-line-height: 36px;
-        --md-sys-typescale-headline-medium-weight: 400;
+        --md-sys-typescale-headline-medium-weight: 700;
         --md-sys-typescale-headline-medium-tracking: 0;
 
         --md-sys-typescale-headline-small-font: var(--font-sans);
         --md-sys-typescale-headline-small-size: 24px;
         --md-sys-typescale-headline-small-line-height: 32px;
-        --md-sys-typescale-headline-small-weight: 400;
+        --md-sys-typescale-headline-small-weight: 700;
         --md-sys-typescale-headline-small-tracking: 0;
 
         /* Title */
         --md-sys-typescale-title-large-font: var(--font-sans);
         --md-sys-typescale-title-large-size: 22px;
         --md-sys-typescale-title-large-line-height: 28px;
-        --md-sys-typescale-title-large-weight: 400;
+        --md-sys-typescale-title-large-weight: 600;
         --md-sys-typescale-title-large-tracking: 0;
 
         --md-sys-typescale-title-medium-font: var(--font-sans);
         --md-sys-typescale-title-medium-size: 16px;
         --md-sys-typescale-title-medium-line-height: 24px;
-        --md-sys-typescale-title-medium-weight: 500;
+        --md-sys-typescale-title-medium-weight: 600;
         --md-sys-typescale-title-medium-tracking: 0.15px;
 
         --md-sys-typescale-title-small-font: var(--font-sans);
@@ -287,7 +287,7 @@ html.dark[data-style="soft"] {
         --md-sys-shape-corner-medium: calc(12px * var(--app-radius-scale, 1));
         --md-sys-shape-corner-large: calc(16px * var(--app-radius-scale, 1));
         --md-sys-shape-corner-extra-large: calc(
-            28px * var(--app-radius-scale, 1)
+            32px * var(--app-radius-scale, 1)
         );
         --md-sys-shape-corner-full: 9999px;
 
@@ -577,6 +577,17 @@ html.dark[data-style="soft"] {
     --md-filled-tonal-icon-button-container-color: var(--md-sys-color-secondary-container);
     --md-filled-tonal-icon-button-icon-color: var(--md-sys-color-on-secondary-container);
     --md-filled-tonal-icon-button-hover-state-layer-color: var(--md-sys-color-on-secondary-container);
+
+    /* Slider Expressive Overrides */
+    --md-slider-active-track-height: 12px;
+    --md-slider-inactive-track-height: 12px;
+    --md-slider-active-track-shape: 999px;
+    --md-slider-inactive-track-shape: 999px;
+    --md-slider-handle-height: 28px;
+    --md-slider-handle-width: 28px;
+    
+    /* Outlined Select Expressive Overrides */
+    --md-outlined-select-container-shape: 24px;
 }
 
 @layer utilities {
