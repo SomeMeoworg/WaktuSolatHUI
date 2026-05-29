@@ -57,15 +57,15 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
   return (
     <div className={cn("flex flex-col w-full h-full min-h-0 flex-1 transition-opacity duration-300", isLoading && "opacity-40 pointer-events-none")}>
       {/* Week Day Headers */}
-      <div className="grid grid-cols-7 border-b border-[var(--md-sys-color-outline)]/12 mb-1 sm:mb-2 pb-0.5 sm:pb-1 shrink-0">
+      <div className="grid grid-cols-7 border-b border-divider mb-1 sm:mb-2 pb-0.5 sm:pb-1 shrink-0">
         {dayNames.map((dayName, idx) => {
           const isWeekend = idx >= 5; 
           return (
             <div key={dayName} className={cn(
               "py-1.5 sm:py-2 text-center text-[9px] sm:text-xs font-black uppercase tracking-widest transition-colors select-none",
               isWeekend 
-                ? "text-[var(--md-sys-color-error)]" 
-                : "text-[var(--md-sys-color-on-surface-variant)]/70"
+                ? "text-[var(--app-danger)]" 
+                : "text-[var(--app-outline)]/70"
             )}>
               <span className="hidden sm:inline">{dayName}</span>
               <span className="sm:hidden">{dayName.slice(0, 3)}</span>
@@ -112,20 +112,20 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
                   if (pData) onSelectDay(pData);
                 }}
                 className={cn(
-                  "relative flex flex-col items-center sm:items-stretch transition-all border border-[var(--md-sys-color-outline)]/8 select-none group cursor-pointer",
+                  "relative flex flex-col items-center sm:items-stretch transition-all border border-divider select-none group cursor-pointer",
                   // Mobile Sizing: Compact Circle. Desktop Sizing: Spacious Square tile
                   "w-full aspect-square max-w-[40px] sm:max-w-none sm:aspect-auto sm:h-full justify-center sm:justify-between p-1 sm:p-2 rounded-full sm:rounded-2xl",
                   // Colors
                   isCurrentMonth 
-                    ? "text-[var(--md-sys-color-on-surface)]" 
-                    : "opacity-35 text-[var(--md-sys-color-on-surface-variant)]/20 hover:opacity-50",
+                    ? "text-foreground" 
+                    : "opacity-35 text-[var(--app-outline)]/20 hover:opacity-50",
                   isCurrentDay 
-                    ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md shadow-[var(--md-sys-color-primary)]/20 font-bold z-[2]"
+                    ? "bg-primary text-primary-foreground shadow-md shadow-[var(--app-primary)]/20 font-bold z-[2]"
                     : isCurrentMonth
-                      ? "bg-[var(--md-sys-color-surface-container)] hover:bg-[var(--md-sys-color-primary-container)]/10"
-                      : "bg-[var(--md-sys-color-surface-container-lowest)]/40",
+                      ? "bg-content2 hover:bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/10"
+                      : "bg-content1/40",
                   // Visual Styles adaptation
-                  visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none shadow-[2px_2px_0px_0px_var(--md-sys-color-on-surface)] sm:hover:translate-y-[-2px] sm:hover:shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]",
+                  visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none shadow-[2px_2px_0px_0px_var(--app-foreground)] sm:hover:translate-y-[-2px] sm:hover:shadow-[4px_4px_0px_0px_var(--app-foreground)]",
                   visualStyle === "glass" && isCurrentMonth && !isCurrentDay && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border-[var(--glass-border)]",
                   visualStyle === "soft" && !isCurrentDay && "shadow-[var(--soft-shadow-light)]"
                 )}
@@ -134,17 +134,17 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
                 <div className="flex justify-center sm:justify-between items-center sm:items-start shrink-0 w-full">
                   <span className={cn(
                     "text-xs sm:text-sm lg:text-lg font-black tabular-nums tracking-tighter transition-all",
-                    isCurrentDay ? "text-[var(--md-sys-color-on-primary)] scale-110" : !isCurrentMonth ? "text-[var(--md-sys-color-on-surface-variant)]/40" : "",
-                    !isCurrentDay && hasPublicHoliday && isCurrentMonth && "text-[var(--md-sys-color-error)]",
-                    isCurrentMonth && !isCurrentDay && !hasPublicHoliday && "group-hover:text-[var(--md-sys-color-primary)]"
+                    isCurrentDay ? "text-primary-foreground scale-110" : !isCurrentMonth ? "text-[var(--app-outline)]/40" : "",
+                    !isCurrentDay && hasPublicHoliday && isCurrentMonth && "text-[var(--app-danger)]",
+                    isCurrentMonth && !isCurrentDay && !hasPublicHoliday && "group-hover:text-primary"
                   )}>
                     {formattedDate}
                   </span>
                   
                   {hijriParts && isCurrentMonth && (
                     <span className={cn(
-                      "hidden sm:inline text-[9px] font-black opacity-50 tabular-nums group-hover:text-[var(--md-sys-color-primary)] transition-colors",
-                      isCurrentDay ? "text-[var(--md-sys-color-on-primary)] opacity-80" : "text-[var(--md-sys-color-on-surface-variant)]"
+                      "hidden sm:inline text-[9px] font-black opacity-50 tabular-nums group-hover:text-primary transition-colors",
+                      isCurrentDay ? "text-primary-foreground opacity-80" : "text-[var(--app-outline)]"
                     )}>
                        {parseInt(hijriParts[2], 10)}
                     </span>
@@ -161,8 +161,8 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
                         className={cn(
                           "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full shrink-0",
                           evt.type === 'public' 
-                            ? isCurrentDay ? "bg-white" : "bg-[var(--md-sys-color-error)]" 
-                            : isCurrentDay ? "bg-white" : "bg-[var(--md-sys-color-primary)]"
+                            ? isCurrentDay ? "bg-white" : "bg-[var(--app-danger)]" 
+                            : isCurrentDay ? "bg-white" : "bg-primary"
                         )}
                         title={evt.title}
                       />
@@ -177,8 +177,8 @@ export function CalendarGridView({ currentDate, monthData, onSelectDay, isLoadin
                         className={cn(
                           "text-[8px] px-1 py-0.5 rounded-md truncate font-black tracking-wider uppercase text-white shadow-xs w-full text-left select-none",
                           evt.type === 'public' 
-                            ? "bg-[var(--md-sys-color-error)]" 
-                            : "bg-[var(--md-sys-color-primary)]"
+                            ? "bg-[var(--app-danger)]" 
+                            : "bg-primary"
                         )}
                         title={evt.title}
                       >

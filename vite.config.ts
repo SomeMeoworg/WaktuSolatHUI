@@ -20,8 +20,8 @@ export default defineConfig(({mode}) => {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               // Only extract massive isolated libraries to prevent circular dependencies
-              if (id.includes('@material/web')) {
-                return 'vendor-material';
+              if (id.includes('@heroui')) {
+                return 'vendor-heroui';
               }
               if (id.includes('leaflet') || id.includes('react-leaflet')) {
                 return 'vendor-map';

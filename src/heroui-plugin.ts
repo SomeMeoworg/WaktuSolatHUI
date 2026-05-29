@@ -1,0 +1,1 @@
+"import { heroui } from \"@heroui/react\";\nexport default heroui();\n"

@@ -10,19 +10,19 @@ export const FEDERAL_HOLIDAYS_FIXED: Record<string, string> = {
 };
 
 export const ISLAMIC_EVENTS: Record<string, { title: string, color: string, isHoliday: boolean }> = {
-  "01-01": { title: "Awal Muharram", color: "bg-[var(--md-sys-color-primary)]", isHoliday: true },
-  "03-12": { title: "Maulidur Rasul", color: "bg-[var(--md-sys-color-tertiary)]", isHoliday: true },
-  "07-27": { title: "Israk & Mikraj", color: "bg-[var(--md-sys-color-secondary)]", isHoliday: false },
-  "08-15": { title: "Nisfu Syaaban", color: "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]", isHoliday: false },
-  "09-01": { title: "Awal Ramadan", color: "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)]", isHoliday: true }, // (Johor/Kedah/Melaka)
-  "09-17": { title: "Nuzul Quran", color: "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]", isHoliday: true }, // (Certain states)
-  "10-01": { title: "Hari Raya Aidilfitri", color: "bg-[var(--md-sys-color-tertiary)]", isHoliday: true },
-  "10-02": { title: "Hari Raya Aidilfitri", color: "bg-[var(--md-sys-color-tertiary)]", isHoliday: true },
-  "12-09": { title: "Hari Arafah (Sunat Puasa)", color: "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)]", isHoliday: false },
-  "12-10": { title: "Hari Raya Aidiladha", color: "bg-[var(--md-sys-color-primary)]", isHoliday: true },
-  "12-11": { title: "Hari Raya Aidiladha (Hari Kedua)", color: "bg-[var(--md-sys-color-primary)]", isHoliday: true }, // Certain states
-  "01-09": { title: "Hari Tasu'a (Sunat Puasa)", color: "bg-[var(--md-sys-color-secondary)]", isHoliday: false },
-  "01-10": { title: "Hari Asyura (Sunat Puasa)", color: "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]", isHoliday: false },
+  "01-01": { title: "Awal Muharram", color: "bg-primary", isHoliday: true },
+  "03-12": { title: "Maulidur Rasul", color: "bg-[var(--app-secondary)]", isHoliday: true },
+  "07-27": { title: "Israk & Mikraj", color: "bg-[var(--app-secondary)]", isHoliday: false },
+  "08-15": { title: "Nisfu Syaaban", color: "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary", isHoliday: false },
+  "09-01": { title: "Awal Ramadan", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: true }, // (Johor/Kedah/Melaka)
+  "09-17": { title: "Nuzul Quran", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: true }, // (Certain states)
+  "10-01": { title: "Hari Raya Aidilfitri", color: "bg-[var(--app-secondary)]", isHoliday: true },
+  "10-02": { title: "Hari Raya Aidilfitri", color: "bg-[var(--app-secondary)]", isHoliday: true },
+  "12-09": { title: "Hari Arafah (Sunat Puasa)", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: false },
+  "12-10": { title: "Hari Raya Aidiladha", color: "bg-primary", isHoliday: true },
+  "12-11": { title: "Hari Raya Aidiladha (Hari Kedua)", color: "bg-primary", isHoliday: true }, // Certain states
+  "01-09": { title: "Hari Tasu'a (Sunat Puasa)", color: "bg-[var(--app-secondary)]", isHoliday: false },
+  "01-10": { title: "Hari Asyura (Sunat Puasa)", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: false },
 };
 
 export function getFixedPublicHoliday(date: Date) {
@@ -42,7 +42,7 @@ export function getIslamicEvent(hijriDate: string) {
     // Ayyamul Bidh (White Days) - 13, 14, 15 of every month
     // Except 13th of Zulhijjah (Tashreeq day - forbidden to fast)
     if ((day === "13" || day === "14" || day === "15") && !(month === "12" && day === "13")) {
-      return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]", isHoliday: false };
+      return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: false };
     }
     
     return ISLAMIC_EVENTS[md] || null;
@@ -52,7 +52,7 @@ export function getIslamicEvent(hijriDate: string) {
       const md = hijriDate;
       const [month, day] = md.split("-");
       if ((day === "13" || day === "14" || day === "15") && !(month === "12" && day === "13")) {
-        return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]", isHoliday: false };
+        return ISLAMIC_EVENTS[md] || { title: "Puasa Sunat Ayyamul Bidh", color: "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]", isHoliday: false };
       }
       return ISLAMIC_EVENTS[md] || null;
   }
@@ -137,7 +137,7 @@ export function getAllEventsForDay(gregorianDate: Date, hijriDateStr: string | n
     if (variable) {
         // Tag as Islamic event if it's one of the known titles
         const isIslamic = ["Awal Ramadan", "Hari Raya Aidilfitri", "Hari Raya Aidilfitri (Hari Kedua)", "Hari Raya Aidiladha", "Awal Muharram", "Maulidur Rasul"].includes(variable);
-        let color = "bg-[var(--md-sys-color-primary)]";
+        let color = "bg-primary";
         if (variable.includes("Aidilfitri")) color = "bg-emerald-500";
         if (variable.includes("Aidiladha")) color = "bg-rose-500";
         if (variable.includes("Ramadan")) color = "bg-amber-500";

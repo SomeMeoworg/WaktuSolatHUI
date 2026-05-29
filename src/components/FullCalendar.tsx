@@ -1,8 +1,6 @@
+import { Button } from "@heroui/react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import "@material/web/tabs/tabs.js";
-import "@material/web/tabs/primary-tab.js";
-import "@material/web/tabs/secondary-tab.js";
 import { format, parse, addMonths, subMonths, startOfMonth, addDays, subDays, isSameDay, isSameWeek } from "date-fns";
 import { ms, enUS } from "date-fns/locale";
 import { PrayerData, PrayerKey } from "../types";
@@ -195,34 +193,34 @@ export function FullCalendar({
            animate="visible"
            exit="exit"
            className={cn(
-             "fixed inset-0 z-40 w-full h-full flex flex-col font-sans text-[var(--md-sys-color-on-background)] overflow-hidden transition-all duration-300 select-none",
+             "fixed inset-0 z-40 w-full h-full flex flex-col font-sans text-foreground overflow-hidden transition-all duration-300 select-none",
              isWallpaperActive
                ? "bg-black/60 backdrop-blur-3xl"
                : visualStyle === 'glass'
                  ? "bg-[var(--glass-bg)]/85 backdrop-blur-[28px] border border-[var(--glass-border)]"
-                 : "bg-[var(--md-sys-color-background)]",
-             visualStyle === 'soft' && "shadow-[var(--soft-shadow-heavy)] bg-[var(--md-sys-color-background)]",
-             visualStyle === 'retro' && "border-[4px] border-[var(--md-sys-color-on-surface)] rounded-none"
+                 : "bg-background",
+             visualStyle === 'soft' && "shadow-[var(--soft-shadow-heavy)] bg-background",
+             visualStyle === 'retro' && "border-[4px] border-[var(--app-foreground)] rounded-none"
            )}
         >
           {/* STICKY HEADER ZONE */}
           <div className={cn(
-            "sticky top-0 z-50 border-b border-[var(--md-sys-color-outline)]/12 shadow-sm shrink-0 transition-all duration-300",
-            isWallpaperActive ? "bg-black/20 backdrop-blur-md" : visualStyle === 'glass' ? "bg-white/5 backdrop-blur-md" : "bg-[var(--md-sys-color-surface)]/90 backdrop-blur-2xl"
+            "sticky top-0 z-50 border-b border-divider shadow-sm shrink-0 transition-all duration-300",
+            isWallpaperActive ? "bg-black/20 backdrop-blur-md" : visualStyle === 'glass' ? "bg-white/5 backdrop-blur-md" : "bg-content1/90 backdrop-blur-2xl"
           )}>
             <div className="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:py-4 lg:px-6 flex flex-col gap-2.5 sm:gap-3.5">
               
               {/* Top Title & Close Button */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[var(--md-sys-color-primary)]/10 flex items-center justify-center shrink-0">
-                    <CalendarRange size={22} className="text-[var(--md-sys-color-primary)] stroke-[2.5] sm:scale-110" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <CalendarRange size={22} className="text-primary stroke-[2.5] sm:scale-110" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-2xl font-black tracking-tight text-[var(--md-sys-color-primary)] leading-tight">
+                    <h2 className="text-lg sm:text-2xl font-black tracking-tight text-primary leading-tight">
                       {t("calendar")}
                     </h2>
-                    <p className="font-bold text-[var(--md-sys-color-on-surface-variant)] text-[10px] sm:text-xs uppercase tracking-wider opacity-85">
+                    <p className="font-bold text-[var(--app-outline)] text-[10px] sm:text-xs uppercase tracking-wider opacity-85">
                       {t("extensiveCalendarDesc")}
                     </p>
                   </div>
@@ -232,7 +230,7 @@ export function FullCalendar({
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
-                  className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-error-container)] hover:text-[var(--md-sys-color-on-error-container)] shrink-0 shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-error)] cursor-pointer"
+                  className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-foreground bg-content3 hover:bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] hover:text-[var(--app-danger)] shrink-0 shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-danger)] cursor-pointer"
                 >
                   <X size={16} strokeWidth={iconStroke} />
                 </motion.button>
@@ -240,25 +238,20 @@ export function FullCalendar({
 
               {/* Tab Navigation Menu (MWC) */}
               <div className="w-full shrink-0 overflow-x-auto no-scrollbar pt-0.5">
-                {/* @ts-ignore */}
-                <md-tabs className="w-full bg-transparent shrink-0" activeTabIndex={activeTab === 'grid' ? 0 : activeTab === 'list' ? 1 : activeTab === 'public_holidays' ? 2 : 3}>
-                  {/* @ts-ignore */}
-                  <md-primary-tab onClick={() => setActiveTab("grid")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span slot="icon"><CalendarDays size={14} /></span> {t("calendarGrid")}</div>
-                  </md-primary-tab>
-                  {/* @ts-ignore */}
-                  <md-primary-tab onClick={() => setActiveTab("list")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span slot="icon"><ListTree size={14} /></span> {t("schedule")}</div>
-                  </md-primary-tab>
-                  {/* @ts-ignore */}
-                  <md-primary-tab onClick={() => setActiveTab("public_holidays")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span slot="icon"><PartyPopper size={14} /></span> {t("publicHolidays")}</div>
-                  </md-primary-tab>
-                  {/* @ts-ignore */}
-                  <md-primary-tab onClick={() => setActiveTab("islamic_events")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span slot="icon"><Moon size={14} /></span> {t("islamicEvents")}</div>
-                  </md-primary-tab>
-                </md-tabs>
+                <div className="w-full bg-transparent shrink-0">
+                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("grid")}>
+                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><CalendarDays size={14} /></span> {t("calendarGrid")}</div>
+                  </button>
+                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("list")}>
+                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><ListTree size={14} /></span> {t("schedule")}</div>
+                  </button>
+                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("public_holidays")}>
+                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><PartyPopper size={14} /></span> {t("publicHolidays")}</div>
+                  </button>
+                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("islamic_events")}>
+                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><Moon size={14} /></span> {t("islamicEvents")}</div>
+                  </button>
+                </div>
               </div>
 
               {/* Navigation and Date Controls Row */}
@@ -266,11 +259,11 @@ export function FullCalendar({
                 <div className={cn(
                   activeTab === "grid" 
                     ? "flex items-center justify-center py-1 sm:py-2 shrink-0 w-full" 
-                    : "flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[var(--md-sys-color-surface-container-low)] p-2.5 px-4 rounded-[20px] border border-[var(--md-sys-color-outline)]/5 shadow-sm transition-colors",
+                    : "flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-content1 p-2.5 px-4 rounded-[20px] border border-divider shadow-sm transition-colors",
                   visualStyle === 'glass' && activeTab !== "grid" && "bg-[var(--glass-bg)]/30 backdrop-blur-sm border-[var(--glass-border)]"
                 )}>
                   {activeTab === "list" ? (
-                    <div className="flex bg-[var(--md-sys-color-surface-container-high)] p-1 rounded-xl shadow-inner shrink-0 overflow-x-auto no-scrollbar">
+                    <div className="flex bg-content3 p-1 rounded-xl shadow-inner shrink-0 overflow-x-auto no-scrollbar">
                       {(["daily", "weekly", "monthly"] as const).map(v => (
                         <button
                           key={v}
@@ -278,12 +271,11 @@ export function FullCalendar({
                           className={cn(
                             "relative overflow-hidden px-4 py-1.5 rounded-lg font-black text-xs transition-all duration-200 whitespace-nowrap cursor-pointer",
                             view === v 
-                              ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm" 
-                              : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-highest)]"
+                              ? "bg-primary text-primary-foreground shadow-sm" 
+                              : "text-[var(--app-outline)] hover:bg-content4"
                           )}
                         >
-                          {/* @ts-ignore */}
-                          <md-ripple></md-ripple>
+                          
                           {t(v as any)}
                         </button>
                       ))}
@@ -298,47 +290,43 @@ export function FullCalendar({
                   )}>
                     {activeTab === 'list' && (
                       <div className="mr-auto sm:mr-1">
-                        {/* @ts-ignore */}
-                        <md-filled-tonal-button
+                        <Button variant="ghost"
                           onClick={handleCopy}
-                          disabled={uniqueDisplayData.length === 0}
-                          title={t("copySchedule")}
+                          isDisabled={uniqueDisplayData.length === 0}
+                          
                         >
-                          {isCopied ? <Check size={14} slot="icon" /> : <Copy size={14} slot="icon" />}
+                          {isCopied ? <Check size={14} /> : <Copy size={14} />}
                           {isCopied ? t("copied") : t("copy")}
-                        </md-filled-tonal-button>
+                        </Button>
                       </div>
                     )}
                     
                     {/* Centered navigation pill */}
-                    <div className="flex items-center gap-2.5 bg-[var(--md-sys-color-surface-container-high)] p-1 rounded-full border border-[var(--md-sys-color-outline)]/8 shadow-inner shrink-0">
-                      {/* @ts-ignore */}
-                      <md-icon-button 
+                    <div className="flex items-center gap-2.5 bg-content3 p-1 rounded-full border border-divider shadow-inner shrink-0">
+                      <Button isIconOnly variant="ghost" className="rounded-full" 
                         onClick={handlePrev}
-                        disabled={isLoading}
+                        isDisabled={isLoading}
                       >
                         <ChevronLeft size={16} strokeWidth={iconStroke} />
-                      </md-icon-button>
+                      </Button>
                       
-                      <h3 className="text-xs font-black min-w-[130px] text-center uppercase tracking-widest text-[var(--md-sys-color-primary)] px-1 flex items-center justify-center gap-1.5 select-none">
-                        <Clock size={12} className="text-[var(--md-sys-color-primary)]" />
+                      <h3 className="text-xs font-black min-w-[130px] text-center uppercase tracking-widest text-primary px-1 flex items-center justify-center gap-1.5 select-none">
+                        <Clock size={12} className="text-primary" />
                         {activeTab === "list" && view === "daily" 
                           ? format(currentDate, "dd MMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })
                           : activeTab === "list" && view === "weekly"
                             ? `${t("week")} ${format(currentDate, "w")}, ${format(currentDate, "yyyy")}`
                             : format(currentDate, "MMMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })}
                       </h3>
-                      
-                      {/* @ts-ignore */}
-                      <md-icon-button 
+                      <Button isIconOnly variant="ghost" className="rounded-full" 
                         onClick={handleNext}
-                        disabled={isLoading}
+                        isDisabled={isLoading}
                       >
                         <ChevronRight size={16} strokeWidth={iconStroke} />
-                      </md-icon-button>
+                      </Button>
                     </div>
 
-                    {showLoadingState && <Loader2 size={18} className="animate-spin text-[var(--md-sys-color-primary)] shrink-0 ml-1" strokeWidth={3} />}
+                    {showLoadingState && <Loader2 size={18} className="animate-spin text-primary shrink-0 ml-1" strokeWidth={3} />}
                   </div>
                 </div>
               )}
@@ -357,7 +345,7 @@ export function FullCalendar({
               activeTab === "grid" && "flex-1"
             )}>
               {error && (
-                <div className="w-full p-4 mb-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-2xl font-black text-center shadow-xs text-xs uppercase tracking-wider">
+                <div className="w-full p-4 mb-4 text-[var(--app-danger)] bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] rounded-2xl font-black text-center shadow-xs text-xs uppercase tracking-wider">
                   {error}
                 </div>
               )}
@@ -369,7 +357,7 @@ export function FullCalendar({
               )}>
                 {activeTab === "grid" && (
                   <div className={cn(
-                    "bg-[var(--md-sys-color-surface-container-low)] shadow-sm rounded-[32px] border border-[var(--md-sys-color-outline)]/10 p-2.5 sm:p-4 lg:p-5 flex-1 flex flex-col min-h-0 transition-all duration-300",
+                    "bg-content1 shadow-sm rounded-[32px] border border-divider p-2.5 sm:p-4 lg:p-5 flex-1 flex flex-col min-h-0 transition-all duration-300",
                     visualStyle === 'glass' && "bg-[var(--glass-bg)]/40 backdrop-blur-md border-[var(--glass-border)] shadow-inner"
                   )}>
                     <CalendarGridView 
@@ -431,14 +419,14 @@ export function FullCalendar({
               animate="visible"
               exit="exit"
               className={cn(
-                "bg-[var(--md-sys-color-surface)] w-full max-w-sm rounded-[var(--md-sys-shape-corner-extra-large)] overflow-hidden shadow-2xl transition-all duration-300",
-                visualStyle === "retro" && "border-[3px] border-[var(--md-sys-color-on-surface)] rounded-none shadow-[8px_8px_0px_0px_var(--md-sys-color-on-surface)]",
+                "bg-content1 w-full max-w-sm rounded-[var(--shape-xl)] overflow-hidden shadow-2xl transition-all duration-300",
+                visualStyle === "retro" && "border-[3px] border-[var(--app-foreground)] rounded-none shadow-[8px_8px_0px_0px_var(--app-foreground)]",
                 visualStyle === "glass" && "bg-[var(--glass-bg)]/90 backdrop-blur-lg border border-[var(--glass-border)]",
                 visualStyle === "soft" && "shadow-[var(--soft-shadow-heavy)] border border-white/5"
               )}
               onClick={e => e.stopPropagation()}
             >
-              <div className="bg-gradient-to-tr from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-primary-container)] text-white p-6 md:p-8 relative overflow-hidden">
+              <div className="bg-gradient-to-tr from-[var(--app-primary)] to-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-white p-6 md:p-8 relative overflow-hidden">
                 <motion.button 
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
@@ -467,12 +455,12 @@ export function FullCalendar({
                 <div className="absolute -bottom-24 -left-24 w-44 h-44 bg-black/5 rounded-full pointer-events-none" />
               </div>
 
-              <div className="p-6 md:p-8 bg-[var(--md-sys-color-surface)]">
+              <div className="p-6 md:p-8 bg-content1">
                 <div className="flex gap-3.5 items-start">
-                  <div className="p-2 bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-primary)] rounded-full shrink-0">
+                  <div className="p-2 bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary rounded-full shrink-0">
                     <Info size={16} strokeWidth={iconStroke} />
                   </div>
-                  <p className="text-[var(--md-sys-color-on-surface)] text-xs leading-relaxed font-semibold">
+                  <p className="text-foreground text-xs leading-relaxed font-semibold">
                     {getPrayerDesc(selectedPrayer.key)}
                   </p>
                 </div>
@@ -481,7 +469,7 @@ export function FullCalendar({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedPrayer(null)}
-                  className="w-full mt-6 py-2.5 px-4 bg-[var(--md-sys-color-surface-variant)] text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-secondary-container)] hover:text-[var(--md-sys-color-on-secondary-container)] font-black text-xs rounded-xl transition-all cursor-pointer shadow-xs border border-[var(--md-sys-color-outline)]/10"
+                  className="w-full mt-6 py-2.5 px-4 bg-[var(--app-surface-variant)] text-[var(--app-outline)] hover:bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] hover:text-[var(--app-secondary)] font-black text-xs rounded-xl transition-all cursor-pointer shadow-xs border border-divider"
                 >
                   {t("close")}
                 </motion.button>

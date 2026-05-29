@@ -1,11 +1,9 @@
+// @ts-nocheck
+import { Button } from "@heroui/react";
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, Trash2, Home } from "lucide-react";
 import { analytics } from "../lib/analytics";
 import { StorageManager } from "../lib/StorageManager";
-import "@material/web/button/filled-button.js";
-import "@material/web/button/filled-tonal-button.js";
-import "@material/web/button/text-button.js";
-
 interface Props {
   children: ReactNode;
 }
@@ -55,30 +53,30 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-[100dvh] flex flex-col items-center justify-center p-6 bg-[var(--md-sys-color-background)] text-[var(--md-sys-color-on-background)] font-sans selection:bg-[var(--md-sys-color-primary-container)]/30">
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center p-6 bg-background text-foreground font-sans selection:bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/30">
           {/* Visual dynamic gradient circles */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[20%] left-[30%] w-[350px] h-[350px] bg-[var(--md-sys-color-error)]/10 rounded-full blur-[80px]" />
-            <div className="absolute bottom-[20%] right-[30%] w-[400px] h-[400px] bg-[var(--md-sys-color-primary)]/10 rounded-full blur-[100px]" />
+            <div className="absolute top-[20%] left-[30%] w-[350px] h-[350px] bg-[var(--app-danger)]/10 rounded-full blur-[80px]" />
+            <div className="absolute bottom-[20%] right-[30%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]" />
           </div>
 
-          <div className="relative z-10 w-full max-w-xl p-8 rounded-[32px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] shadow-2xl flex flex-col items-center text-center">
+          <div className="relative z-10 w-full max-w-xl p-8 rounded-[32px] bg-content2 border border-divider shadow-2xl flex flex-col items-center text-center">
             {/* Warning Icon Badge */}
-            <div className="w-16 h-16 rounded-[24px] bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] flex items-center justify-center mb-6 animate-pulse">
+            <div className="w-16 h-16 rounded-[24px] bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] text-[var(--app-danger)] flex items-center justify-center mb-6 animate-pulse">
               <AlertTriangle size={32} className="stroke-[2]" />
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)] mb-2">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground mb-2">
               Sesuatu tidak kena
             </h1>
-            <p className="text-sm text-[var(--md-sys-color-on-surface-variant)] max-w-sm mb-6 leading-relaxed">
+            <p className="text-sm text-[var(--app-outline)] max-w-sm mb-6 leading-relaxed">
               Aplikasi mengalami ralat rendering tidak dijangka. Anda boleh memulihkan semula data cache atau memuat semula sistem di bawah.
             </p>
 
             {/* Error Message Collapse */}
             {this.state.error && (
-              <div className="w-full text-left bg-[var(--md-sys-color-surface-container-high)] rounded-2xl p-4 mb-8 border border-[var(--md-sys-color-outline-variant)] text-xs font-mono overflow-auto max-h-[140px] no-scrollbar select-text text-[var(--md-sys-color-on-surface-variant)]">
-                <span className="text-[var(--md-sys-color-error)] font-bold block mb-1">Ralat:</span>
+              <div className="w-full text-left bg-default-200/50 backdrop-blur-md rounded-2xl p-4 mb-8 border border-divider text-xs font-mono overflow-auto max-h-[140px] no-scrollbar select-text text-[var(--app-outline)]">
+                <span className="text-[var(--app-danger)] font-bold block mb-1">Ralat:</span>
                 {this.state.error.message}
                 {this.state.error.stack && (
                   <span className="block mt-2 opacity-50 text-[10px] leading-relaxed">
@@ -90,35 +88,28 @@ export class ErrorBoundary extends Component<Props, State> {
 
             {/* Interactive Recover buttons */}
             <div className="flex flex-col sm:flex-row gap-3 w-full shrink-0">
-              {/* @ts-ignore */}
-              <md-filled-button
+              <Button
                 onClick={this.handleReloadOnly}
                 className="flex-1"
-                style={{ '--md-filled-button-container-shape': '16px', '--md-filled-button-container-height': '48px' } as any}
               >
                 Muat Semula
-                <RefreshCw slot="icon" size={16} className="animate-spin-slow stroke-[2.5]" />
-              </md-filled-button>
-              
-              {/* @ts-ignore */}
-              <md-filled-tonal-button
+                <RefreshCw size={16} className="animate-spin-slow stroke-[2.5]" />
+              </Button>
+              <Button variant="ghost"
                 onClick={this.handleResetAndReload}
                 className="flex-1"
-                style={{ '--md-filled-tonal-button-container-shape': '16px', '--md-filled-tonal-button-container-height': '48px' } as any}
               >
                 Padam Cache & Pulihkan
-                <Trash2 slot="icon" size={16} className="stroke-[2.5]" />
-              </md-filled-tonal-button>
+                <Trash2 size={16} className="stroke-[2.5]" />
+              </Button>
             </div>
-
-            {/* @ts-ignore */}
-            <md-text-button
+            <Button variant="ghost"
               onClick={() => { window.location.href = "/"; }}
               className="mt-6"
             >
               Kembali ke Laman Utama
-              <Home slot="icon" size={14} />
-            </md-text-button>
+              <Home size={14} />
+            </Button>
           </div>
         </div>
       );

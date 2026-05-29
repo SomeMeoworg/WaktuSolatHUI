@@ -4,16 +4,14 @@ import { useTime } from "./useTime";
 import { useVisualStyle } from "../../hooks/useVisualStyle";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "motion/react";
-import "@material/web/elevation/elevation.js";
-
 function FlipDigit({ digit, visualStyle }: { digit: string; visualStyle: string }) {
   return (
     <div className={cn(
       "relative w-[28px] h-[42px] sm:w-[38px] sm:h-[58px] md:w-[48px] md:h-[72px] lg:w-[60px] lg:h-[90px] xl:w-[74px] xl:h-[110px] 2xl:w-[88px] 2xl:h-[132px] flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300",
-      "bg-[var(--md-sys-color-surface-container-high)] rounded-[var(--md-sys-shape-corner-medium)] border border-[var(--md-sys-color-outline-variant)]/20",
-      visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container-high)]",
+      "bg-content3 rounded-[var(--shape-md)] border border-divider",
+      visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content3",
       visualStyle === 'glass' && "bg-[var(--glass-bg)]/80 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
-      visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-[var(--md-sys-color-surface-container-lowest)]"
+      visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-content1"
     )}>
       <AnimatePresence mode="popLayout">
         <motion.span
@@ -24,10 +22,10 @@ function FlipDigit({ digit, visualStyle }: { digit: string; visualStyle: string 
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
           className={cn(
             "absolute text-lg sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black font-sans select-none transition-colors tabular-nums",
-            "text-[var(--md-sys-color-primary)]",
-            visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)]",
-            visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)] drop-shadow-sm",
-            visualStyle === 'soft' && "text-[var(--md-sys-color-primary)]"
+            "text-primary",
+            visualStyle === 'retro' && "text-foreground",
+            visualStyle === 'glass' && "text-foreground drop-shadow-sm",
+            visualStyle === 'soft' && "text-primary"
           )}
           style={{ transformOrigin: "bottom" }}
         >
@@ -36,10 +34,10 @@ function FlipDigit({ digit, visualStyle }: { digit: string; visualStyle: string 
       </AnimatePresence>
       <div className={cn(
         "absolute top-1/2 left-0 w-full h-[1px] sm:h-[1.5px] opacity-40 z-10",
-        "bg-[var(--md-sys-color-surface-container-lowest)]",
-        visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)] opacity-70",
+        "bg-content1",
+        visualStyle === 'retro' && "bg-[var(--app-foreground)] opacity-70",
         visualStyle === 'glass' && "bg-white/20",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-outline-variant)]/40"
+        visualStyle === 'soft' && "bg-[var(--app-outline)]/40"
       )}></div>
     </div>
   );
@@ -55,13 +53,12 @@ export function FlipClock() {
   return (
     <div className={cn(
       "relative w-full overflow-hidden flex flex-col items-center justify-center p-3 sm:p-4.5 lg:p-5.5 min-h-[85px] sm:min-h-[105px] lg:min-h-[125px] xl:min-h-[140px] max-h-[20vh] transition-all duration-300",
-      "bg-[var(--md-sys-color-surface-container-highest)] rounded-[var(--md-sys-shape-corner-extra-large)] shadow-sm",
-      visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none md3-shape-extra-large bg-[var(--md-sys-color-surface-container-high)]",
-      visualStyle === 'glass' && "bg-[var(--glass-bg)]/35 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] rounded-[var(--md-sys-shape-corner-extra-large)] shadow-none",
-      visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/25 rounded-[var(--md-sys-shape-corner-extra-large)] bg-[var(--md-sys-color-surface-container-low)]"
+      "bg-content4 rounded-[var(--shape-xl)] shadow-sm",
+      visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none md3-shape-extra-large bg-content3",
+      visualStyle === 'glass' && "bg-[var(--glass-bg)]/35 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] rounded-[var(--shape-xl)] shadow-none",
+      visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/25 rounded-[var(--shape-xl)] bg-content1"
     )}>
-      {/* @ts-ignore */}
-      <md-elevation level="1"></md-elevation>
+      
 
       <div className="flex items-center justify-center gap-0.5 sm:gap-1 lg:gap-1.5 w-full">
         <FlipDigit digit={timeString[0]} visualStyle={visualStyle} />
@@ -69,10 +66,10 @@ export function FlipClock() {
         
         <span className={cn(
           "text-sm sm:text-lg md:text-xl lg:text-2xl font-black mx-0.5 animate-pulse transition-colors select-none",
-          "text-[var(--md-sys-color-on-surface-variant)]/50",
-          visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)] opacity-90",
-          visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)]",
-          visualStyle === 'soft' && "text-[var(--md-sys-color-primary)] opacity-70"
+          "text-[var(--app-outline)]/50",
+          visualStyle === 'retro' && "text-foreground opacity-90",
+          visualStyle === 'glass' && "text-foreground",
+          visualStyle === 'soft' && "text-primary opacity-70"
         )}>:</span>
         
         <FlipDigit digit={timeString[2]} visualStyle={visualStyle} />
@@ -80,10 +77,10 @@ export function FlipClock() {
         
         <span className={cn(
           "text-sm sm:text-lg md:text-xl lg:text-2xl font-black mx-0.5 animate-pulse transition-colors select-none",
-          "text-[var(--md-sys-color-on-surface-variant)]/50",
-          visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)] opacity-90",
-          visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)]",
-          visualStyle === 'soft' && "text-[var(--md-sys-color-primary)] opacity-70"
+          "text-[var(--app-outline)]/50",
+          visualStyle === 'retro' && "text-foreground opacity-90",
+          visualStyle === 'glass' && "text-foreground",
+          visualStyle === 'soft' && "text-primary opacity-70"
         )}>:</span>
         
         <FlipDigit digit={timeString[4]} visualStyle={visualStyle} />
@@ -92,45 +89,45 @@ export function FlipClock() {
         {settings.timeFormat === "12h" && (
           <div className="flex flex-col ml-0.5 sm:ml-1 justify-center gap-0.5 font-black select-none">
             <span className={cn(
-              "text-[7px] sm:text-[9px] px-1 py-0.25 sm:px-1.5 rounded-[var(--md-sys-shape-corner-small)] transition-all",
+              "text-[7px] sm:text-[9px] px-1 py-0.25 sm:px-1.5 rounded-[var(--shape-sm)] transition-all",
               format(time, "a") === "AM" 
-                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm" 
-                : "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)]/60 border border-[var(--md-sys-color-outline-variant)]/10",
+                ? "bg-primary text-primary-foreground shadow-sm" 
+                : "bg-content3 text-[var(--app-outline)]/60 border border-divider",
               visualStyle === 'retro' && (
                 format(time, "a") === "AM"
-                  ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border border-[var(--md-sys-color-on-surface)] shadow-[2px_2px_0px_var(--md-sys-color-on-surface)] rounded-none"
-                  : "bg-transparent text-[var(--md-sys-color-on-surface)] border border-transparent rounded-none"
+                  ? "bg-primary text-primary-foreground border border-[var(--app-foreground)] shadow-[2px_2px_0px_var(--app-foreground)] rounded-none"
+                  : "bg-transparent text-foreground border border-transparent rounded-none"
               ),
               visualStyle === 'glass' && (
                 format(time, "a") === "AM"
-                  ? "bg-white/20 border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]"
-                  : "bg-transparent text-[var(--md-sys-color-on-surface)]/40 border border-transparent"
+                  ? "bg-white/20 border border-[var(--glass-border)] text-foreground"
+                  : "bg-transparent text-foreground/40 border border-transparent"
               ),
               visualStyle === 'soft' && (
                 format(time, "a") === "AM"
-                  ? "bg-[var(--md-sys-color-primary)]/15 text-[var(--md-sys-color-primary)] font-black"
-                  : "bg-transparent text-[var(--md-sys-color-outline)]/40"
+                  ? "bg-primary/15 text-primary font-black"
+                  : "bg-transparent text-[var(--app-outline)]/40"
               )
             )}>AM</span>
             <span className={cn(
-              "text-[7px] sm:text-[9px] px-1 py-0.25 sm:px-1.5 rounded-[var(--md-sys-shape-corner-small)] transition-all",
+              "text-[7px] sm:text-[9px] px-1 py-0.25 sm:px-1.5 rounded-[var(--shape-sm)] transition-all",
               format(time, "a") === "PM" 
-                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm" 
-                : "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)]/60 border border-[var(--md-sys-color-outline-variant)]/10",
+                ? "bg-primary text-primary-foreground shadow-sm" 
+                : "bg-content3 text-[var(--app-outline)]/60 border border-divider",
               visualStyle === 'retro' && (
                 format(time, "a") === "PM"
-                  ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border border-[var(--md-sys-color-on-surface)] shadow-[2px_2px_0px_var(--md-sys-color-on-surface)] rounded-none"
-                  : "bg-transparent text-[var(--md-sys-color-on-surface)] border border-transparent rounded-none"
+                  ? "bg-primary text-primary-foreground border border-[var(--app-foreground)] shadow-[2px_2px_0px_var(--app-foreground)] rounded-none"
+                  : "bg-transparent text-foreground border border-transparent rounded-none"
               ),
               visualStyle === 'glass' && (
                 format(time, "a") === "PM"
-                  ? "bg-white/20 border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]"
-                  : "bg-transparent text-[var(--md-sys-color-on-surface)]/40 border border-transparent"
+                  ? "bg-white/20 border border-[var(--glass-border)] text-foreground"
+                  : "bg-transparent text-foreground/40 border border-transparent"
               ),
               visualStyle === 'soft' && (
                 format(time, "a") === "PM"
-                  ? "bg-[var(--md-sys-color-primary)]/15 text-[var(--md-sys-color-primary)] font-black"
-                  : "bg-transparent text-[var(--md-sys-color-outline)]/40"
+                  ? "bg-primary/15 text-primary font-black"
+                  : "bg-transparent text-[var(--app-outline)]/40"
               )
             )}>PM</span>
           </div>

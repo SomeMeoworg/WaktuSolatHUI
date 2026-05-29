@@ -1,3 +1,4 @@
+import { Button } from "@heroui/react";
 import { useEffect, useState, useRef } from "react";
 import { X, Navigation, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -10,9 +11,6 @@ import { M3_MOTION } from "../lib/motion";
 import { useAppContext } from "../AppContext";
 import { JAKIM_ZONES } from "../lib/zones";
 import { ZONE_COORDINATES } from "../lib/zoneCoordinates";
-import "@material/web/iconbutton/icon-button.js";
-import "@material/web/button/filled-tonal-button.js";
-
 // Fix for leaflet default icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -138,9 +136,9 @@ export function MapModal({
         if (!isSelected) {
           target.setStyle({
             fillOpacity: 0.4,
-            fillColor: 'var(--md-sys-color-secondary-container)',
+            fillColor: 'var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))',
             weight: 2,
-            color: 'var(--md-sys-color-secondary)'
+            color: 'var(--app-secondary)'
           });
           target.bringToFront();
         }
@@ -156,11 +154,11 @@ export function MapModal({
     if (jakimCode) {
       layer.bindTooltip(`
         <div class="font-sans max-w-[220px] text-center p-1">
-          <strong class="text-base block mb-1 text-[var(--md-sys-color-primary)]">${zoneName}</strong>
-          <span class="text-xs font-mono font-bold block text-[var(--md-sys-color-on-surface-variant)] opacity-90">${jakimCode} - ${stateName}</span>
-          ${!isSelected ? `<span class="text-[10px] text-[var(--md-sys-color-on-surface-variant)] uppercase mt-2 block opacity-70 border-t border-[var(--md-sys-color-outline-variant)] pt-1">Click to select</span>` : ''}
+          <strong class="text-base block mb-1 text-primary">${zoneName}</strong>
+          <span class="text-xs font-mono font-bold block text-[var(--app-outline)] opacity-90">${jakimCode} - ${stateName}</span>
+          ${!isSelected ? `<span class="text-[10px] text-[var(--app-outline)] uppercase mt-2 block opacity-70 border-t border-divider pt-1">Click to select</span>` : ''}
         </div>
-      `, { direction: 'top', sticky: true, className: 'custom-m3e-tooltip border-none shadow-xl rounded-xl overflow-hidden' });
+      `, { direction: 'top', sticky: true, className: 'custom-hui-tooltip border-none shadow-xl rounded-xl overflow-hidden' });
     }
   };
 
@@ -168,8 +166,8 @@ export function MapModal({
     const isSelected = selectedZone === feature.properties?.jakim_code;
     
     return {
-      color: isSelected ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline)',
-      fillColor: isSelected ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)',
+      color: isSelected ? 'var(--app-primary)' : 'var(--app-outline)',
+      fillColor: isSelected ? 'var(--app-primary)' : 'var(--app-foreground)',
       weight: isSelected ? 5 : 1.5,
       opacity: isSelected ? 1 : 0.6,
       fillOpacity: isSelected ? 0.4 : 0.1,
@@ -187,14 +185,14 @@ export function MapModal({
             exit={{ opacity: 0, scale: 0.95, y: "100%" }}
             transition={M3_MOTION.expressiveSpring}
             onAnimationComplete={() => window.dispatchEvent(new Event('resize'))}
-            className="w-full max-w-6xl bg-[var(--md-sys-color-surface)] rounded-[var(--md-sys-shape-corner-extra-large)] shadow-2xl overflow-hidden flex flex-col h-[90dvh] sm:my-auto"
+            className="w-full max-w-6xl bg-content1 rounded-[var(--shape-xl)] shadow-2xl overflow-hidden flex flex-col h-[90dvh] sm:my-auto"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 md:p-8 border-b border-[var(--md-sys-color-outline)]/10 shrink-0 gap-4 bg-[var(--md-sys-color-surface)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 md:p-8 border-b border-divider shrink-0 gap-4 bg-content1">
               <div>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-[var(--md-sys-color-primary)] mb-1">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-primary mb-1">
                   {t('mapView')}
                 </h2>
-                <div className="flex items-center gap-2 text-[var(--md-sys-color-on-surface-variant)]">
+                <div className="flex items-center gap-2 text-[var(--app-outline)]">
                   <MapPin size={16} className="shrink-0" />
                   <p className="text-base font-bold truncate max-w-[300px] md:max-w-none">{zoneLabel || selectedZone}</p>
                 </div>
@@ -202,32 +200,31 @@ export function MapModal({
               <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
                 {userLocation && (
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    {/* @ts-ignore */}
-                    <md-filled-tonal-button 
+                    <Button variant="ghost" 
                       onClick={() => {
                         if (mapRef.current) {
                           mapRef.current.setView([userLocation.lat, userLocation.lng], 12);
                         }
                       }}
-                      style={{ '--md-filled-tonal-button-container-shape': '20px' }}
+                      
                     >
-                      <Navigation size={18} slot="icon" />
+                      <Navigation size={18} />
                       {t('yourLocation')}
-                    </md-filled-tonal-button>
+                    </Button>
                   </motion.div>
                 )}
                 <motion.button
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
-                  className="w-12 h-12 flex items-center justify-center rounded-full text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-error-container)] hover:text-[var(--md-sys-color-on-error-container)] shrink-0 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-error)]"
+                  className="w-12 h-12 flex items-center justify-center rounded-full text-foreground bg-content3 hover:bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] hover:text-[var(--app-danger)] shrink-0 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-danger)]"
                 >
                   <X size={24} className="stroke-[3]" />
                 </motion.button>
               </div>
             </div>
             
-            <div className="flex-1 w-full relative shrink-0 bg-[var(--md-sys-color-surface-container-lowest)]">
+            <div className="flex-1 w-full relative shrink-0 bg-content1">
               {/* Floating Selection Indicator */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] pointer-events-none w-[90%] max-w-sm">
                 <AnimatePresence mode="wait">
@@ -237,26 +234,26 @@ export function MapModal({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -20, scale: 0.9 }}
                     transition={M3_MOTION.expressiveSpring}
-                    className="bg-[var(--md-sys-color-primary)] shadow-[0_16px_32px_rgba(0,0,0,0.3)] rounded-3xl p-5 flex flex-col items-center justify-center text-center overflow-hidden"
+                    className="bg-primary shadow-[0_16px_32px_rgba(0,0,0,0.3)] rounded-3xl p-5 flex flex-col items-center justify-center text-center overflow-hidden"
                   >
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[var(--md-sys-color-on-primary)] opacity-90 mb-1">
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-primary-foreground opacity-90 mb-1">
                       {t('selectedZone' as any)}
                     </span>
-                    <span className="text-xl sm:text-3xl font-black text-[var(--md-sys-color-on-primary)] leading-tight drop-shadow-sm truncate w-full px-2">
+                    <span className="text-xl sm:text-3xl font-black text-primary-foreground leading-tight drop-shadow-sm truncate w-full px-2">
                       {zoneLabel || selectedZone}
                     </span>
                     <div className="absolute -right-4 -bottom-4 opacity-10">
-                      <MapPin size={80} className="text-[var(--md-sys-color-on-primary)]" />
+                      <MapPin size={80} className="text-primary-foreground" />
                     </div>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
               {!geoData && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-[var(--md-sys-color-surface)]/50 backdrop-blur-sm">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-content1/50 backdrop-blur-sm">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[var(--md-sys-color-primary)]/30 border-t-[var(--md-sys-color-primary)] rounded-full animate-spin"></div>
-                    <span className="font-bold text-[var(--md-sys-color-primary)] animate-pulse tracking-widest uppercase">Loading Boundaries...</span>
+                    <div className="w-12 h-12 border-4 border-primary/30 border-t-[var(--app-primary)] rounded-full animate-spin"></div>
+                    <span className="font-bold text-primary animate-pulse tracking-widest uppercase">Loading Boundaries...</span>
                   </div>
                 </div>
               )}

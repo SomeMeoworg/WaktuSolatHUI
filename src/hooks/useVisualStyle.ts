@@ -61,7 +61,7 @@ export function useIconStroke(style?: VisualStyle): number {
 export function getStyleClasses(style: VisualStyle, baseClasses: string = ''): string {
   switch (style) {
     case 'retro':
-      return `${baseClasses} border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]`;
+      return `${baseClasses} border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)]`;
     case 'glass':
       return `${baseClasses} bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]`;
     case 'soft':

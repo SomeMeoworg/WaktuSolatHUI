@@ -27,7 +27,7 @@ const WeatherParticles = ({ weatherCode, isDay }: { weatherCode: number, isDay: 
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={`rain-${i}`}
-            className="absolute w-[2px] h-[20px] bg-[var(--md-sys-color-tertiary)] rounded-full"
+            className="absolute w-[2px] h-[20px] bg-[var(--app-secondary)] rounded-full"
             style={{ left: `${Math.random() * 100}%`, top: `-20px` }}
             animate={{ top: ['0%', '100%'], opacity: [0, 1, 0] }}
             transition={{ duration: 0.8 + Math.random() * 0.5, repeat: Infinity, delay: Math.random(), ease: "linear" }}
@@ -41,7 +41,7 @@ const WeatherParticles = ({ weatherCode, isDay }: { weatherCode: number, isDay: 
     return (
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 flex items-center justify-center">
         <motion.div 
-          className="w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border-[40px] border-[var(--md-sys-color-primary-container)] border-dashed"
+          className="w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border-[40px] border-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] border-dashed"
           animate={{ rotate: 360 }}
           transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
         />
@@ -125,15 +125,15 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
             exit={{ scale: 0.95, opacity: 0, y: "100%" }}
             transition={M3_MOTION.expressiveSpring}
             onClick={(e) => e.stopPropagation()}
-            className="bg-[var(--md-sys-color-surface)] w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[900px] flex flex-col rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden shadow-2xl sm:my-auto text-[var(--md-sys-color-on-surface)]"
+            className="bg-content1 w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[900px] flex flex-col rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl sm:my-auto text-foreground"
           >
-            <div className="relative p-5 sm:p-6 md:p-10 shrink-0 bg-gradient-to-br from-[var(--md-sys-color-primary-container)] to-[var(--md-sys-color-surface-variant)] flex flex-col items-center justify-center text-center overflow-hidden">
+            <div className="relative p-5 sm:p-6 md:p-10 shrink-0 bg-gradient-to-br from-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] to-[var(--app-surface-variant)] flex flex-col items-center justify-center text-center overflow-hidden">
               {onRefresh && (
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onRefresh}
-                  className="absolute top-3 left-3 sm:top-4 sm:left-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-[var(--md-sys-color-on-surface)] backdrop-blur-md transition-colors z-20"
+                  className="absolute top-3 left-3 sm:top-4 sm:left-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-foreground backdrop-blur-md transition-colors z-20"
                 >
                   <motion.div
                     animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
@@ -148,7 +148,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-[var(--md-sys-color-on-surface)] backdrop-blur-md transition-colors z-20"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-foreground backdrop-blur-md transition-colors z-20"
               >
                 <X size={20} className="stroke-[3]" />
               </motion.button>
@@ -166,7 +166,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                 </div>
                 
                 <div className="flex items-center justify-center gap-3 sm:gap-6 mb-1 sm:mb-2">
-                  <CurrentIcon className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-lg text-[var(--md-sys-color-primary)]" strokeWidth={2} />
+                  <CurrentIcon className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-lg text-primary" strokeWidth={2} />
                   <div className="text-6xl sm:text-7xl md:text-8xl font-black tracking-tighter drop-shadow-md">
                     {weather.temperature}°
                   </div>
@@ -198,12 +198,12 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                   {hourlyForecasts.map((hour, idx) => {
                     const { Icon: HourIcon } = getWeatherDetails(hour.code, hour.time.getHours() >= 6 && hour.time.getHours() <= 19, t);
                     return (
-                      <div key={idx} className="flex flex-col items-center justify-between bg-[var(--md-sys-color-surface-container)] rounded-[1.5rem] p-4 min-w-[90px] snap-center shrink-0 border border-transparent hover:border-[var(--md-sys-color-outline-variant)] transition-colors">
+                      <div key={idx} className="flex flex-col items-center justify-between glass-panel rounded-2xl p-4 min-w-[90px] snap-center shrink-0 border border-transparent hover:border-divider transition-colors">
                         <span className="text-sm font-bold opacity-70 mb-3">{format(hour.time, "ha")}</span>
-                        <HourIcon size={28} className="mb-3 text-[var(--md-sys-color-primary)]" />
+                        <HourIcon size={28} className="mb-3 text-primary" />
                         <span className="text-xl font-black">{hour.temp}°</span>
                         {hour.precip > 20 && (
-                          <span className="text-xs font-bold text-[var(--md-sys-color-tertiary)] mt-2 flex items-center gap-1">
+                          <span className="text-xs font-bold text-[var(--app-secondary)] mt-2 flex items-center gap-1">
                             <Umbrella size={10} /> {hour.precip}%
                           </span>
                         )}
@@ -214,7 +214,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
               </section>
 
               <section className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 px-1 sm:px-2">
-                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                <div className="bg-content2 p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
                     <Activity className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherAQI" as any)}
                   </div>
@@ -228,7 +228,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                   </div>
                 </div>
 
-                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                <div className="bg-content2 p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
                     <Sun className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherUVIndex" as any)}
                   </div>
@@ -240,7 +240,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                   </div>
                 </div>
                 
-                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                <div className="bg-content2 p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base leading-tight">
                     <Sunrise className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherSunrise" as any)}
                   </div>
@@ -251,7 +251,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                   </div>
                 </div>
                 
-                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                <div className="bg-content2 p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base leading-tight">
                     <Sunset className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherSunset" as any)}
                   </div>
@@ -262,7 +262,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                   </div>
                 </div>
                 
-                <div className="bg-[var(--md-sys-color-surface-container)] p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
+                <div className="bg-content2 p-4 sm:p-5 rounded-3xl flex flex-col justify-between aspect-square">
                   <div className="flex items-center gap-1.5 sm:gap-2 opacity-70 font-bold mb-2 sm:mb-4 text-xs sm:text-base">
                     <Wind className="w-4 h-4 sm:w-[18px] sm:h-[18px]" /> {t("weatherPressure" as any)}
                   </div>
@@ -287,21 +287,21 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                     const widthPercent = Math.max(5, ((day.maxTemp - day.minTemp) / range) * 100);
 
                     return (
-                      <div key={idx} className="flex items-center justify-between p-3 sm:p-4 bg-[var(--md-sys-color-surface-container-low)] rounded-[1.5rem]">
+                      <div key={idx} className="flex items-center justify-between p-3 sm:p-4 bg-content1 rounded-2xl">
                         <div className="w-[70px] sm:w-24 font-bold text-[13px] sm:text-base shrink-0 truncate">
                           {isToday ? t("weatherToday" as any) : format(day.date, "EEEE", { locale: settings.language === 'ms' ? ms : undefined })}
                         </div>
                         <div className="flex items-center justify-center gap-2 sm:gap-4 flex-1">
-                          <DayIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--md-sys-color-primary)] shrink-0" />
+                          <DayIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary shrink-0" />
                           {day.precip > 20 && (
-                            <span className="text-[10px] sm:text-xs font-bold text-[var(--md-sys-color-tertiary)] w-8 sm:w-10 text-center">{day.precip}%</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-[var(--app-secondary)] w-8 sm:w-10 text-center">{day.precip}%</span>
                           )}
                         </div>
                         <div className="w-[120px] sm:w-48 flex items-center justify-end gap-2 sm:gap-3 font-black text-[13px] sm:text-base shrink-0">
                           <span className="opacity-60 text-right w-6 sm:w-8">{day.minTemp}°</span>
-                          <div className="relative flex-1 max-w-[60px] sm:max-w-[100px] h-1.5 sm:h-2 bg-[var(--md-sys-color-surface-container-highest)] rounded-full overflow-hidden shrink-0">
+                          <div className="relative flex-1 max-w-[60px] sm:max-w-[100px] h-1.5 sm:h-2 bg-content4 rounded-full overflow-hidden shrink-0">
                              <div 
-                               className="absolute h-full bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-error)] opacity-90 rounded-full" 
+                               className="absolute h-full bg-gradient-to-r from-[var(--app-primary)] to-[var(--app-danger)] opacity-90 rounded-full" 
                                style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
                              />
                           </div>
@@ -315,7 +315,7 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
 
               {/* Provider Selection */}
               <section className="px-1 sm:px-2 mt-2 sm:mt-4 pb-8">
-                <div className="bg-[var(--md-sys-color-surface-container-high)] p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem]">
+                <div className="bg-content3 p-5 sm:p-6 rounded-2xl sm:rounded-3xl">
                   <h3 className="text-base sm:text-lg font-black tracking-tight mb-1 sm:mb-2">{t("weatherProvider" as any)}</h3>
                   <p className="text-xs sm:text-sm opacity-70 mb-4 sm:mb-6">{t("weatherProviderDesc" as any)}</p>
                   
@@ -327,12 +327,11 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
                         className={cn(
                           "relative overflow-hidden flex flex-col items-start p-3 sm:p-4 rounded-2xl transition-all border-2 text-left",
                           (settings.weatherProvider || 'best_match') === p.id
-                            ? "border-[var(--md-sys-color-primary)] bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]"
-                            : "border-transparent bg-[var(--md-sys-color-surface)] hover:border-[var(--md-sys-color-outline-variant)]"
+                            ? "border-primary bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary"
+                            : "border-transparent bg-content1 hover:border-divider"
                         )}
                       >
-                        {/* @ts-ignore */}
-                        <md-ripple></md-ripple>
+                        
                         <span className="font-black text-sm sm:text-base mb-0.5 sm:mb-1">{t(p.name as any)}</span>
                         <span className="text-[10px] sm:text-xs font-medium opacity-80">{t(p.desc as any)}</span>
                       </button>

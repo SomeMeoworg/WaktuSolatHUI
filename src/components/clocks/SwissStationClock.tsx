@@ -1,8 +1,6 @@
 import { useTime } from "./useTime";
 import { useVisualStyle } from "../../hooks/useVisualStyle";
 import { cn } from "../../lib/utils";
-import "@material/web/elevation/elevation.js";
-
 export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) {
   const visualStyle = useVisualStyle();
   const time = useTime(movement);
@@ -18,14 +16,13 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
       "w-[90%] sm:w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[360px]",
       
       // Default Style: Circular Dial
-      "rounded-full bg-[var(--md-sys-color-surface)] shadow-inner",
+      "rounded-full bg-content1 shadow-inner",
       
-      visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+      visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] bg-content1 shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none",
       visualStyle === 'glass' && "border-2 border-[var(--glass-border)] bg-[var(--glass-bg)]/35 backdrop-blur-[var(--glass-blur)] rounded-full shadow-none",
-      visualStyle === 'soft' && "border border-[var(--md-sys-color-outline-variant)]/10 bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-light)] rounded-full"
+      visualStyle === 'soft' && "border border-divider bg-content1 shadow-[var(--soft-shadow-light)] rounded-full"
     )}>
-      {/* @ts-ignore */}
-      <md-elevation level="1"></md-elevation>
+      
       
       {/* Swiss Hour Ticks - Thick and long */}
       {[...Array(12)].map((_, i) => (
@@ -36,10 +33,10 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
         >
           <div className={cn(
             "w-[5px] h-[16px] sm:w-[6.5px] sm:h-[20px] mx-auto mt-1 sm:mt-1.5 transition-colors",
-            "bg-[var(--md-sys-color-on-surface)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)] rounded-none w-[6px] h-[18px]",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]/90",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-primary)]"
+            "bg-[var(--app-foreground)]",
+            visualStyle === 'retro' && "bg-[var(--app-foreground)] rounded-none w-[6px] h-[18px]",
+            visualStyle === 'glass' && "bg-[var(--app-foreground)]/90",
+            visualStyle === 'soft' && "bg-primary"
           )}></div>
         </div>
       ))}
@@ -55,10 +52,10 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
           >
             <div className={cn(
               "w-[2px] h-[5.5px] sm:w-[3px] sm:h-[6.5px] mx-auto mt-1 sm:mt-1.5 transition-colors",
-              "bg-[var(--md-sys-color-on-surface-variant)]/80",
-              visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)]/75 rounded-none w-[2px] h-[6px]",
-              visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]/60",
-              visualStyle === 'soft' && "bg-[var(--md-sys-color-on-surface-variant)]/40"
+              "bg-[var(--app-outline)]/80",
+              visualStyle === 'retro' && "bg-[var(--app-foreground)]/75 rounded-none w-[2px] h-[6px]",
+              visualStyle === 'glass' && "bg-[var(--app-foreground)]/60",
+              visualStyle === 'soft' && "bg-[var(--app-outline)]/40"
             )}></div>
           </div>
         );
@@ -67,10 +64,10 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
       {/* Center dot/axis */}
       <div className={cn(
         "absolute top-1/2 left-1/2 w-4.5 h-4.5 sm:w-5 sm:h-5 -ml-2.25 sm:-ml-2.5 -mt-2.25 sm:-mt-2.5 rounded-full z-20 shadow-md transition-colors",
-        "bg-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)] border-2 border-white shadow-none",
-        visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-primary)]"
+        "bg-[var(--app-foreground)]",
+        visualStyle === 'retro' && "bg-[var(--app-foreground)] border-2 border-white shadow-none",
+        visualStyle === 'glass' && "bg-[var(--app-foreground)]",
+        visualStyle === 'soft' && "bg-primary"
       )}></div>
 
       {/* Hands */}
@@ -79,10 +76,10 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
         <div
           className={cn(
             "absolute top-[28%] left-1/2 w-[7px] sm:w-[9px] h-[30%] -ml-[3.5px] sm:-ml-[4.5px] origin-[50%_73.3%] z-10 transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
-            "bg-[var(--md-sys-color-on-surface)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-primary)] border border-white rounded-none",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]/95",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-primary)]"
+            "bg-[var(--app-foreground)]",
+            visualStyle === 'retro' && "bg-primary border border-white rounded-none",
+            visualStyle === 'glass' && "bg-[var(--app-foreground)]/95",
+            visualStyle === 'soft' && "bg-primary"
           )}
           style={{ transform: `rotate(${hours * 30}deg)` }}
         ></div>
@@ -91,10 +88,10 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
         <div
           className={cn(
             "absolute top-[12%] left-1/2 w-[5.5px] sm:w-[7px] h-[48%] -ml-[2.75px] sm:-ml-[3.5px] origin-[50%_79.1%] z-10 transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
-            "bg-[var(--md-sys-color-on-surface)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-secondary)] border border-white rounded-none",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]/85",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-secondary)]"
+            "bg-[var(--app-foreground)]",
+            visualStyle === 'retro' && "bg-[var(--app-secondary)] border border-white rounded-none",
+            visualStyle === 'glass' && "bg-[var(--app-foreground)]/85",
+            visualStyle === 'soft' && "bg-[var(--app-secondary)]"
           )}
           style={{ transform: `rotate(${minutes * 6}deg)` }}
         ></div>
@@ -103,20 +100,20 @@ export function SwissStationClock({ movement }: { movement: 'tick' | 'sweep' }) 
         <div
           className={cn(
             "absolute top-[10%] left-1/2 w-[2px] h-[55%] -ml-[1px] origin-[50%_72.7%] z-20 transition-colors shadow-[0_4px_12px_rgba(255,0,0,0.2)]",
-            "bg-[var(--md-sys-color-error)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-error)] w-[2.5px] rounded-none",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-error)] shadow-[0_0_8px_rgba(244,63,94,0.6)]",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-error)]"
+            "bg-[var(--app-danger)]",
+            visualStyle === 'retro' && "bg-[var(--app-danger)] w-[2.5px] rounded-none",
+            visualStyle === 'glass' && "bg-[var(--app-danger)] shadow-[0_0_8px_rgba(244,63,94,0.6)]",
+            visualStyle === 'soft' && "bg-[var(--app-danger)]"
           )}
           style={{ transform: `rotate(${seconds * 6}deg)` }}
         >
            {/* Red disk at the tip */}
            <div className={cn(
              "absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 sm:w-5 sm:h-5 rounded-full shadow-sm",
-             "bg-[var(--md-sys-color-error)]",
-             visualStyle === 'retro' && "bg-[var(--md-sys-color-error)] border border-white rounded-none w-4 h-4",
-             visualStyle === 'glass' && "bg-[var(--md-sys-color-error)] shadow-[0_0_6px_rgba(244,63,94,0.6)]",
-             visualStyle === 'soft' && "bg-[var(--md-sys-color-error)]"
+             "bg-[var(--app-danger)]",
+             visualStyle === 'retro' && "bg-[var(--app-danger)] border border-white rounded-none w-4 h-4",
+             visualStyle === 'glass' && "bg-[var(--app-danger)] shadow-[0_0_6px_rgba(244,63,94,0.6)]",
+             visualStyle === 'soft' && "bg-[var(--app-danger)]"
            )}></div>
         </div>
       </div>

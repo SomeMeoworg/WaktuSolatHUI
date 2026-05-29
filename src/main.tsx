@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { HeroUIProvider } from "@heroui/system";
 import App from "./App.tsx";
 import "./index.css";
 import "./m3e-layout.css";
@@ -10,9 +11,11 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <AppProvider>
-        <App />
-      </AppProvider>
+      <HeroUIProvider>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </HeroUIProvider>
     </ErrorBoundary>
   </StrictMode>,
 );

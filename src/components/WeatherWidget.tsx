@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ZONE_COORDINATES } from "../lib/zoneCoordinates";
-import "@material/web/ripple/ripple.js";
 import {
   Cloud,
   CloudDrizzle,
@@ -201,8 +200,8 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
     return (
       <motion.div
         className={cn(
-          "flex w-full items-center justify-between bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] rounded-[var(--md-sys-shape-corner-extra-large)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-default border border-[var(--md-sys-color-error)]/25",
-          visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]",
+          "flex w-full items-center justify-between bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] text-[var(--app-danger)] rounded-[var(--shape-xl)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-default border border-[var(--app-danger)]/25",
+          visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)]",
           visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[8px] border border-[var(--glass-border)]",
           visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
         )}
@@ -210,11 +209,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
       >
-        {/* @ts-ignore */}
-        <md-ripple></md-ripple>
+        
         <div className="flex items-center gap-3 sm:gap-4 z-10 w-full pr-2 lg:pr-3 relative">
           <motion.div
-            className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--md-sys-shape-corner-large)] flex items-center justify-center shrink-0 bg-[var(--md-sys-color-error)] text-[var(--md-sys-color-on-error)]"
+            className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--shape-lg)] flex items-center justify-center shrink-0 bg-[var(--app-danger)] text-[var(--app-danger-foreground)]"
             whileHover={{ rotate: 12, scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
           >
@@ -227,10 +225,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
           </motion.div>
 
           <div className="flex flex-col flex-1 min-w-0">
-            <span className="font-black text-sm sm:text-base lg:text-lg leading-tight text-[var(--md-sys-color-on-error-container)] truncate">
+            <span className="font-black text-sm sm:text-base lg:text-lg leading-tight text-[var(--app-danger)] truncate">
               {t("noInternetConnection")}
             </span>
-            <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest mt-1 opacity-80 text-[var(--md-sys-color-on-error-container)]/80">
+            <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest mt-1 opacity-80 text-[var(--app-danger)]/80">
               {t("offlineModeActive")}
             </span>
           </div>
@@ -257,20 +255,20 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
   // Determine background class based on weather code and day/night
   const getWidgetBgClass = () => {
-    if (!weather) return "bg-[var(--md-sys-color-surface-container)]";
+    if (!weather) return "bg-content2";
     if (weather.weatherCode >= 61 && weather.weatherCode <= 67) {
       // Rain
       return weather.isDay 
-        ? "bg-gradient-to-br from-blue-300/30 to-[var(--md-sys-color-surface-container)]"
-        : "bg-gradient-to-br from-indigo-900/30 to-[var(--md-sys-color-surface-container)]";
+        ? "bg-gradient-to-br from-blue-300/30 to-[var(--app-surface-container)]"
+        : "bg-gradient-to-br from-indigo-900/30 to-[var(--app-surface-container)]";
     }
     if (weather.weatherCode === 0) {
       // Clear
       return weather.isDay
-        ? "bg-gradient-to-br from-amber-200/30 to-[var(--md-sys-color-surface-container)]"
-        : "bg-gradient-to-br from-indigo-900/30 to-[var(--md-sys-color-surface-container)]";
+        ? "bg-gradient-to-br from-amber-200/30 to-[var(--app-surface-container)]"
+        : "bg-gradient-to-br from-indigo-900/30 to-[var(--app-surface-container)]";
     }
-    return "bg-[var(--md-sys-color-surface-container)]";
+    return "bg-content2";
   };
 
   return (
@@ -278,9 +276,9 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
     <motion.button
       onClick={() => setIsModalOpen(true)}
       className={cn(
-        "flex w-full items-center justify-between text-[var(--md-sys-color-on-surface)] rounded-[var(--md-sys-shape-corner-extra-large)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--md-sys-color-primary)]",
+        "flex w-full items-center justify-between text-foreground rounded-[var(--shape-xl)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-primary)]",
         getWidgetBgClass(),
-        visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]",
+        visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)]",
         visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[8px] border border-[var(--glass-border)]",
         visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
       )}
@@ -288,14 +286,12 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
     >
-      {/* @ts-ignore */}
-      <md-ripple></md-ripple>
-      {/* @ts-ignore */}
-      <md-elevation level="1"></md-elevation>
+      
+      
       <div className="flex items-center gap-3 sm:gap-4 z-10 w-full pr-2 lg:pr-3 relative">
         <motion.div
-          className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--md-sys-shape-corner-large)] flex items-center justify-center shrink-0 bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]"
-          whileHover={{ rotate: 12, scale: 1.1, backgroundColor: "var(--md-sys-color-primary-container)", color: "var(--md-sys-color-on-primary-container)" }}
+          className="w-10 h-10 sm:w-12 sm:h-12 lg:w-11 lg:h-11 xl:w-12 xl:h-12 rounded-[var(--shape-lg)] flex items-center justify-center shrink-0 bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]"
+          whileHover={{ rotate: 12, scale: 1.1, backgroundColor: "var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))", color: "var(--app-primary)" }}
           transition={{ type: "spring", stiffness: 500, damping: 20 }}
         >
           <Icon className={cn(
@@ -308,16 +304,16 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex items-center justify-between w-full">
-            <span className="font-black text-sm sm:text-base lg:text-lg leading-tight text-[var(--md-sys-color-on-surface)] truncate">
+            <span className="font-black text-sm sm:text-base lg:text-lg leading-tight text-foreground truncate">
               {label}
             </span>
             <div className="flex items-baseline gap-1.5 ml-2 shrink-0">
-              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[var(--md-sys-color-tertiary)] tracking-tight tabular-nums">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[var(--app-secondary)] tracking-tight tabular-nums">
                 {weather.temperature}°
               </span>
               {weather.minTemp !== undefined &&
                 weather.maxTemp !== undefined && (
-                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[var(--md-sys-color-tertiary)]/80 hidden sm:inline">
+                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[var(--app-secondary)]/80 hidden sm:inline">
                     {weather.minTemp}° – {weather.maxTemp}°
                   </span>
                 )}
@@ -326,10 +322,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 opacity-80">
             <div
-              className="flex items-center gap-1.5 text-[var(--md-sys-color-on-surface-variant)]"
+              className="flex items-center gap-1.5 text-[var(--app-outline)]"
               title={t("humidity" as any)}
             >
-              <Droplets className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--md-sys-color-tertiary)] shrink-0 stroke-[3]" />
+              <Droplets className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />
               <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest">
                 {weather.humidity}%{" "}
                 <span className="hidden sm:inline">
@@ -339,10 +335,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
             </div>
             {weather.precipitationProb !== undefined && (
               <div
-                className="flex items-center gap-1.5 text-[var(--md-sys-color-on-surface-variant)]"
+                className="flex items-center gap-1.5 text-[var(--app-outline)]"
                 title={t("rainProb" as any)}
               >
-                <Umbrella className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--md-sys-color-tertiary)] shrink-0 stroke-[3]" />
+                <Umbrella className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />
                 <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest">
                   {weather.precipitationProb}%{" "}
                   <span className="hidden sm:inline">
@@ -352,10 +348,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
               </div>
             )}
             <div
-              className="flex items-center gap-1.5 text-[var(--md-sys-color-on-surface-variant)]"
+              className="flex items-center gap-1.5 text-[var(--app-outline)]"
               title={t("windSpeed" as any)}
             >
-              <Wind className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--md-sys-color-tertiary)] shrink-0 stroke-[3]" />
+              <Wind className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />
               <span className="text-[10px] sm:text-[11px] uppercase font-black tracking-widest">
                 {weather.windSpeed}
                 {t("kmh")}{" "}

@@ -43,10 +43,10 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
   if (data.length === 0 && !isLoading) {
     return (
       <div className={cn(
-        "p-12 flex items-center justify-center bg-[var(--md-sys-color-surface-container)] shadow-sm rounded-3xl border border-[var(--md-sys-color-outline)]/12",
+        "p-12 flex items-center justify-center bg-content2 shadow-sm rounded-3xl border border-divider",
         visualStyle === "glass" && "bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]"
       )}>
-        <p className="text-[var(--md-sys-color-on-surface-variant)] font-black text-sm uppercase tracking-widest text-center">
+        <p className="text-[var(--app-outline)] font-black text-sm uppercase tracking-widest text-center">
           {t("noData")}
         </p>
       </div>
@@ -67,23 +67,23 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 350, damping: 24 }}
           className={cn(
-            "bg-[var(--md-sys-color-surface-container)] rounded-[28px] p-6 sm:p-10 flex flex-col items-center text-center gap-4 relative overflow-hidden border border-[var(--md-sys-color-outline)]/8 shadow-sm transition-all duration-300",
-            isToday && "bg-gradient-to-br from-[var(--md-sys-color-primary-container)] to-[var(--md-sys-color-primary-container)]/40 ring-4 ring-[var(--md-sys-color-primary)]/20 shadow-md",
+            "bg-content2 rounded-[28px] p-6 sm:p-10 flex flex-col items-center text-center gap-4 relative overflow-hidden border border-divider shadow-sm transition-all duration-300",
+            isToday && "bg-gradient-to-br from-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] to-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/40 ring-4 ring-[var(--app-primary)]/20 shadow-md",
             visualStyle === "glass" && "bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]",
-            visualStyle === "retro" && "border-[3px] border-[var(--md-sys-color-on-surface)] rounded-none shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]"
+            visualStyle === "retro" && "border-[3px] border-[var(--app-foreground)] rounded-none shadow-[4px_4px_0px_0px_var(--app-foreground)]"
           )}>
-          {isToday && <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--md-sys-color-primary)] shadow-[0_0_12px_var(--md-sys-color-primary)]" />}
+          {isToday && <div className="absolute top-0 left-0 w-full h-1.5 bg-primary shadow-[0_0_12px_var(--app-primary)]" />}
           
           <div className="flex flex-col items-center gap-1 select-none">
-             <span className="text-[10px] sm:text-xs font-black text-[var(--md-sys-color-on-surface-variant)] uppercase tracking-widest opacity-85">
+             <span className="text-[10px] sm:text-xs font-black text-[var(--app-outline)] uppercase tracking-widest opacity-85">
                {format(parse(day.date, "dd-MMM-yyyy", new Date()), "EEEE", { locale: settings.language === 'ms' ? ms : enUS })}
              </span>
-             <h3 className="text-2xl sm:text-4xl font-black text-[var(--md-sys-color-on-surface)] tracking-tighter mt-1">
+             <h3 className="text-2xl sm:text-4xl font-black text-foreground tracking-tighter mt-1">
                {format(parse(day.date, "dd-MMM-yyyy", new Date()), "dd MMMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })}
              </h3>
           </div>
           
-          <div className="flex items-center gap-2 mt-1 px-5 py-2.5 bg-[var(--md-sys-color-surface-container-high)] rounded-full border border-[var(--md-sys-color-outline)]/8 text-[var(--md-sys-color-on-surface-variant)] shadow-inner text-xs font-bold transition-all">
+          <div className="flex items-center gap-2 mt-1 px-5 py-2.5 bg-content3 rounded-full border border-divider text-[var(--app-outline)] shadow-inner text-xs font-bold transition-all">
              {(!settings.hijriFormat || settings.hijriFormat === 'both' || settings.hijriFormat === 'text') && (
                <span className="font-black text-xs">{getHijriFormatted(day.date, settings.hijriMethod, settings.hijriAdjustment, "text", settings.language, day.hijri)}</span>
              )}
@@ -98,7 +98,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
           </div>
 
           {evt && (
-            <div className={`mt-2 px-4 py-1.5 rounded-full text-[10px] font-black text-white uppercase tracking-widest shadow-sm select-none ${evt.color || 'bg-[var(--md-sys-color-primary)]'}`}>
+            <div className={`mt-2 px-4 py-1.5 rounded-full text-[10px] font-black text-white uppercase tracking-widest shadow-sm select-none ${evt.color || 'bg-primary'}`}>
               {evt.title}
             </div>
           )}
@@ -120,20 +120,19 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onPrayerSelect({ key: k as PrayerKey, time: timeStr.substring(0, 5), dateValue: day.date, hijriValue: day.hijri })}
                 className={cn(
-                  "relative bg-[var(--md-sys-color-surface-container)] rounded-[24px] border border-[var(--md-sys-color-outline)]/8 p-5 flex flex-col items-center gap-3.5 overflow-hidden shadow-xs hover:shadow-md cursor-pointer transition-all duration-350 focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)]",
-                  isToday && "bg-[var(--md-sys-color-primary-container)]/10 ring-1 ring-[var(--md-sys-color-primary)]/20",
+                  "relative bg-content2 rounded-[24px] border border-divider p-5 flex flex-col items-center gap-3.5 overflow-hidden shadow-xs hover:shadow-md cursor-pointer transition-all duration-350 focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)]",
+                  isToday && "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/10 ring-1 ring-[var(--app-primary)]/20",
                   visualStyle === "glass" && "bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]",
-                  visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none shadow-[2px_2px_0px_0px_var(--md-sys-color-on-surface)]"
+                  visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none shadow-[2px_2px_0px_0px_var(--app-foreground)]"
                 )}
               >
-                {/* @ts-ignore */}
-                <md-ripple></md-ripple>
-                <div className="w-10 h-10 rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] flex items-center justify-center relative z-10 shrink-0 shadow-inner">
+                
+                <div className="w-10 h-10 rounded-full bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] flex items-center justify-center relative z-10 shrink-0 shadow-inner">
                   <Icon size={18} strokeWidth={iconStroke} />
                 </div>
                 <div className="flex flex-col items-center z-10 select-none">
-                  <span className="text-[10px] font-black opacity-80 uppercase tracking-widest text-[var(--md-sys-color-on-surface-variant)]">{t(k)}</span>
-                  <span className="text-xl sm:text-2xl font-black font-mono tracking-tighter mt-1 text-[var(--md-sys-color-on-surface)]">{timeStr.substring(0, 5)}</span>
+                  <span className="text-[10px] font-black opacity-80 uppercase tracking-widest text-[var(--app-outline)]">{t(k)}</span>
+                  <span className="text-xl sm:text-2xl font-black font-mono tracking-tighter mt-1 text-foreground">{timeStr.substring(0, 5)}</span>
                 </div>
               </motion.button>
             );
@@ -158,24 +157,24 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.03, type: 'spring', stiffness: 350, damping: 24 }}
               className={cn(
-                 "bg-[var(--md-sys-color-surface-container)] rounded-[24px] p-5 lg:p-6 flex flex-col lg:flex-row gap-4 lg:items-center relative overflow-hidden border border-[var(--md-sys-color-outline)]/8 shadow-xs hover:shadow-md transition-all duration-300",
-                 isToday && "bg-[var(--md-sys-color-primary-container)]/10 ring-2 ring-[var(--md-sys-color-primary)]/35",
+                 "bg-content2 rounded-[24px] p-5 lg:p-6 flex flex-col lg:flex-row gap-4 lg:items-center relative overflow-hidden border border-divider shadow-xs hover:shadow-md transition-all duration-300",
+                 isToday && "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/10 ring-2 ring-[var(--app-primary)]/35",
                  visualStyle === "glass" && "bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]",
-                 visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]"
+                 visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none shadow-[3px_3px_0px_0px_var(--app-foreground)]"
               )}
             >
-              {isToday && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--md-sys-color-primary)]" />}
+              {isToday && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />}
 
               <div className="flex flex-col min-w-[190px] shrink-0 gap-0.5 select-none">
-                <span className={cn("font-black text-lg sm:text-xl tracking-tight flex items-center gap-1.5", isToday ? "text-[var(--md-sys-color-primary)]" : "text-[var(--md-sys-color-on-surface)]")}>
+                <span className={cn("font-black text-lg sm:text-xl tracking-tight flex items-center gap-1.5", isToday ? "text-primary" : "text-foreground")}>
                   {format(parse(day.date, "dd-MMM-yyyy", new Date()), "dd MMMM", { locale: settings.language === 'ms' ? ms : enUS })}
                   {isToday && (
-                    <span className="px-2 py-0.5 bg-[var(--md-sys-color-primary)] text-white text-[8px] font-black uppercase rounded-md tracking-wider flex items-center gap-1 shadow-sm">
+                    <span className="px-2 py-0.5 bg-primary text-white text-[8px] font-black uppercase rounded-md tracking-wider flex items-center gap-1 shadow-sm">
                       <CalendarDays size={10} /> {t("today")}
                     </span>
                   )}
                 </span>
-                <span className="text-[10px] font-black opacity-80 uppercase tracking-widest text-[var(--md-sys-color-on-surface-variant)] mt-0.5">
+                <span className="text-[10px] font-black opacity-80 uppercase tracking-widest text-[var(--app-outline)] mt-0.5">
                   {format(parse(day.date, "dd-MMM-yyyy", new Date()), "EEEE", { locale: settings.language === 'ms' ? ms : enUS })}
                 </span>
                 <span className="text-[9px] font-mono font-black opacity-55 mt-1">
@@ -186,7 +185,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                 </span>
                 
                 {evt && (
-                  <span className={`mt-2.5 inline-flex w-fit px-2.5 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider shadow-sm ${evt.color || 'bg-[var(--md-sys-color-primary)]'}`}>
+                  <span className={`mt-2.5 inline-flex w-fit px-2.5 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider shadow-sm ${evt.color || 'bg-primary'}`}>
                     {evt.title}
                   </span>
                 )}
@@ -209,19 +208,18 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                         hijriValue: day.hijri
                       })}
                       className={cn(
-                        "relative flex items-center gap-2 p-2.5 rounded-2xl bg-[var(--md-sys-color-surface-variant)]/35 border border-[var(--md-sys-color-outline)]/5 flex-1 min-w-[90px] justify-center lg:justify-start lg:flex-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)] cursor-pointer",
-                        isToday && "bg-[var(--md-sys-color-surface)]",
-                        visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none"
+                        "relative flex items-center gap-2 p-2.5 rounded-2xl bg-[var(--app-surface-variant)]/35 border border-divider flex-1 min-w-[90px] justify-center lg:justify-start lg:flex-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] cursor-pointer",
+                        isToday && "bg-content1",
+                        visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none"
                       )}
                     >
-                      {/* @ts-ignore */}
-                      <md-ripple></md-ripple>
-                      <div className="p-1 rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] relative z-10 shrink-0">
+                      
+                      <div className="p-1 rounded-full bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] relative z-10 shrink-0">
                         <Icon size={12} strokeWidth={iconStroke} />
                       </div>
                       <div className="flex flex-col items-center lg:items-start leading-none z-10 select-none">
-                        <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-[var(--md-sys-color-on-surface-variant)]">{t(k)}</span>
-                        <span className="font-mono font-black text-xs sm:text-sm mt-0.5 text-[var(--md-sys-color-on-surface)]">{day[k] ? day[k].substring(0, 5) : "--:--"}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-[var(--app-outline)]">{t(k)}</span>
+                        <span className="font-mono font-black text-xs sm:text-sm mt-0.5 text-foreground">{day[k] ? day[k].substring(0, 5) : "--:--"}</span>
                       </div>
                     </motion.button>
                   );
@@ -237,22 +235,22 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
   // Monthly Table Redesign (Visual Masterpiece)
   return (
     <div className={cn(
-      "w-full overflow-x-auto bg-[var(--md-sys-color-surface-container)] rounded-[28px] border border-[var(--md-sys-color-outline)]/8 p-3 sm:p-5 shadow-xs transition-all duration-300",
+      "w-full overflow-x-auto bg-content2 rounded-[28px] border border-divider p-3 sm:p-5 shadow-xs transition-all duration-300",
       visualStyle === "glass" && "bg-[var(--glass-bg)]/35 backdrop-blur-md border-[var(--glass-border)] shadow-inner"
     )}>
       <table className="w-full text-left border-collapse min-w-[920px] sm:min-w-[1020px]">
         <thead>
-          <tr className="border-b border-[var(--md-sys-color-outline)]/12 text-[var(--md-sys-color-on-surface)]">
-            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[140px] text-[var(--md-sys-color-primary)]">{t("gregorianDate")}</th>
-            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[150px] text-[var(--md-sys-color-primary)]">{t("hijriDate")}</th>
-            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[100px] text-[var(--md-sys-color-primary)]">{t("day")}</th>
+          <tr className="border-b border-divider text-foreground">
+            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[140px] text-primary">{t("gregorianDate")}</th>
+            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[150px] text-primary">{t("hijriDate")}</th>
+            <th className="py-4 px-4 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[100px] text-primary">{t("day")}</th>
             {timesToDisplay.map((k) => (
-              <th key={k} className="py-4 px-1 font-black uppercase tracking-widest text-[9px] sm:text-xs text-center text-[var(--md-sys-color-on-surface-variant)]">{t(k)}</th>
+              <th key={k} className="py-4 px-1 font-black uppercase tracking-widest text-[9px] sm:text-xs text-center text-[var(--app-outline)]">{t(k)}</th>
             ))}
-            <th className="py-4 px-2 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[60px] text-center text-[var(--md-sys-color-primary)]">{t("copy" as any)}</th>
+            <th className="py-4 px-2 font-black uppercase tracking-widest text-[9px] sm:text-xs w-[60px] text-center text-primary">{t("copy" as any)}</th>
           </tr>
         </thead>
-        <tbody className={cn("divide-y divide-[var(--md-sys-color-outline)]/5 transition-opacity duration-300", isLoading && "opacity-40")}>
+        <tbody className={cn("divide-y divide-[var(--app-outline)]/5 transition-opacity duration-300", isLoading && "opacity-40")}>
           {data.map((day, idx) => {
             const isToday = day.date === format(new Date(), "dd-MMM-yyyy");
             const dateObj = parse(day.date, "dd-MMM-yyyy", new Date());
@@ -266,22 +264,22 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                 transition={{ delay: Math.min(idx * 0.015, 0.4), type: "spring", stiffness: 400, damping: 25 }}
                 key={day.date}
                 className={cn(
-                  "transition-all duration-200 group relative border-b border-[var(--md-sys-color-outline)]/4",
+                  "transition-all duration-200 group relative border-b border-divider",
                   isToday 
-                    ? "bg-[var(--md-sys-color-primary-container)]/30 hover:bg-[var(--md-sys-color-primary-container)]/40 text-[var(--md-sys-color-on-primary-container)] z-[2]" 
+                    ? "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/30 hover:bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/40 text-primary z-[2]" 
                     : isCurrentWeekDay
-                      ? "bg-[var(--md-sys-color-secondary-container)]/8 hover:bg-[var(--md-sys-color-secondary-container)]/15" 
-                      : "hover:bg-[var(--md-sys-color-surface-container-high)]/50"
+                      ? "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))]/8 hover:bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))]/15" 
+                      : "hover:bg-content3/50"
                 )}
               >
                 {/* Gregorian Date Column */}
                 <td className="py-3.5 px-4 tabular-nums relative select-none">
-                  {isToday && <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--md-sys-color-primary)] rounded-r-full shadow-[0_0_8px_var(--md-sys-color-primary)]" />}
-                  <div className={cn("font-black text-xs sm:text-sm tracking-tight", isToday && "text-[var(--md-sys-color-primary)]")}>
+                  {isToday && <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary rounded-r-full shadow-[0_0_8px_var(--app-primary)]" />}
+                  <div className={cn("font-black text-xs sm:text-sm tracking-tight", isToday && "text-primary")}>
                     {format(dateObj, "dd MMM yyyy", { locale: settings.language === 'ms' ? ms : enUS })}
                   </div>
                   {isToday && (
-                    <span className="mt-1 inline-flex gap-1 items-center px-1.5 py-0.5 bg-[var(--md-sys-color-primary)] text-white text-[8px] rounded uppercase tracking-wider font-black w-fit shadow-sm">
+                    <span className="mt-1 inline-flex gap-1 items-center px-1.5 py-0.5 bg-primary text-white text-[8px] rounded uppercase tracking-wider font-black w-fit shadow-sm">
                       <CalendarDays size={10} /> {t("today")}
                     </span>
                   )}
@@ -303,7 +301,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                     <div className="mt-1 flex">
                       <span className={cn(
                         "inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black text-white uppercase tracking-widest shadow-xs",
-                        evt.color || "bg-[var(--md-sys-color-primary)]"
+                        evt.color || "bg-primary"
                       )}>
                         {evt.title}
                       </span>
@@ -331,15 +329,14 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                           hijriValue: day.hijri
                         })}
                         className={cn(
-                          "relative w-full py-2 px-1 flex flex-col items-center justify-center gap-0.5 rounded-xl border border-transparent overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)] cursor-pointer transition-all duration-300",
+                          "relative w-full py-2 px-1 flex flex-col items-center justify-center gap-0.5 rounded-xl border border-transparent overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] cursor-pointer transition-all duration-300",
                           isToday 
-                            ? "bg-[var(--md-sys-color-surface)] text-[var(--md-sys-color-primary)]" 
-                            : "bg-[var(--md-sys-color-surface-container-low)]/80 text-[var(--md-sys-color-on-surface)] group-hover:bg-[var(--md-sys-color-surface)] group-hover:border-[var(--md-sys-color-outline)]/8"
+                            ? "bg-content1 text-primary" 
+                            : "bg-content1/80 text-foreground group-hover:bg-content1 group-hover:border-divider"
                         )}
                         title={t(k)}
                       >
-                        {/* @ts-ignore */}
-                        <md-ripple></md-ripple>
+                        
                         <span className="tabular-nums font-mono text-[11px] sm:text-xs font-black whitespace-nowrap">{day[k] ? day[k].substring(0, 5) : "--:--"}</span>
                       </motion.button>
                     </td>
@@ -357,7 +354,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
                       "w-7 h-7 flex items-center justify-center rounded-lg transition-all cursor-pointer shadow-xs",
                       copiedRowDate === day.date
                         ? "bg-[#25D366] text-white"
-                        : "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-primary)] hover:text-white border border-[var(--md-sys-color-outline)]/5"
+                        : "bg-content3 text-[var(--app-outline)] hover:bg-primary hover:text-white border border-divider"
                     )}
                   >
                     {copiedRowDate === day.date ? (
@@ -375,7 +372,7 @@ export function PrayerTimesListView({ data, view = "monthly", isLoading, onPraye
       
       {data.length === 0 && !isLoading && (
         <div className="p-12 flex items-center justify-center select-none">
-          <p className="text-[var(--md-sys-color-on-surface-variant)] font-black text-sm uppercase tracking-widest text-center">
+          <p className="text-[var(--app-outline)] font-black text-sm uppercase tracking-widest text-center">
             {t("noData")}
           </p>
         </div>

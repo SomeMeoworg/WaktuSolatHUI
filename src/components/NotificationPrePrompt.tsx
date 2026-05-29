@@ -49,22 +49,22 @@ export function NotificationPrePrompt({
             exit="exit"
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "relative bg-[var(--md-sys-color-surface-container)] w-full max-w-md flex flex-col rounded-[2.5rem] overflow-hidden shadow-2xl border border-[var(--md-sys-color-outline)]/20 p-6 text-center select-none",
+              "relative bg-content2 w-full max-w-md flex flex-col rounded-[2.5rem] overflow-hidden shadow-2xl border border-divider p-6 text-center select-none",
               visualStyle === "glass" && "bg-[var(--glass-bg)] backdrop-blur-[24px] border border-[var(--glass-border)]",
-              visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)]",
+              visualStyle === "retro" && "border-2 border-[var(--app-foreground)] shadow-[6px_6px_0px_0px_var(--app-foreground)]",
               visualStyle === "soft" && "shadow-[var(--soft-shadow-light)] border-0"
             )}
           >
             {/* Expressive M3 Icon Badge */}
-            <div className="mx-auto w-16 h-16 rounded-[24px] bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center mb-6 ring-8 ring-[var(--md-sys-color-primary-container)]/10 animate-bounce-slow">
+            <div className="mx-auto w-16 h-16 rounded-[24px] bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary flex items-center justify-center mb-6 ring-8 ring-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/10 animate-bounce-slow">
               <BellRing size={28} className="stroke-[2.2]" />
             </div>
 
-            <h2 className="md3-title-large font-black text-[var(--md-sys-color-on-surface)] mb-3 px-2 leading-tight">
+            <h2 className="text-xl font-semibold font-black text-foreground mb-3 px-2 leading-tight">
               {titleText}
             </h2>
 
-            <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] leading-relaxed mb-8 px-3">
+            <p className="text-sm text-[var(--app-outline)] leading-relaxed mb-8 px-3">
               {descText}
             </p>
 
@@ -78,9 +78,9 @@ export function NotificationPrePrompt({
                   onClose();
                 }}
                 className={cn(
-                  "w-full inline-flex items-center justify-center gap-2 py-4 rounded-3xl font-black text-sm text-[var(--md-sys-color-on-primary)] bg-[var(--md-sys-color-primary)] shadow-md hover:shadow-lg transition-all cursor-pointer",
-                  visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none shadow-[2px_2px_0px_var(--md-sys-color-on-surface)]",
-                  visualStyle === "glass" && "bg-[var(--md-sys-color-primary)] backdrop-blur-none"
+                  "w-full inline-flex items-center justify-center gap-2 py-4 rounded-3xl font-black text-sm text-primary-foreground bg-primary shadow-md hover:shadow-lg transition-all cursor-pointer",
+                  visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none shadow-[2px_2px_0px_var(--app-foreground)]",
+                  visualStyle === "glass" && "bg-primary backdrop-blur-none"
                 )}
               >
                 <Check size={16} className="stroke-[2.5]" />
@@ -92,8 +92,8 @@ export function NotificationPrePrompt({
                 whileTap={{ scale: 0.98 }}
                 onClick={onClose}
                 className={cn(
-                  "w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-3xl font-bold text-sm text-[var(--md-sys-color-outline)] hover:bg-[var(--md-sys-color-surface-variant)]/50 transition-all cursor-pointer",
-                  visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] rounded-none"
+                  "w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-3xl font-bold text-sm text-[var(--app-outline)] hover:bg-[var(--app-surface-variant)]/50 transition-all cursor-pointer",
+                  visualStyle === "retro" && "border-2 border-[var(--app-foreground)] rounded-none"
                 )}
               >
                 <X size={14} className="stroke-[2.5]" />

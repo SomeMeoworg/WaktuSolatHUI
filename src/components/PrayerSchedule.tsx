@@ -1,9 +1,8 @@
+import { Button } from "@heroui/react";
 import { PrayerData, PrayerPreference } from "../types";
 import { cn } from "../lib/utils";
 import { motion, AnimatePresence } from "motion/react";
-import "@material/web/iconbutton/icon-button.js";
-import "@material/web/iconbutton/filled-tonal-icon-button.js";
-import "@material/web/chips/filter-chip.js";
+
 import { ElementType, useState } from "react";
 import {
   Moon,
@@ -93,21 +92,21 @@ export function PrayerSchedule({
     return (
       <div className="flex-1 w-full flex flex-col min-h-0 animate-pulse mt-2">
         <div className="flex justify-between items-center mb-1 lg:mb-2 pl-3 pr-1 shrink-0 h-[40px]">
-          <div className="w-32 h-8 bg-[var(--md-sys-color-surface-variant)]/50 rounded-xl"></div>
-          <div className="w-10 h-10 bg-[var(--md-sys-color-surface-variant)]/50 rounded-[1rem]"></div>
+          <div className="w-32 h-8 bg-[var(--app-surface-variant)]/50 rounded-xl"></div>
+          <div className="w-10 h-10 bg-[var(--app-surface-variant)]/50 rounded-[1rem]"></div>
         </div>
 
         <div className="flex px-1 sm:px-2 gap-2 mb-2 lg:mb-3 pt-1 shrink-0">
-          <div className="w-16 h-8 bg-[var(--md-sys-color-surface-variant)]/50 rounded-full"></div>
-          <div className="w-20 h-8 bg-[var(--md-sys-color-surface-variant)]/30 rounded-full"></div>
-          <div className="w-20 h-8 bg-[var(--md-sys-color-surface-variant)]/30 rounded-full"></div>
+          <div className="w-16 h-8 bg-[var(--app-surface-variant)]/50 rounded-full"></div>
+          <div className="w-20 h-8 bg-[var(--app-surface-variant)]/30 rounded-full"></div>
+          <div className="w-20 h-8 bg-[var(--app-surface-variant)]/30 rounded-full"></div>
         </div>
 
         <div className="flex flex-col gap-1.5 sm:gap-2 flex-1 justify-start px-1 sm:px-2 pb-2 lg:pb-0 min-h-0 overflow-y-auto no-scrollbar">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="flex-1 min-h-[50px] lg:min-h-[60px] bg-[var(--md-sys-color-surface-container-low)] rounded-[32px] w-full"
+              className="flex-1 min-h-[50px] lg:min-h-[60px] bg-content1 rounded-[32px] w-full"
             ></div>
           ))}
         </div>
@@ -231,7 +230,7 @@ export function PrayerSchedule({
   return (
     <div className="flex-1 w-full flex flex-col min-h-0">
       <div className="flex justify-between items-center mb-1 lg:mb-2 pl-3 pr-1 shrink-0">
-        <h3 className="md3-headline-small font-black tracking-[-0.04em] text-[var(--md-sys-color-primary)] opacity-90 drop-shadow-sm">
+        <h3 className="text-xl font-bold font-black tracking-[-0.04em] text-primary opacity-90 drop-shadow-sm">
           {t("schedule")}
         </h3>
         <div className="flex items-center gap-1">
@@ -240,8 +239,7 @@ export function PrayerSchedule({
             whileTap={{ scale: 0.95 }}
             className="inline-flex mt-1 w-10 h-10 lg:w-[44px] lg:h-[44px]"
           >
-            {/* @ts-ignore */}
-            <md-icon-button
+            <Button isIconOnly variant="ghost" radius="full"
               onClick={onShareClick}
               title={t("share" as any) || "Share"}
               style={{ width: '100%', height: '100%' }}
@@ -252,15 +250,14 @@ export function PrayerSchedule({
                 visualStyle === 'soft' && "stroke-[1.5]",
                 !(visualStyle === 'retro' || visualStyle === 'glass' || visualStyle === 'soft') && "stroke-[2]"
               )} />
-            </md-icon-button>
+            </Button>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-flex rotate-3 mt-1 w-10 h-10 lg:w-[48px] lg:h-[48px]"
           >
-            {/* @ts-ignore */}
-            <md-filled-tonal-icon-button
+            <Button isIconOnly variant="secondary" radius="full"
               onClick={onSettingsClick}
               title={t("settings")}
               style={{ '--md-filled-tonal-icon-button-container-shape': '20px', width: '100%', height: '100%' }}
@@ -271,7 +268,7 @@ export function PrayerSchedule({
                 visualStyle === 'soft' && "stroke-[1.5]",
                 !(visualStyle === 'retro' || visualStyle === 'glass' || visualStyle === 'soft') && "stroke-[2.5]"
               )} />
-            </md-filled-tonal-icon-button>
+            </Button>
           </motion.div>
         </div>
       </div>
@@ -286,9 +283,8 @@ export function PrayerSchedule({
               whileTap={{ scale: 0.96 }}
               className="inline-flex shrink-0"
             >
-              {/* @ts-ignore */}
-              <md-filter-chip
-                selected={isSelected ? true : undefined}
+              <Button radius="full" variant="secondary"
+                isSelected={isSelected ? true : undefined}
                 label={
                   f === "all"
                     ? t("filterAll" as any)
@@ -297,7 +293,7 @@ export function PrayerSchedule({
                       : t("filterSunat" as any)
                 }
                 onClick={() => setFilter(f)}
-              ></md-filter-chip>
+              ></Button>
             </motion.div>
           );
         })}
@@ -309,7 +305,7 @@ export function PrayerSchedule({
           animate={{ opacity: 1, scaleY: 1, y: 0 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
           style={{ transformOrigin: "top" }}
-          className="mb-4 bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] p-5 rounded-[1.5rem] text-sm font-black shadow-sm"
+          className="mb-4 bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] text-[var(--app-danger)] p-5 rounded-2xl text-sm font-black shadow-sm"
         >
           {t("blockedNotificationsDesc")}
         </motion.div>
@@ -352,32 +348,30 @@ export function PrayerSchedule({
                 "group relative overflow-hidden flex items-center justify-between min-h-0",
                 shapeClasses,
                 isNext
-                  ? "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] shadow-md px-4 py-3 sm:p-5 lg:py-4 lg:px-5 z-20 flex-[1.05] min-h-[64px] lg:min-h-[76px] shrink-0"
+                  ? "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary shadow-md px-4 py-3 sm:p-5 lg:py-4 lg:px-5 z-20 flex-[1.05] min-h-[64px] lg:min-h-[76px] shrink-0"
                   : isCurrent
-                    ? "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] shadow-sm px-4 py-3 sm:p-4 lg:py-3 lg:px-5 z-10 flex-[1.02] min-h-[60px] lg:min-h-[70px] shrink-0"
+                    ? "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] shadow-sm px-4 py-3 sm:p-4 lg:py-3 lg:px-5 z-10 flex-[1.02] min-h-[60px] lg:min-h-[70px] shrink-0"
                     : isFardhu
-                      ? "bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface)] py-2.5 px-4 sm:p-4 lg:py-3 lg:px-4 shadow-sm flex-1 min-h-[56px] lg:min-h-[64px] shrink-0"
-                      : "bg-[var(--md-sys-color-surface-container-low)] text-[var(--md-sys-color-on-surface-variant)] py-2.5 px-4 sm:p-4 lg:py-2.5 lg:px-4 flex-1 min-h-[56px] lg:min-h-[64px] shrink-0",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[3px_3px_0px_0px_var(--md-sys-color-on-surface)]",
+                      ? "bg-content2 text-foreground py-2.5 px-4 sm:p-4 lg:py-3 lg:px-4 shadow-sm flex-1 min-h-[56px] lg:min-h-[64px] shrink-0"
+                      : "bg-content1 text-[var(--app-outline)] py-2.5 px-4 sm:p-4 lg:py-2.5 lg:px-4 flex-1 min-h-[56px] lg:min-h-[64px] shrink-0",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)]",
                 visualStyle === 'glass' && "backdrop-blur-[8px] border border-[var(--glass-border)]",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
               )}
             >
-              {/* @ts-ignore */}
-              <md-ripple></md-ripple>
-              {/* @ts-ignore */}
-              <md-elevation level={isNext ? "2" : isCurrent ? "1" : "0"}></md-elevation>
+              
+              
               <div className="flex items-center gap-2 sm:gap-3 z-10 h-full pl-0.5 sm:pl-1">
                 <motion.div
                   className={cn(
                     "w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full flex items-center justify-center shrink-0 shadow-sm",
                     isNext
-                      ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-md w-10 h-10 sm:w-12 sm:h-12"
+                      ? "bg-primary text-primary-foreground shadow-md w-10 h-10 sm:w-12 sm:h-12"
                       : isCurrent
-                        ? "bg-[var(--md-sys-color-tertiary)]/20 text-[var(--md-sys-color-on-tertiary-container)] ring-1 ring-[var(--md-sys-color-tertiary)]/20"
+                        ? "bg-[var(--app-secondary)]/20 text-[var(--app-secondary)] ring-1 ring-[var(--app-secondary)]/20"
                         : isFardhu
-                          ? "bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-secondary)]"
-                          : "bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-on-surface-variant)]",
+                          ? "bg-content3 text-[var(--app-secondary)]"
+                          : "bg-content4 text-[var(--app-outline)]",
                   )}
                   whileHover={{ scale: 1.15, rotate: isNext ? 12 : isCurrent ? -12 : 0 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
@@ -405,25 +399,25 @@ export function PrayerSchedule({
                             ? "text-base sm:text-lg lg:text-xl"
                             : "text-sm sm:text-base lg:text-lg",
                         isCurrent &&
-                          "text-[var(--md-sys-color-on-tertiary-container)]",
+                          "text-[var(--app-secondary)]",
                       )}
                     >
                       {getPrayerDisplayName(key)}
                     </span>
                     {!isFardhu && !isNext && !isCurrent && (
-                      <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-[var(--md-sys-color-surface)] text-[10px] font-black uppercase tracking-widest opacity-70">
+                      <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-content1 text-[10px] font-black uppercase tracking-widest opacity-70">
                         {t("filterSunat" as any)}
                       </span>
                     )}
                   </div>
                   {isNext && (
-                    <span className="text-[10px] sm:text-xs lg:text-sm font-black uppercase tracking-[0.15em] opacity-80 mt-0.5 max-w-fit border-b-[2px] border-[var(--md-sys-color-primary)]/20 pb-0.5">
+                    <span className="text-[10px] sm:text-xs lg:text-sm font-black uppercase tracking-[0.15em] opacity-80 mt-0.5 max-w-fit border-b-[2px] border-primary/20 pb-0.5">
                       {t("nextPrayer")}
                     </span>
                   )}
                   {isCurrent && (
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[var(--md-sys-color-tertiary)] mt-1 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[var(--md-sys-color-tertiary)] animate-pulse" />
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[var(--app-secondary)] mt-1 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[var(--app-secondary)] animate-pulse" />
                       {t("currentPrayer")}
                     </span>
                   )}
@@ -436,12 +430,12 @@ export function PrayerSchedule({
                     className={cn(
                       "font-black tracking-[-0.04em] tabular-nums whitespace-nowrap",
                       isNext
-                        ? "text-xl sm:text-2xl lg:text-3xl text-[var(--md-sys-color-primary)]"
+                        ? "text-xl sm:text-2xl lg:text-3xl text-primary"
                         : isCurrent
                           ? "text-lg sm:text-xl lg:text-2xl"
                           : "text-base sm:text-lg lg:text-xl",
                       isCurrent &&
-                        "text-[var(--md-sys-color-on-tertiary-container)]",
+                        "text-[var(--app-secondary)]",
                     )}
                   >
                     {timeLabel}
@@ -453,10 +447,10 @@ export function PrayerSchedule({
                         className={cn(
                           "text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider block text-right mt-0.5",
                           isNext
-                            ? "text-[var(--md-sys-color-primary)]/70"
+                            ? "text-primary/70"
                             : isCurrent
-                              ? "text-[var(--md-sys-color-on-tertiary-container)]/70"
-                              : "text-[var(--md-sys-color-on-surface-variant)]/70",
+                              ? "text-[var(--app-secondary)]/70"
+                              : "text-[var(--app-outline)]/70",
                         )}
                       >
                         {t("iqamah")}:{" "}
@@ -480,12 +474,12 @@ export function PrayerSchedule({
                   )}
                 </div>
 
-                <md-icon-button
+                <Button isIconOnly variant="ghost" radius="full"
                   onClick={() => onTogglePreference(key as any)}
                   className={cn(
                     "flex items-center justify-center shrink-0",
                     pref.enabled &&
-                      "text-[var(--md-sys-color-primary)] bg-[var(--md-sys-color-primary)]/10",
+                      "text-primary bg-primary/10",
                   )}
                 >
                   {pref.enabled ? (
@@ -493,7 +487,7 @@ export function PrayerSchedule({
                   ) : (
                     <BellOff size={18} className="opacity-40" />
                   )}
-                </md-icon-button>
+                </Button>
               </div>
             </motion.div>
           );

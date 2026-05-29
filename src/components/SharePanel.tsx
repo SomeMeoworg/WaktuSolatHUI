@@ -23,12 +23,6 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { JAKIM_ZONES } from "../lib/zones";
-import "@material/web/iconbutton/icon-button.js";
-import "@material/web/icon/icon.js";
-import "@material/web/textfield/outlined-text-field.js";
-import "@material/web/button/text-button.js";
-import "@material/web/tabs/tabs.js";
-import "@material/web/tabs/primary-tab.js";
 import { useAppContext } from "../AppContext";
 import { getHijriFormatted } from "../lib/holidays";
 import { useVisualStyle, useIconStroke } from "../hooks/useVisualStyle";
@@ -607,7 +601,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
             </div>
 
             {/* Premium Header */}
-            <div className="flex items-center justify-between px-5 py-2 sm:px-6 sm:pt-4 sm:pb-3 border-b border-[var(--md-sys-color-outline)]/10 shrink-0">
+            <div className="flex items-center justify-between px-5 py-2 sm:px-6 sm:pt-4 sm:pb-3 border-b border-divider shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary)]/10 flex items-center justify-center relative overflow-hidden group">
                   <motion.div 
@@ -633,7 +627,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
             </div>
 
             {/* Searchable Zone Selector */}
-            <div className="px-5 py-2.5 sm:px-6 border-b border-[var(--md-sys-color-outline)]/8 bg-[var(--md-sys-color-surface-container-low)] shrink-0">
+            <div className="px-5 py-2.5 sm:px-6 border-b border-[var(--md-sys-color-outline)]/8 bg-content1 shrink-0">
               <div className="flex items-center justify-between gap-3 mb-1">
                 <span className="text-[9px] uppercase tracking-widest font-black text-[var(--md-sys-color-primary)] flex items-center gap-1.5">
                   <MapPin size={11} className="text-[var(--md-sys-color-primary)]" />
@@ -651,7 +645,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                 whileTap={{ scale: 0.99 }}
                 onClick={() => setShowZonePicker(!showZonePicker)}
                 className={cn(
-                  "w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 text-left transition-all hover:ring-[var(--md-sys-color-primary)]/40 shadow-sm cursor-pointer",
+                  "w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-2xl bg-content1 ring-1 ring-divider text-left transition-all hover:ring-[var(--md-sys-color-primary)]/40 shadow-sm cursor-pointer",
                   visualStyle === "retro" && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[2px_2px_0px_0px_var(--md-sys-color-on-surface)] ring-0 rounded-none",
                   visualStyle === "soft" && "rounded-2xl"
                 )}
@@ -685,18 +679,14 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                     style={{ transformOrigin: "top", willChange: "transform, opacity" }}
                     className="overflow-hidden"
                   >
-                    <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 shadow-xl overflow-hidden">
-                      <div className="px-3 py-2 border-b border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container-low)]">
+                    <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-content1 ring-1 ring-divider shadow-xl overflow-hidden">
+                      <div className="px-3 py-2 border-b border-divider bg-content1">
                         {/* @ts-ignore */}
                         <md-outlined-text-field
                           value={searchQuery}
                           onInput={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
                           placeholder={t("searchZonePlaceholder" as any)}
                           className="w-full"
-                          style={{ 
-                            '--md-outlined-text-field-container-shape': '28px',
-                            '--md-sys-color-surface-variant': 'var(--md-sys-color-surface-container-high)'
-                          } as any}
                         >
                           <md-icon slot="leading-icon">search</md-icon>
                           {searchQuery && (
@@ -960,7 +950,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
 
                         {/* Centered Date Pill Capsule (High Contrast Dynamic) */}
                         <div className="my-2 text-center relative z-10 flex justify-center w-full">
-                          <div className="inline-flex flex-col items-center py-2 px-4 rounded-2xl bg-[var(--md-sys-color-secondary-container)] border border-[var(--md-sys-color-outline)]/10 min-w-[170px] sm:min-w-[190px] shadow-sm">
+                          <div className="inline-flex flex-col items-center py-2 px-4 rounded-2xl bg-[var(--md-sys-color-secondary-container)] border border-divider min-w-[170px] sm:min-w-[190px] shadow-sm">
                             <span className="text-[10px] sm:text-[11px] font-black text-[var(--md-sys-color-on-secondary-container)] flex items-center gap-1.5 justify-center">
                               <Calendar size={11} className="text-[var(--md-sys-color-on-secondary-container)]/85" />
                               {targetDate.toLocaleDateString(isMalay ? "ms-MY" : "en-US", {
@@ -978,7 +968,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                         </div>
 
                         {/* Dynamic Material 3 Prayers Schedule Container */}
-                        <div className="bg-[var(--md-sys-color-surface-container)]/95 rounded-[24px] p-4 border border-[var(--md-sys-color-outline)]/10 space-y-1 relative z-10 flex-1 flex flex-col justify-center my-1.5 max-h-[160px] sm:max-h-[185px] shadow-inner">
+                        <div className="bg-[var(--md-sys-color-surface-container)]/95 rounded-[24px] p-4 border border-divider space-y-1 relative z-10 flex-1 flex flex-col justify-center my-1.5 max-h-[160px] sm:max-h-[185px] shadow-inner">
                           {loadingData ? (
                             <div className="flex flex-col items-center justify-center h-full py-4 space-y-1.5">
                               <div className="w-5 h-5 border-2 border-[var(--md-sys-color-primary)]/30 border-t-[var(--md-sys-color-primary)] rounded-full animate-spin" />
@@ -1064,7 +1054,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                         whileTap={{ scale: 0.92 }}
                         onClick={handleDownloadImage}
                         title={t("downloadPNG" as any)}
-                        className="w-11 h-11 flex items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] border border-[var(--md-sys-color-outline)]/10 shadow-sm cursor-pointer shrink-0 transition-colors"
+                        className="w-11 h-11 flex items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] border border-divider shadow-sm cursor-pointer shrink-0 transition-colors"
                       >
                         <Download size={16} strokeWidth={iconStroke} />
                       </motion.button>
@@ -1076,7 +1066,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                         onClick={handleSystemShare}
                         disabled={typeof navigator !== "undefined" && !navigator.share}
                         title={t("sharePoster" as any)}
-                        className="w-11 h-11 flex items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] border border-[var(--md-sys-color-outline)]/10 shadow-sm cursor-pointer shrink-0 disabled:opacity-40 transition-colors"
+                        className="w-11 h-11 flex items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-on-primary-container)] border border-divider shadow-sm cursor-pointer shrink-0 disabled:opacity-40 transition-colors"
                       >
                         <Share2 size={16} strokeWidth={iconStroke} />
                       </motion.button>

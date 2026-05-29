@@ -1,8 +1,6 @@
 import { useTime } from "./useTime";
 import { useVisualStyle } from "../../hooks/useVisualStyle";
 import { cn } from "../../lib/utils";
-import "@material/web/elevation/elevation.js";
-
 const NUMERIC_POSITIONS = [
   { x: 50, y: 12, num: 12 },  // 12 o'clock
   { x: 69, y: 17, num: 1 },   // 1
@@ -33,14 +31,13 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
       "w-[90%] sm:w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[360px]",
       
       // Default Style: Circular Dial
-      "rounded-full border-[1.5px] border-[var(--md-sys-color-outline-variant)]/20 bg-[var(--md-sys-color-surface)] shadow-inner",
+      "rounded-full border-[1.5px] border-divider bg-content1 shadow-inner",
       
-      visualStyle === 'retro' && "border-[3px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+      visualStyle === 'retro' && "border-[3px] border-[var(--app-foreground)] bg-content1 shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none",
       visualStyle === 'glass' && "border-2 border-[var(--glass-border)] bg-[var(--glass-bg)]/35 backdrop-blur-[var(--glass-blur)] rounded-full shadow-none",
-      visualStyle === 'soft' && "border border-[var(--md-sys-color-outline-variant)]/10 bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-light)] rounded-full"
+      visualStyle === 'soft' && "border border-divider bg-content1 shadow-[var(--soft-shadow-light)] rounded-full"
     )}>
-      {/* @ts-ignore */}
-      <md-elevation level="2"></md-elevation>
+      
       
       {/* Numeric Hour Markers */}
       {NUMERIC_POSITIONS.map((pos) => (
@@ -48,10 +45,10 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
           key={pos.num}
           className={cn(
             "absolute flex items-center justify-center font-black select-none pointer-events-none transition-colors",
-            "text-[var(--md-sys-color-on-surface)] drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]",
-            visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)] font-black drop-shadow-none",
-            visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)] drop-shadow-md",
-            visualStyle === 'soft' && "text-[var(--md-sys-color-primary)] opacity-95 drop-shadow-none"
+            "text-foreground drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]",
+            visualStyle === 'retro' && "text-foreground font-black drop-shadow-none",
+            visualStyle === 'glass' && "text-foreground drop-shadow-md",
+            visualStyle === 'soft' && "text-primary opacity-95 drop-shadow-none"
           )}
           style={{
             left: `${pos.x}%`,
@@ -76,10 +73,10 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
             style={{ transform: `rotate(${angle}deg)` }}
           >
             <div className={cn(
-              "absolute top-[2%] left-1/2 w-[1.5px] h-[4%] -ml-[0.75px] bg-[var(--md-sys-color-on-surface)]/30",
-              visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)]/50 w-[2px]",
+              "absolute top-[2%] left-1/2 w-[1.5px] h-[4%] -ml-[0.75px] bg-[var(--app-foreground)]/30",
+              visualStyle === 'retro' && "bg-[var(--app-foreground)]/50 w-[2px]",
               visualStyle === 'glass' && "bg-white/45",
-              visualStyle === 'soft' && "bg-[var(--md-sys-color-outline)]/20"
+              visualStyle === 'soft' && "bg-[var(--app-outline)]/20"
             )} />
           </div>
         );
@@ -88,12 +85,12 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
       {/* Center dot */}
       <div className={cn(
         "absolute top-1/2 left-1/2 w-4.5 h-4.5 sm:w-5 sm:h-5 -ml-2.25 sm:-ml-2.5 -mt-2.25 sm:-mt-2.5 rounded-full z-30 shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
-        "bg-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'retro' && "bg-[var(--md-sys-color-on-surface)] border-2 border-white shadow-none",
-        visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-primary)] shadow-[var(--soft-shadow-light)]"
+        "bg-[var(--app-foreground)]",
+        visualStyle === 'retro' && "bg-[var(--app-foreground)] border-2 border-white shadow-none",
+        visualStyle === 'glass' && "bg-[var(--app-foreground)]",
+        visualStyle === 'soft' && "bg-primary shadow-[var(--soft-shadow-light)]"
       )}></div>
-      <div className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1.25 -mt-1.25 bg-[var(--md-sys-color-error)] rounded-full z-40 pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1.25 -mt-1.25 bg-[var(--app-danger)] rounded-full z-40 pointer-events-none"></div>
 
       {/* Hands */}
       <div className="absolute inset-0 pointer-events-none">
@@ -101,10 +98,10 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
         <div
           className={cn(
             "absolute top-[28%] left-1/2 w-3.5 sm:w-4.5 h-[30%] rounded-full -ml-[1.75px] sm:-ml-[2.25px] origin-[50%_73.3%] z-10 shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
-            "bg-[var(--md-sys-color-primary)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-primary)] border-2 border-[var(--md-sys-color-on-surface)] rounded-none w-4 sm:w-5 -ml-2 sm:-ml-2.5",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)] border border-white/20",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-primary)] shadow-sm"
+            "bg-primary",
+            visualStyle === 'retro' && "bg-primary border-2 border-[var(--app-foreground)] rounded-none w-4 sm:w-5 -ml-2 sm:-ml-2.5",
+            visualStyle === 'glass' && "bg-[var(--app-foreground)] border border-white/20",
+            visualStyle === 'soft' && "bg-primary shadow-sm"
           )}
           style={{ transform: `rotate(${hours * 30}deg)` }}
         ></div>
@@ -113,10 +110,10 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
         <div
           className={cn(
             "absolute top-[12%] left-1/2 w-2.5 sm:w-3.25 h-[48%] rounded-full -ml-[1.25px] sm:-ml-[1.625px] origin-[50%_79.1%] z-10 shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
-            "bg-[var(--md-sys-color-on-surface)] opacity-95",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-secondary)] border-2 border-[var(--md-sys-color-on-surface)] rounded-none w-3 sm:w-3.75 -ml-1.5 sm:-ml-[1.875px]",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-on-surface)]/85 border border-white/10",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-secondary)] opacity-80"
+            "bg-[var(--app-foreground)] opacity-95",
+            visualStyle === 'retro' && "bg-[var(--app-secondary)] border-2 border-[var(--app-foreground)] rounded-none w-3 sm:w-3.75 -ml-1.5 sm:-ml-[1.875px]",
+            visualStyle === 'glass' && "bg-[var(--app-foreground)]/85 border border-white/10",
+            visualStyle === 'soft' && "bg-[var(--app-secondary)] opacity-80"
           )}
           style={{ transform: `rotate(${minutes * 6}deg)` }}
         ></div>
@@ -125,10 +122,10 @@ export function AnalogNumericClock({ movement }: { movement: 'tick' | 'sweep' })
         <div
           className={cn(
             "absolute top-[8%] left-1/2 w-[2px] h-[55%] rounded-full -ml-[1px] origin-[50%_76.3%] z-20 shadow-[0_4px_12px_rgba(255,0,0,0.2)]",
-            "bg-[var(--md-sys-color-error)]",
-            visualStyle === 'retro' && "bg-[var(--md-sys-color-error)] w-[2.5px] rounded-none",
-            visualStyle === 'glass' && "bg-[var(--md-sys-color-error)] shadow-[0_0_8px_var(--md-sys-color-error)]",
-            visualStyle === 'soft' && "bg-[var(--md-sys-color-error)]"
+            "bg-[var(--app-danger)]",
+            visualStyle === 'retro' && "bg-[var(--app-danger)] w-[2.5px] rounded-none",
+            visualStyle === 'glass' && "bg-[var(--app-danger)] shadow-[0_0_8px_var(--app-danger)]",
+            visualStyle === 'soft' && "bg-[var(--app-danger)]"
           )}
           style={{ transform: `rotate(${seconds * 6}deg)` }}
         ></div>

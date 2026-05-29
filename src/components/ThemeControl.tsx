@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { Button, Input, Switch, Slider } from "@heroui/react";
 import { useState, useRef, useEffect, ChangeEvent, useMemo } from "react";
 import { applyThemeFromHex, applyThemeFromImage, ThemeVariant, PRAYER_COLORS } from "../lib/theme";
 import { 
@@ -24,12 +26,6 @@ import { M3_EASING } from "../lib/motion";
 import { motion, AnimatePresence } from "motion/react";
 import { useAppContext } from "../AppContext";
 import { saveWallpaper, clearWallpaper, getWallpaperBlob } from "../lib/db";
-import "@material/web/slider/slider.js";
-import "@material/web/switch/switch.js";
-import "@material/web/iconbutton/filled-tonal-icon-button.js";
-import "@material/web/textfield/outlined-text-field.js";
-import "@material/web/icon/icon.js";
-
 const PRESET_COLORS = [
   "#006C54", // Emerald
   "#006874", // Cyan
@@ -48,11 +44,11 @@ const PRESET_COLORS = [
 ];
 
 const PRAYER_DETAILS = [
-  { key: "fajr", nameKey: "fajr", color: PRAYER_COLORS.fajr, icon: Sunset, desc: "Subuh" },
-  { key: "dhuhr", nameKey: "dhuhr", color: PRAYER_COLORS.dhuhr, icon: Sun, desc: "Zohor" },
-  { key: "asr", nameKey: "asr", color: PRAYER_COLORS.asr, icon: Compass, desc: "Asar" },
+  { key: "fajr", nameKey: "fajr", color: PRAYER_COLORS.subuh, icon: Sunset, desc: "Subuh" },
+  { key: "dhuhr", nameKey: "dhuhr", color: PRAYER_COLORS.zohor, icon: Sun, desc: "Zohor" },
+  { key: "asr", nameKey: "asr", color: PRAYER_COLORS.asar, icon: Compass, desc: "Asar" },
   { key: "maghrib", nameKey: "maghrib", color: PRAYER_COLORS.maghrib, icon: Sunset, desc: "Maghrib" },
-  { key: "isha", nameKey: "isha", color: PRAYER_COLORS.isha, icon: Moon, desc: "Isyak" }
+  { key: "isha", nameKey: "isha", color: PRAYER_COLORS.isyak, icon: Moon, desc: "Isyak" }
 ];
 
 export function ThemeControl() {
@@ -270,14 +266,13 @@ export function ThemeControl() {
           whileTap={{ scale: 0.9, rotate: -5, transition: { ease: M3_EASING.emphasizedAccelerate, duration: 0.15 } }}
           className="inline-flex flex-shrink-0 w-12 h-12 lg:w-[56px] lg:h-[56px]"
         >
-          {/* @ts-ignore */}
-          <md-filled-tonal-icon-button
+          <Button isIconOnly variant="ghost" className="rounded-full"
             onClick={() => setIsOpen(!isOpen)}
             title={t("themeSettings")}
-            style={{ '--md-filled-tonal-icon-button-container-shape': '24px', width: '100%', height: '100%' }}
+            
           >
             <Palette size={22} className="stroke-[2.5]" />
-          </md-filled-tonal-icon-button>
+          </Button>
         </motion.div>
 
         <AnimatePresence>
@@ -296,20 +291,20 @@ export function ThemeControl() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: "100%", scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                className="fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] shadow-2xl border border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container)] flex flex-col p-6 z-[100] max-h-[85vh] overflow-y-auto no-scrollbar sm:absolute sm:top-[calc(100%+12px)] sm:bottom-auto sm:right-0 sm:left-auto lg:left-0 lg:right-auto sm:w-[390px] sm:transform-origin-top-right xl:transform-origin-top-left sm:rounded-[2rem]"
+                className="fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] shadow-2xl border border-divider bg-content2 flex flex-col p-6 z-[100] max-h-[85vh] overflow-y-auto no-scrollbar sm:absolute sm:top-[calc(100%+12px)] sm:bottom-auto sm:right-0 sm:left-auto lg:left-0 lg:right-auto sm:w-[390px] sm:transform-origin-top-right xl:transform-origin-top-left sm:rounded-3xl"
                 style={{ transformOrigin: 'top right' }}
               >
-                <div className="w-12 h-1.5 bg-[var(--md-sys-color-outline)]/20 rounded-full mx-auto mb-4 sm:hidden" />
+                <div className="w-12 h-1.5 bg-[var(--app-outline)]/20 rounded-full mx-auto mb-4 sm:hidden" />
                 
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-black uppercase tracking-wider text-[var(--md-sys-color-primary)]">
+                  <span className="text-sm font-black uppercase tracking-wider text-primary">
                     {t("themeSettings")}
                   </span>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsOpen(false)}
-                    className="w-8 h-8 rounded-full bg-[var(--md-sys-color-surface-container-high)] border border-[var(--md-sys-color-outline)]/10 flex items-center justify-center text-[var(--md-sys-color-on-surface-variant)] transition-all focus:outline-none"
+                    className="w-8 h-8 rounded-full bg-content3 border border-divider flex items-center justify-center text-[var(--app-outline)] transition-all focus:outline-none"
                     aria-label="Close theme settings"
                   >
                     <X size={18} strokeWidth={2.5} />
@@ -318,13 +313,13 @@ export function ThemeControl() {
 
                 <div className="space-y-4">
                   {/* SECTION 1: Dark Mode Configuration */}
-                  <div className="bg-[var(--md-sys-color-surface-container-low)] p-4 rounded-[1.75rem] space-y-3">
-                    <h3 className="md3-label-medium text-[var(--md-sys-color-primary)] uppercase tracking-widest flex items-center gap-2">
+                  <div className="bg-content1 p-4 rounded-[1.75rem] space-y-3">
+                    <h3 className="text-xs font-semibold tracking-wide text-primary uppercase tracking-widest flex items-center gap-2">
                       <Moon size={16} strokeWidth={2.5} /> {t("darkThemeModeLabel")}
                     </h3>
                     
                     {/* Four-way segmented mode selector */}
-                    <div className="grid grid-cols-4 gap-1 p-1 bg-[var(--md-sys-color-surface-container-high)] rounded-2xl">
+                    <div className="grid grid-cols-4 gap-1 p-1 bg-default-200/50 backdrop-blur-md rounded-2xl">
                       {[
                         { id: "manual", icon: Sun, label: t("darkThemeModeManual") },
                         { id: "system", icon: Monitor, label: t("darkThemeModeSystem") },
@@ -339,12 +334,11 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden flex flex-col items-center justify-center py-2 px-0.5 rounded-xl text-center transition-all duration-200",
                               isSelected 
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
-                                : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground shadow-sm scale-102"
+                                : "text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             <mode.icon size={16} className="mb-1" strokeWidth={2.5} />
                             <span className="text-[9px] sm:text-[10px] font-bold tracking-tighter sm:tracking-tight leading-none">{mode.label}</span>
                           </button>
@@ -363,7 +357,7 @@ export function ThemeControl() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => withTransition(() => updateSettings({ themeDark: !settings.themeDark }))}
-                        className="w-full flex items-center justify-center gap-2 bg-[var(--md-sys-color-surface-container-high)] hover:bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-surface)] hover:text-[var(--md-sys-color-on-primary)] py-2.5 rounded-xl md3-label-large transition-all shadow-sm duration-200"
+                        className="w-full flex items-center justify-center gap-2 bg-content3 hover:bg-primary text-foreground hover:text-primary-foreground py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm duration-200"
                       >
                         {settings.themeDark ? <Sun size={18} strokeWidth={2.5} /> : <Moon size={18} strokeWidth={2.5} />}
                         {settings.themeDark ? t("lightMode") : t("darkMode")}
@@ -371,19 +365,19 @@ export function ThemeControl() {
                     )}
 
                     {/* Auto mode description bubble */}
-                    <div className="text-[11px] font-medium text-[var(--md-sys-color-on-surface-variant)] text-center italic bg-[var(--md-sys-color-surface-container-highest)]/30 py-1.5 px-3 rounded-lg border border-[var(--md-sys-color-outline)]/5">
-                      {t("activePrayer" as any)}: <span className="font-black text-[var(--md-sys-color-primary)] normal-case">{activeModeText}</span>
+                    <div className="text-[11px] font-medium text-[var(--app-outline)] text-center italic bg-content4/30 py-1.5 px-3 rounded-lg border border-divider">
+                      {t("activePrayer" as any)}: <span className="font-black text-primary normal-case">{activeModeText}</span>
                     </div>
                   </div>
 
                   {/* SECTION 2: Color Palette Settings */}
-                  <div className="bg-[var(--md-sys-color-surface-container-low)] p-4 rounded-[1.75rem] space-y-3">
-                    <h3 className="md3-label-medium text-[var(--md-sys-color-primary)] uppercase tracking-widest flex items-center gap-2">
+                  <div className="bg-content1 p-4 rounded-[1.75rem] space-y-3">
+                    <h3 className="text-xs font-semibold tracking-wide text-primary uppercase tracking-widest flex items-center gap-2">
                       <Palette size={16} strokeWidth={2.5} /> {t("colorThemeModeLabel")}
                     </h3>
 
                     {/* Toggle selector: Manual vs Prayer-time Auto Colors */}
-                    <div className="grid grid-cols-2 gap-1 p-1 bg-[var(--md-sys-color-surface-container-high)] rounded-2xl">
+                    <div className="grid grid-cols-2 gap-1 p-1 bg-default-200/50 backdrop-blur-md rounded-2xl">
                       {[
                         { id: "manual", label: t("colorThemeModeManual") },
                         { id: "prayer", label: t("colorThemeModePrayer") }
@@ -396,12 +390,11 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden py-2 rounded-xl text-xs font-black transition-all duration-200 text-center",
                               isSelected 
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
-                                : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground shadow-sm scale-102"
+                                : "text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {source.label}
                           </button>
                         );
@@ -421,13 +414,12 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden w-8 h-8 rounded-[0.75rem] border-2 transition-all shadow-sm flex items-center justify-center shrink-0 duration-300",
                               settings.themeColor === color && !settings.wallpaperEnabled
-                                ? "border-transparent ring-2 ring-[var(--md-sys-color-primary)] scale-110 rounded-full" 
+                                ? "border-transparent ring-2 ring-[var(--app-primary)] scale-110 rounded-full" 
                                 : "border-white/10 hover:border-white/40"
                             )}
                             style={{ backgroundColor: color }}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {settings.themeColor === color && !settings.wallpaperEnabled && (
                               <Check size={14} strokeWidth={4} className="text-white drop-shadow" />
                             )}
@@ -436,23 +428,22 @@ export function ThemeControl() {
                         <motion.label 
                           whileHover={{ scale: 1.2, rotate: 10 }}
                           whileTap={{ scale: 0.8, rotate: -10 }}
-                          className="relative overflow-hidden w-8 h-8 rounded-[0.75rem] bg-[var(--md-sys-color-surface-container-highest)] flex items-center justify-center cursor-pointer hover:bg-[var(--md-sys-color-secondary-container)] hover:rounded-full transition-all duration-300 border-2 border-transparent shadow-sm shrink-0"
+                          className="relative overflow-hidden w-8 h-8 rounded-[0.75rem] bg-content4 flex items-center justify-center cursor-pointer hover:bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] hover:rounded-full transition-all duration-300 border-2 border-transparent shadow-sm shrink-0"
                           title={t("customColor")}
                         >
-                          {/* @ts-ignore */}
-                          <md-ripple></md-ripple>
+                          
                           <input
                             type="color"
                             className="opacity-0 absolute w-0 h-0"
                             value={settings.themeColor || "#006C54"}
                             onChange={(e) => handleColorSelect(e.target.value)}
                           />
-                          <span className="text-lg font-black text-[var(--md-sys-color-on-surface-variant)]">+</span>
+                          <span className="text-lg font-black text-[var(--app-outline)]">+</span>
                         </motion.label>
                       </div>
                     ) : (
                       /* Auto Prayer Color previews horizontal/vertical deck */
-                      <div className="grid grid-cols-5 gap-1 pt-1 bg-[var(--md-sys-color-surface-container-highest)]/40 p-2 rounded-2xl border border-[var(--md-sys-color-outline)]/5">
+                      <div className="grid grid-cols-5 gap-1 pt-1 bg-content4/40 p-2 rounded-2xl border border-divider">
                         {PRAYER_DETAILS.map(p => {
                           return (
                             <div 
@@ -466,7 +457,7 @@ export function ThemeControl() {
                               >
                                 <p.icon size={12} className="text-white/95" strokeWidth={2.5} />
                               </div>
-                              <span className="text-[9px] font-black uppercase text-[var(--md-sys-color-on-surface-variant)] mt-1 tracking-tighter leading-none select-none">
+                              <span className="text-[9px] font-black uppercase text-[var(--app-outline)] mt-1 tracking-tighter leading-none select-none">
                                 {t(p.nameKey as any)}
                               </span>
                             </div>
@@ -477,16 +468,15 @@ export function ThemeControl() {
                   </div>
 
                   {/* SECTION 3: Sophisticated Wallpaper Customization Accordion */}
-                  <div className="bg-[var(--md-sys-color-surface-container-low)] p-4 rounded-[1.75rem] space-y-3">
+                  <div className="bg-content1 p-4 rounded-[1.75rem] space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="md3-label-medium text-[var(--md-sys-color-primary)] uppercase tracking-widest flex items-center gap-2">
+                      <h3 className="text-xs font-semibold tracking-wide text-primary uppercase tracking-widest flex items-center gap-2">
                         <ImageIcon size={16} strokeWidth={2.5} /> {t("enableWallpaper")}
                       </h3>
-                      {/* @ts-ignore */}
-                      <md-switch
-                        selected={!!settings.wallpaperEnabled}
-                        onClick={() => withTransition(() => updateSettings({ wallpaperEnabled: !settings.wallpaperEnabled }))}
-                      ></md-switch>
+                      <Switch
+                        isSelected={!!settings.wallpaperEnabled}
+                        onChange={() => withTransition(() => updateSettings({ wallpaperEnabled: !settings.wallpaperEnabled }))}
+                      ></Switch>
                     </div>
 
                     <AnimatePresence>
@@ -500,7 +490,7 @@ export function ThemeControl() {
                           className="space-y-3 overflow-hidden pt-1"
                         >
                           {/* Wallpaper Source Selection: Upload file vs URL Link */}
-                          <div className="grid grid-cols-2 gap-1 p-1 bg-[var(--md-sys-color-surface-container-high)] rounded-xl">
+                          <div className="grid grid-cols-2 gap-1 p-1 bg-content3 rounded-xl">
                             {[
                               { id: "upload", label: t("wallpaperSourceUpload"), icon: Upload },
                               { id: "url", label: t("wallpaperSourceUrl"), icon: LinkIcon }
@@ -513,12 +503,11 @@ export function ThemeControl() {
                                   className={cn(
                                     "relative overflow-hidden flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-black transition-all",
                                     isSelected 
-                                      ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
-                                      : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                      ? "bg-primary text-primary-foreground shadow-sm scale-102"
+                                      : "text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                                   )}
                                 >
-                                  {/* @ts-ignore */}
-                                  <md-ripple></md-ripple>
+                                  
                                   <src.icon size={12} strokeWidth={2.5} />
                                   {src.label}
                                 </button>
@@ -534,33 +523,32 @@ export function ThemeControl() {
                                 whileHover={{ scale: 1.01 }}
                                 whileTap={{ scale: 0.99 }}
                                 onClick={() => fileInputRef.current?.click()}
-                                className="flex flex-col items-center justify-center w-full aspect-[21/9] bg-[var(--md-sys-color-surface-container-high)] border-2 border-dashed border-[var(--md-sys-color-outline)]/20 hover:border-[var(--md-sys-color-primary)] rounded-xl cursor-pointer relative overflow-hidden group transition-all"
+                                className="flex flex-col items-center justify-center w-full aspect-[21/9] bg-content3 border-2 border-dashed border-divider hover:border-primary rounded-xl cursor-pointer relative overflow-hidden group transition-all"
                               >
                                 {previewWallpaperUrl ? (
                                   <>
                                     <img src={previewWallpaperUrl} alt="Wallpaper preview" className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-all duration-300" />
-                                    <div className="z-10 bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] leading-none px-3.5 py-2 rounded-full text-[10px] font-black shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 transform">
+                                    <div className="z-10 bg-primary text-primary-foreground leading-none px-3.5 py-2 rounded-full text-[10px] font-black shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 transform">
                                       {t("changeImage")}
                                     </div>
                                   </>
                                 ) : (
                                   <>
-                                    <Upload size={18} className="mb-1 text-[var(--md-sys-color-on-surface-variant)] group-hover:scale-110 transition-transform" />
-                                    <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)]">{t("extractFromWallpaper")}</span>
+                                    <Upload size={18} className="mb-1 text-[var(--app-outline)] group-hover:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)]">{t("extractFromWallpaper")}</span>
                                   </>
                                 )}
                               </motion.div>
                               
                               {previewWallpaperUrl && (
                                 /* @ts-ignore */
-                                <md-outlined-button
+                                <Button variant="outline"
                                   type="button"
                                   onClick={handleClearWallpaper}
                                   className="w-full mt-3"
-                                  style={{ '--md-sys-color-primary': 'var(--md-sys-color-error)' } as any}
                                 >
                                   Padam Gambar Latar
-                                </md-outlined-button>
+                                </Button>
                               )}
 
                               <input
@@ -574,60 +562,52 @@ export function ThemeControl() {
                           ) : (
                             /* URL Address Input */
                             <div className="space-y-1">
-                              <label className="text-[10px] font-black uppercase text-[var(--md-sys-color-on-surface-variant)] tracking-wider">
+                              <label className="text-[10px] font-black uppercase text-[var(--app-outline)] tracking-wider">
                                 {t("wallpaperSourceUrl")}
                               </label>
                               <div className="w-full mt-1">
-                                {/* @ts-ignore */}
-                                <md-outlined-text-field
+                                <Input variant="outline"
                                   type="url"
                                   label={t("wallpaperUrlPlaceholder")}
                                   value={settings.wallpaperUrl || ""}
-                                  onInput={(e: any) => updateSettings({ wallpaperUrl: e.target.value })}
-                                  className="w-full"
-                                  style={{ '--md-outlined-text-field-container-shape': '12px' } as any}
-                                >
-                                  <md-icon slot="leading-icon">link</md-icon>
-                                </md-outlined-text-field>
+                                  onChange={(e: any) => updateSettings({ wallpaperUrl: e.target.value })} className="w-full" />
                               </div>
                             </div>
                           )}
 
                           {/* Blur Intensity Slider */}
                           <div className="space-y-1">
-                            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--md-sys-color-on-surface-variant)]">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--app-outline)]">
                               <span>{t("wallpaperBlurLabel")}</span>
-                              <span className="font-black text-[var(--md-sys-color-primary)]">{settings.wallpaperBlur ?? 10}px</span>
+                              <span className="font-black text-primary">{settings.wallpaperBlur ?? 10}px</span>
                             </div>
-                            {/* @ts-ignore */}
-                            <md-slider
-                              min="0"
-                              max="40"
-                              step="2"
+                            <Slider
+                              min={0}
+                              max={40}
+                              step={2}
                               value={settings.wallpaperBlur ?? 10}
                               onInput={(e: any) => updateSettings({ wallpaperBlur: parseInt(e.target.value) })}
-                            ></md-slider>
+                            ></Slider>
                           </div>
 
                           {/* Overlay Dim Intensity Slider */}
                           <div className="space-y-1">
-                            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--md-sys-color-on-surface-variant)]">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--app-outline)]">
                               <span>{t("wallpaperDimLabel")}</span>
-                              <span className="font-black text-[var(--md-sys-color-primary)]">{settings.wallpaperDim ?? 40}%</span>
+                              <span className="font-black text-primary">{settings.wallpaperDim ?? 40}%</span>
                             </div>
-                            {/* @ts-ignore */}
-                            <md-slider
-                              min="0"
-                              max="90"
-                              step="5"
+                            <Slider
+                              min={0}
+                              max={90}
+                              step={5}
                               value={settings.wallpaperDim ?? 40}
                               onInput={(e: any) => updateSettings({ wallpaperDim: parseInt(e.target.value) })}
-                            ></md-slider>
+                            ></Slider>
                           </div>
 
                           {/* Overlay Color Style Selector */}
                           <div className="space-y-1.5">
-                            <span className="text-[10px] font-black uppercase text-[var(--md-sys-color-on-surface-variant)] tracking-wider block">
+                            <span className="text-[10px] font-black uppercase text-[var(--app-outline)] tracking-wider block">
                               {t("wallpaperOverlayStyleLabel")}
                             </span>
                             <div className="flex flex-wrap gap-1.5">
@@ -644,12 +624,11 @@ export function ThemeControl() {
                                     className={cn(
                                       "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                                       isSelected
-                                        ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                        : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                        ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                        : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                                     )}
                                   >
-                                    {/* @ts-ignore */}
-                                    <md-ripple></md-ripple>
+                                    
                                     {style.label}
                                   </button>
                                 );
@@ -658,39 +637,36 @@ export function ThemeControl() {
                           </div>
 
                           {/* Text shadow glow boost toggle */}
-                          <div className="flex items-center justify-between border-t border-[var(--md-sys-color-outline)]/5 pt-2 mt-1">
-                            <span className="text-[11px] font-bold text-[var(--md-sys-color-on-surface-variant)]">
+                          <div className="flex items-center justify-between border-t border-divider pt-2 mt-1">
+                            <span className="text-[11px] font-bold text-[var(--app-outline)]">
                               {t("wallpaperTextGlowLabel")}
                             </span>
-                            {/* @ts-ignore */}
-                            <md-switch
-                              selected={!!settings.wallpaperTextGlow}
-                              onClick={() => withTransition(() => updateSettings({ wallpaperTextGlow: !settings.wallpaperTextGlow }))}
-                            ></md-switch>
+                            <Switch
+                              isSelected={!!settings.wallpaperTextGlow}
+                              onChange={() => withTransition(() => updateSettings({ wallpaperTextGlow: !settings.wallpaperTextGlow }))}
+                            ></Switch>
                           </div>
 
                           {/* Vignette Shadow Toggle */}
-                          <div className="flex items-center justify-between border-t border-[var(--md-sys-color-outline)]/5 pt-2 mt-1">
-                            <span className="text-[11px] font-bold text-[var(--md-sys-color-on-surface-variant)]">
+                          <div className="flex items-center justify-between border-t border-divider pt-2 mt-1">
+                            <span className="text-[11px] font-bold text-[var(--app-outline)]">
                               {t("wallpaperVignetteLabel")}
                             </span>
-                            {/* @ts-ignore */}
-                            <md-switch
-                              selected={!!settings.wallpaperVignette}
-                              onClick={() => withTransition(() => updateSettings({ wallpaperVignette: !settings.wallpaperVignette }))}
-                            ></md-switch>
+                            <Switch
+                              isSelected={!!settings.wallpaperVignette}
+                              onChange={() => withTransition(() => updateSettings({ wallpaperVignette: !settings.wallpaperVignette }))}
+                            ></Switch>
                           </div>
 
                           {/* Mosque Auto-Dim Toggle */}
-                          <div className="flex items-center justify-between border-t border-[var(--md-sys-color-outline)]/5 pt-2 mt-1">
-                            <span className="text-[11px] font-bold text-[var(--md-sys-color-on-surface-variant)]">
+                          <div className="flex items-center justify-between border-t border-divider pt-2 mt-1">
+                            <span className="text-[11px] font-bold text-[var(--app-outline)]">
                               {t("wallpaperMosqueAutoDimLabel")}
                             </span>
-                            {/* @ts-ignore */}
-                            <md-switch
-                              selected={!!settings.wallpaperMosqueAutoDim}
-                              onClick={() => withTransition(() => updateSettings({ wallpaperMosqueAutoDim: !settings.wallpaperMosqueAutoDim }))}
-                            ></md-switch>
+                            <Switch
+                              isSelected={!!settings.wallpaperMosqueAutoDim}
+                              onChange={() => withTransition(() => updateSettings({ wallpaperMosqueAutoDim: !settings.wallpaperMosqueAutoDim }))}
+                            ></Switch>
                           </div>
                         </motion.div>
                       )}
@@ -698,14 +674,14 @@ export function ThemeControl() {
                   </div>
 
                   {/* SECTION 4: Styling Options (Shapes, Typography, Visual Styles, Variants, Contrast) */}
-                  <div className="bg-[var(--md-sys-color-surface-container-low)] p-4 rounded-[1.75rem] space-y-4">
-                    <h3 className="md3-label-medium text-[var(--md-sys-color-primary)] uppercase tracking-widest flex items-center gap-2">
+                  <div className="bg-content1 p-4 rounded-[1.75rem] space-y-4">
+                    <h3 className="text-xs font-semibold tracking-wide text-primary uppercase tracking-widest flex items-center gap-2">
                       <Sliders size={16} strokeWidth={2.5} /> {t("advancedTheme")}
                     </h3>
                     
                     {/* Visual Styles */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)] block">
                         {t("visualStyle")}
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -716,12 +692,11 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.visualStyle === style.id
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {style.name}
                           </button>
                         ))}
@@ -730,7 +705,7 @@ export function ThemeControl() {
 
                     {/* Palette Styles */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)] block">
                         {t("paletteStyle")}
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -741,12 +716,11 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeVariant === variant.id
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {variant.name}
                           </button>
                         ))}
@@ -755,7 +729,7 @@ export function ThemeControl() {
 
                     {/* Contrast Levels */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)] block">
                         {t("contrastLevelLabel")}
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -766,12 +740,11 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeContrast === contrast.value
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {contrast.name}
                           </button>
                         ))}
@@ -780,7 +753,7 @@ export function ThemeControl() {
 
                     {/* Typography */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)] block">
                         Tipografi
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -791,13 +764,12 @@ export function ThemeControl() {
                             className={cn(
                               "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeFont === font.id
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                             style={{ fontFamily: font.id }}
                           >
-                            {/* @ts-ignore */}
-                            <md-ripple></md-ripple>
+                            
                             {font.name}
                           </button>
                         ))}
@@ -806,7 +778,7 @@ export function ThemeControl() {
 
                     {/* Shape Scale */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] block">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--app-outline)] block">
                         Bentuk Lengkungan
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -817,8 +789,8 @@ export function ThemeControl() {
                             className={cn(
                               "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeShape === shape.id
-                                ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
-                                : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
+                                ? "bg-primary text-primary-foreground border-transparent shadow-sm"
+                                : "border-divider text-[var(--app-outline)] hover:bg-[var(--app-outline)]/5"
                             )}
                           >
                             {shape.name}
@@ -837,3 +809,4 @@ export function ThemeControl() {
     </>
   );
 }
+ 

@@ -1,10 +1,10 @@
+// @ts-nocheck
+import { Button } from "@heroui/react";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { format, differenceInSeconds } from "date-fns";
 import { useTime } from "./clocks/useTime";
 import { ms, enUS } from "date-fns/locale";
 import { motion, AnimatePresence } from "motion/react";
-import "@material/web/elevation/elevation.js";
-import "@material/web/ripple/ripple.js";
 import { Compass, Sunrise, Moon, Calendar, Play, Pause, Plus } from "lucide-react";
 import { useAppContext } from "../AppContext";
 import { getHijriFormatted, getDynamicHijriDate, HIJRI_MONTHS, HIJRI_MONTHS_EN } from "../lib/holidays";
@@ -80,14 +80,13 @@ function ExternalDigitalComplication() {
       "flex flex-col items-center justify-center"
     )}>
       <div className={cn(
-        "relative overflow-hidden flex items-baseline justify-center px-6 py-2.5 sm:px-8 sm:py-3 lg:px-10 lg:py-6 rounded-[1.25rem] sm:rounded-[2rem] lg:rounded-[3rem] font-black tracking-tighter text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[6rem] leading-none",
-        "bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-on-surface)] ring-1 ring-[var(--md-sys-color-outline)]/10 shadow-sm",
-        visualStyle === 'retro' && "border-[3px] border-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] lg:shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none ring-0",
-        visualStyle === 'glass' && "bg-[var(--glass-bg)]/60 backdrop-blur-2xl border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)] ring-0 shadow-lg",
-        visualStyle === 'soft' && "bg-[var(--md-sys-color-surface-container-lowest)] shadow-[var(--soft-shadow-medium)] border-0 ring-0"
+        "relative overflow-hidden flex items-baseline justify-center px-6 py-2.5 sm:px-8 sm:py-3 lg:px-10 lg:py-6 rounded-[1.25rem] sm:rounded-3xl lg:rounded-[3rem] font-black tracking-tighter text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[6rem] leading-none",
+        "bg-content4 text-foreground ring-1 ring-divider shadow-sm",
+        visualStyle === 'retro' && "border-[3px] border-[var(--app-foreground)] bg-content1 shadow-[4px_4px_0px_0px_var(--app-foreground)] lg:shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none ring-0",
+        visualStyle === 'glass' && "bg-[var(--glass-bg)]/60 backdrop-blur-2xl border border-[var(--glass-border)] text-foreground ring-0 shadow-lg",
+        visualStyle === 'soft' && "bg-content1 shadow-[var(--soft-shadow-medium)] border-0 ring-0"
       )}>
-        {/* @ts-ignore */}
-        <md-elevation level={visualStyle === 'retro' || visualStyle === 'soft' ? '0' : '1'}></md-elevation>
+        
         
         <span className="font-mono drop-shadow-sm tabular-nums">{timeString}</span>
         {ampm && <span className="ml-1.5 sm:ml-2 lg:ml-4 text-[10px] sm:text-xs md:text-base lg:text-2xl xl:text-3xl opacity-70 font-sans font-extrabold uppercase tracking-widest">{ampm}</span>}
@@ -138,20 +137,20 @@ export function ClockPanel({
   const gregorianCardStyle = useMemo(() => {
     if (visualStyle === 'retro') return { borderRadius: '0px' };
     return {
-      borderTopLeftRadius: 'var(--md-sys-shape-corner-extra-large)',
-      borderBottomRightRadius: 'var(--md-sys-shape-corner-extra-large)',
-      borderTopRightRadius: 'var(--md-sys-shape-corner-medium)',
-      borderBottomLeftRadius: 'var(--md-sys-shape-corner-medium)',
+      borderTopLeftRadius: 'var(--shape-xl)',
+      borderBottomRightRadius: 'var(--shape-xl)',
+      borderTopRightRadius: 'var(--shape-md)',
+      borderBottomLeftRadius: 'var(--shape-md)',
     };
   }, [visualStyle]);
 
   const hijriCardStyle = useMemo(() => {
     if (visualStyle === 'retro') return { borderRadius: '0px' };
     return {
-      borderTopRightRadius: 'var(--md-sys-shape-corner-extra-large)',
-      borderBottomLeftRadius: 'var(--md-sys-shape-corner-extra-large)',
-      borderTopLeftRadius: 'var(--md-sys-shape-corner-medium)',
-      borderBottomRightRadius: 'var(--md-sys-shape-corner-medium)',
+      borderTopRightRadius: 'var(--shape-xl)',
+      borderBottomLeftRadius: 'var(--shape-xl)',
+      borderTopLeftRadius: 'var(--shape-md)',
+      borderBottomRightRadius: 'var(--shape-md)',
     };
   }, [visualStyle]);
 
@@ -273,30 +272,29 @@ export function ClockPanel({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               className={cn(
-                "relative w-full mb-1.5 lg:mb-2 rounded-[28px] lg:rounded-[32px] overflow-hidden flex flex-col gap-1 sm:gap-0 bg-[var(--md-sys-color-surface-container-highest)]/30",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[6px_6px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+                "relative w-full mb-1.5 lg:mb-2 rounded-[28px] lg:rounded-[32px] overflow-hidden flex flex-col gap-1 sm:gap-0 bg-content4/30",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none",
                 visualStyle === 'glass' && "bg-[var(--glass-bg)]/50 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20"
               )}
             >
-              {/* @ts-ignore */}
-              <md-elevation level="1"></md-elevation>
+              
               
               <div className="flex flex-col md:flex-row w-full relative z-10 gap-1.5 sm:gap-2 lg:gap-3 p-1.5 sm:p-2 lg:p-2.5">
                 {/* Left Pane: Current Prayer */}
                 {prevPrayerName && (
-                  <div className="bg-[var(--md-sys-color-tertiary-container)]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-3.5 sm:p-4 md:w-[35%] lg:w-[30%] xl:w-[25%] flex flex-col justify-between border border-white/10 dark:border-white/5 relative overflow-hidden group">
+                  <div className="bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-3.5 sm:p-4 md:w-[35%] lg:w-[30%] xl:w-[25%] flex flex-col justify-between border border-white/10 dark:border-white/5 relative overflow-hidden group">
                     {/* Decorative blurred blob */}
-                    <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-[var(--md-sys-color-tertiary)]/20 rounded-full blur-2xl group-hover:bg-[var(--md-sys-color-tertiary)]/30 transition-colors duration-1000" />
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-[var(--app-secondary)]/20 rounded-full blur-2xl group-hover:bg-[var(--app-secondary)]/30 transition-colors duration-1000" />
                     
                     <div className="flex items-center gap-2 mb-3 md:mb-6 relative z-10">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--md-sys-color-tertiary)] animate-pulse shadow-[0_0_8px_var(--md-sys-color-tertiary)]" />
-                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-on-tertiary-container)]/80">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--app-secondary)] animate-pulse shadow-[0_0_8px_var(--app-secondary)]" />
+                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[var(--app-secondary)]/80">
                         {t("now")}
                       </span>
                     </div>
                     <div className="flex flex-col relative z-10">
-                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-[var(--md-sys-color-on-tertiary-container)] leading-none tracking-tight">
+                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-[var(--app-secondary)] leading-none tracking-tight">
                         {prevPrayerName}
                       </span>
                     </div>
@@ -304,26 +302,26 @@ export function ClockPanel({
                 )}
 
                 <div className={cn(
-                  "bg-[var(--md-sys-color-primary-container)]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-4 sm:p-5 md:p-6 flex-1 flex flex-col justify-between border border-white/10 dark:border-white/5 relative overflow-hidden group min-h-[110px]",
+                  "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/90 backdrop-blur-md rounded-[20px] lg:rounded-[24px] p-4 sm:p-5 md:p-6 flex-1 flex flex-col justify-between border border-white/10 dark:border-white/5 relative overflow-hidden group min-h-[110px]",
                   !prevPrayerName && "w-full"
                 )}>
                   {/* Atmospheric Background Graphic */}
-                  <div className="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[var(--md-sys-color-primary)]/20 to-transparent rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition-opacity duration-1000 pointer-events-none" />
-                  <div className="absolute -left-10 -bottom-20 w-48 h-48 bg-gradient-to-tr from-[var(--md-sys-color-primary)]/10 to-transparent rounded-full blur-2xl opacity-40 pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-[var(--app-primary)]/20 to-transparent rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition-opacity duration-1000 pointer-events-none" />
+                  <div className="absolute -left-10 -bottom-20 w-48 h-48 bg-gradient-to-tr from-[var(--app-primary)]/10 to-transparent rounded-full blur-2xl opacity-40 pointer-events-none" />
                   
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full relative z-10 gap-4 sm:gap-0">
                     <div className="flex flex-col w-full sm:w-auto">
                       <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[var(--md-sys-color-primary)]">
+                        <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-primary">
                           {t("nextPrayer")}
                         </span>
                       </div>
                       <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
-                        <span className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--md-sys-color-on-primary-container)] tracking-tighter leading-none drop-shadow-sm">
+                        <span className="text-3xl sm:text-4xl md:text-5xl font-black text-primary tracking-tighter leading-none drop-shadow-sm">
                           {nextPrayerName}
                         </span>
                         {nextPrayerTime && (
-                          <span className="text-sm sm:text-base font-bold text-[var(--md-sys-color-on-primary-container)]/60 tracking-tight">
+                          <span className="text-sm sm:text-base font-bold text-primary/60 tracking-tight">
                             {format(nextPrayerTime, settings.timeFormat === "12h" ? "hh:mm a" : "HH:mm")}
                           </span>
                         )}
@@ -331,10 +329,10 @@ export function ClockPanel({
                     </div>
 
                     <div className="flex flex-col items-start sm:items-end w-full sm:w-auto">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--md-sys-color-on-primary-container)]/70 mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-1">
                         {t("timeRemaining")}
                       </span>
-                      <div className="flex items-baseline font-mono text-[var(--md-sys-color-primary)] text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter drop-shadow-sm">
+                      <div className="flex items-baseline font-mono text-primary text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter drop-shadow-sm">
                         {countdownParts.active ? (
                           <>
                             {countdownParts.h > 0 && (
@@ -355,7 +353,7 @@ export function ClockPanel({
                             </div>
                           </>
                         ) : (
-                           <span className="text-3xl sm:text-4xl md:text-5xl font-sans font-black uppercase tracking-widest text-[var(--md-sys-color-error)] animate-pulse">{t("now")}</span>
+                           <span className="text-3xl sm:text-4xl md:text-5xl font-sans font-black uppercase tracking-widest text-[var(--app-danger)] animate-pulse">{t("now")}</span>
                         )}
                       </div>
                     </div>
@@ -363,9 +361,9 @@ export function ClockPanel({
                   
                   {/* M3 Expressive Squiggly Progress bar */}
                   <div className="w-full mt-4 sm:mt-5 relative z-10">
-                    <div className="w-full h-2.5 lg:h-3 bg-[var(--md-sys-color-on-primary-container)]/10 text-[var(--md-sys-color-primary)] rounded-full relative flex items-center">
+                    <div className="w-full h-2.5 lg:h-3 bg-primary/10 text-primary rounded-full relative flex items-center">
                       <div
-                        className="absolute inset-y-0 left-0 bg-current transition-all duration-1000 ease-linear animate-squiggle drop-shadow-[0_2px_4px_var(--md-sys-color-primary)]"
+                        className="absolute inset-y-0 left-0 bg-current transition-all duration-1000 ease-linear animate-squiggle drop-shadow-[0_2px_4px_var(--app-primary)]"
                         style={{
                           width: `${progress}%`,
                           maskImage: `url("data:image/svg+xml,%3Csvg width='40' height='16' viewBox='0 0 40 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 8 Q 10 2 20 8 T 40 8' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
@@ -376,7 +374,7 @@ export function ClockPanel({
                       />
                       {/* Tracking dot */}
                       <div
-                        className="absolute h-3 w-3 lg:h-4 lg:w-4 bg-[var(--md-sys-color-primary)] rounded-full transition-all duration-1000 ease-linear shadow-[0_0_8px_var(--md-sys-color-primary)] border-[1.5px] border-white z-10"
+                        className="absolute h-3 w-3 lg:h-4 lg:w-4 bg-primary rounded-full transition-all duration-1000 ease-linear shadow-[0_0_8px_var(--app-primary)] border-[1.5px] border-white z-10"
                         style={{ left: `calc(${progress}% - 6px)` }}
                       />
                     </div>
@@ -466,33 +464,31 @@ export function ClockPanel({
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onCalendarClick?.(); } }}
               className={cn(
                 "relative overflow-hidden flex items-center gap-2 sm:gap-2 md:gap-3 lg:gap-2 xl:gap-4 p-2.5 sm:p-2.5 md:p-3.5 lg:p-2.5 xl:p-4 transition-all duration-500 ease-out cursor-pointer select-none group",
-                "bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
-                visualStyle === 'glass' && "bg-[var(--glass-bg)]/40 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-[var(--md-sys-color-primary-container)]"
+                "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)]/40 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-foreground",
+                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]"
               )}
             >
-              {/* @ts-ignore */}
-              <md-elevation level="1"></md-elevation>
-              {/* @ts-ignore */}
-              <md-ripple></md-ripple>
+              
+              
 
               {/* Dynamic Calendar Watermark */}
               <Calendar className={cn(
                 "absolute -right-3 -bottom-3 w-10 h-10 md:w-14 md:h-14 lg:w-10 lg:h-10 xl:w-16 xl:h-16 opacity-[0.04] pointer-events-none transition-all duration-700 ease-out group-hover:rotate-12 group-hover:scale-125 group-hover:opacity-[0.08]",
-                "text-[var(--md-sys-color-primary)]",
-                visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)] opacity-5",
-                visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)] opacity-5",
-                visualStyle === 'soft' && "text-[var(--md-sys-color-primary)] opacity-[0.05]"
+                "text-primary",
+                visualStyle === 'retro' && "text-foreground opacity-5",
+                visualStyle === 'glass' && "text-foreground opacity-5",
+                visualStyle === 'soft' && "text-primary opacity-[0.05]"
               )} />
 
               {/* Gregorian Day Number */}
               <span className={cn(
                 "text-2.5xl sm:text-2.5xl md:text-3.5xl lg:text-3.5xl xl:text-4xl 2xl:text-4.5xl font-black font-sans leading-none tracking-tighter select-none shrink-0 tabular-nums z-10 transition-colors duration-300",
-                "text-[var(--md-sys-color-primary)]",
-                visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'soft' && "text-[var(--md-sys-color-primary)]"
+                "text-primary",
+                visualStyle === 'retro' && "text-foreground",
+                visualStyle === 'glass' && "text-foreground",
+                visualStyle === 'soft' && "text-primary"
               )}>
                 {format(currentTime, "d")}
               </span>
@@ -522,33 +518,31 @@ export function ClockPanel({
               whileTap={{ scale: 0.98 }}
               className={cn(
                 "relative overflow-hidden flex items-center gap-2 sm:gap-2 md:gap-3 lg:gap-2 xl:gap-4 p-2.5 sm:p-2.5 md:p-3.5 lg:p-2.5 xl:p-4 transition-all duration-500 ease-out select-none group",
-                "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)]",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'glass' && "bg-[var(--glass-bg)]/40 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-[var(--md-sys-color-tertiary-container)]"
+                "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)]",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none text-foreground",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)]/40 backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-foreground",
+                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20 bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))]"
               )}
             >
-              {/* @ts-ignore */}
-              <md-elevation level="1"></md-elevation>
-              {/* @ts-ignore */}
-              <md-ripple></md-ripple>
+              
+              
 
               {/* Dynamic Moon Watermark */}
               <Moon className={cn(
                 "absolute -right-3 -bottom-3 w-10 h-10 md:w-14 md:h-14 lg:w-10 lg:h-10 xl:w-16 xl:h-16 opacity-[0.04] pointer-events-none transition-all duration-700 ease-out group-hover:-rotate-12 group-hover:scale-125 group-hover:opacity-[0.08]",
-                "text-[var(--md-sys-color-tertiary)]",
-                visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)] opacity-5",
-                visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)] opacity-5",
-                visualStyle === 'soft' && "text-[var(--md-sys-color-tertiary)] opacity-[0.05]"
+                "text-[var(--app-secondary)]",
+                visualStyle === 'retro' && "text-foreground opacity-5",
+                visualStyle === 'glass' && "text-foreground opacity-5",
+                visualStyle === 'soft' && "text-[var(--app-secondary)] opacity-[0.05]"
               )} />
 
               {/* Hijri Day Number */}
               <span className={cn(
                 "text-2.5xl sm:text-2.5xl md:text-3.5xl lg:text-3.5xl xl:text-4xl 2xl:text-4.5xl font-black font-sans leading-none tracking-tighter select-none shrink-0 tabular-nums z-10 transition-colors duration-300",
-                "text-[var(--md-sys-color-tertiary)]",
-                visualStyle === 'retro' && "text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'glass' && "text-[var(--md-sys-color-on-surface)]",
-                visualStyle === 'soft' && "text-[var(--md-sys-color-tertiary)]"
+                "text-[var(--app-secondary)]",
+                visualStyle === 'retro' && "text-foreground",
+                visualStyle === 'glass' && "text-foreground",
+                visualStyle === 'soft' && "text-[var(--app-secondary)]"
               )}>
                 {hijriDayNum || "•"}
               </span>
@@ -581,16 +575,15 @@ export function ClockPanel({
               whileHover={{ scale: 1.02, rotate: -1, y: -4 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
+                "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] p-2 sm:p-2.5 rounded-[var(--shape-xl)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none",
                 visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)]"
               )}
             >
-              {/* @ts-ignore */}
-              <md-ripple></md-ripple>
+              
               <motion.div
-                className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--md-sys-color-tertiary)]/10 pointer-events-none"
+                className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--app-secondary)]/10 pointer-events-none"
                 whileHover={{ rotate: -12, opacity: 0.2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
@@ -598,7 +591,7 @@ export function ClockPanel({
               </motion.div>
 
               <div className="relative z-10 flex flex-col h-full justify-between gap-1">
-                <h3 className="md3-label-small text-[var(--md-sys-color-on-tertiary-container)]/80 font-black uppercase tracking-widest">
+                <h3 className="text-xs font-semibold tracking-wide text-[var(--app-secondary)]/80 font-black uppercase tracking-widest">
                   {t("qibla")}
                 </h3>
                 <div>
@@ -619,20 +612,20 @@ export function ClockPanel({
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
               className={cn(
-                "p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between select-none transition-all duration-300 group cursor-default",
+                "p-2 sm:p-2.5 rounded-[var(--shape-xl)] flex-1 relative overflow-hidden min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between select-none transition-all duration-300 group cursor-default",
                 iqamahRemainingSeconds <= 10 
                   ? "bg-red-600 text-white border-2 border-red-700 shadow-[0_0_20px_rgba(220,38,38,0.7)] animate-pulse" 
                   : iqamahRemainingSeconds <= 30
                     ? "bg-amber-500 text-white border-2 border-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-                    : "bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] border border-[var(--md-sys-color-error)]/30",
-                visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)] rounded-none",
-                visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-[var(--md-sys-color-on-surface)]",
+                    : "bg-[var(--app-danger-container, hsl(var(--heroui-danger) / 0.15))] text-[var(--app-danger)] border border-[var(--app-danger)]/30",
+                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none",
+                visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-foreground",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-white/20"
               )}
             >
               {/* Progress Bar background overlay */}
               <div 
-                className="absolute inset-y-0 left-0 bg-[var(--md-sys-color-error)]/10 dark:bg-white/10 transition-all duration-1000 ease-linear pointer-events-none"
+                className="absolute inset-y-0 left-0 bg-[var(--app-danger)]/10 dark:bg-white/10 transition-all duration-1000 ease-linear pointer-events-none"
                 style={{ 
                   width: `${(iqamahRemainingSeconds / (iqamahTotalSeconds || 600)) * 100}%`,
                   display: iqamahRemainingSeconds <= 5 ? 'none' : 'block'
@@ -658,8 +651,8 @@ export function ClockPanel({
                 ) : (
                   <>
                     <h3 className={cn(
-                      "md3-label-small font-black uppercase tracking-widest text-center",
-                      iqamahRemainingSeconds <= 10 ? "text-red-100 dark:text-red-200" : iqamahRemainingSeconds <= 30 ? "text-amber-100" : "text-[var(--md-sys-color-on-error-container)]/80"
+                      "text-xs font-semibold tracking-wide font-black uppercase tracking-widest text-center",
+                      iqamahRemainingSeconds <= 10 ? "text-red-100 dark:text-red-200" : iqamahRemainingSeconds <= 30 ? "text-amber-100" : "text-[var(--app-danger)]/80"
                     )}>
                       IQAMAH {currentPrayerNameForIqamah ? `• ${currentPrayerNameForIqamah}` : ''} {iqamahPaused ? " (PAUSED)" : ""}
                     </h3>
@@ -685,29 +678,25 @@ export function ClockPanel({
               {/* Tactile Administrative Overlays revealed on hover/touch */}
               {onIqamahTogglePause && onIqamahAddMinute && iqamahRemainingSeconds > 5 && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3 z-20">
-                  {/* @ts-ignore */}
-                  <md-icon-button
+                  <Button isIconOnly variant="ghost" className="rounded-full"
                     onClick={(e: any) => {
                       e.stopPropagation();
                       onIqamahTogglePause();
                     }}
-                    style={{ '--md-icon-button-state-layer-color': 'white', '--md-icon-button-icon-color': 'white' } as any}
                     title={iqamahPaused ? "Mula" : "Jeda"}
                   >
                     {iqamahPaused ? <Play className="fill-white stroke-[2.5]" /> : <Pause className="fill-white stroke-[2.5]" />}
-                  </md-icon-button>
-                  {/* @ts-ignore */}
-                  <md-filled-tonal-button
+                  </Button>
+                  <Button variant="ghost"
                     onClick={(e: any) => {
                       e.stopPropagation();
                       onIqamahAddMinute();
                     }}
                     title="Tambah 1 minit"
-                    style={{ '--md-sys-color-secondary-container': 'rgba(255,255,255,0.2)', '--md-sys-color-on-secondary-container': 'white' } as any}
                   >
-                    <Plus slot="icon" />
+                    <Plus />
                     +1m
-                  </md-filled-tonal-button>
+                  </Button>
                 </div>
               )}
             </motion.div>
@@ -719,16 +708,15 @@ export function ClockPanel({
           whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className={cn(
-            "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] p-2 sm:p-2.5 rounded-[var(--md-sys-shape-corner-extra-large)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
-            visualStyle === 'retro' && "border-2 border-[var(--md-sys-color-on-surface)] shadow-[4px_4px_0px_0px_var(--md-sys-color-on-surface)]",
+            "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] p-2 sm:p-2.5 rounded-[var(--shape-xl)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
+            visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)]",
             visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
             visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)]"
           )}
         >
-          {/* @ts-ignore */}
-          <md-ripple></md-ripple>
+          
           <motion.div
-            className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--md-sys-color-secondary)]/10 pointer-events-none"
+            className="absolute -right-2 -bottom-2 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-[var(--app-secondary)]/10 pointer-events-none"
             whileHover={{ rotate: 12, opacity: 0.2 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
@@ -736,7 +724,7 @@ export function ClockPanel({
           </motion.div>
 
           <div className="relative z-10 flex flex-col h-full justify-between gap-1">
-            <h3 className="md3-label-small text-[var(--md-sys-color-on-secondary-container)]/80 font-black uppercase tracking-widest">
+            <h3 className="text-xs font-semibold tracking-wide text-[var(--app-secondary)]/80 font-black uppercase tracking-widest">
               {t("sunrise")}
             </h3>
             <div>

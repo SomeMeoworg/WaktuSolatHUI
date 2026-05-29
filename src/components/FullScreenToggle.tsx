@@ -1,7 +1,8 @@
+import { Button } from "@heroui/react";
 import { useState, useEffect } from "react";
 import { Maximize, Minimize } from "lucide-react";
 import { motion } from "motion/react";
-import "@material/web/iconbutton/filled-tonal-icon-button.js";
+
 
 export function FullScreenToggle() {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -34,8 +35,7 @@ export function FullScreenToggle() {
       whileTap={{ scale: 0.95 }}
       className="inline-flex shrink-0 w-12 h-12 lg:w-[56px] lg:h-[56px]"
     >
-      {/* @ts-ignore */}
-      <md-filled-tonal-icon-button
+      <Button isIconOnly variant="secondary" radius="full"
         onClick={toggleFullscreen}
         title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
         aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
@@ -46,7 +46,7 @@ export function FullScreenToggle() {
         ) : (
           <Maximize size={24} className="stroke-[2.5]" />
         )}
-      </md-filled-tonal-icon-button>
+      </Button>
     </motion.div>
   );
 }
