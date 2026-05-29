@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Compass, X, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { useAppContext } from "../AppContext";
+import "@material/web/button/filled-tonal-button.js";
 
 export function SolatMode({
   prayerName,
@@ -103,13 +104,13 @@ export function SolatMode({
           duration: isDuaStage ? 12 : 8,
           ease: "easeInOut",
         }}
-        className="absolute w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none"
+        className="absolute w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] rounded-full bg-[var(--md-sys-color-primary)]/10 blur-[120px] pointer-events-none"
       />
 
       {/* Top Header: Solat Mode Indicator & Clock */}
       <div className="w-full flex items-center justify-between z-10">
         <div className="flex items-center gap-2 text-zinc-500 font-extrabold tracking-widest text-xs uppercase bg-zinc-900/60 border border-zinc-800 px-4 py-2 rounded-full">
-          <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isDuaStage ? 'opacity-80' : 'animate-pulse'}`}></span>
+          <span className={`w-2 h-2 rounded-full bg-[var(--md-sys-color-primary)] ${isDuaStage ? 'opacity-80' : 'animate-pulse'}`}></span>
           {isDuaStage ? "Dua & Remembrance" : "Solat Sedang Berlangsung"}
         </div>
         
@@ -132,7 +133,7 @@ export function SolatMode({
             transition={{ duration: 0.8 }}
             className="flex flex-col items-center justify-center text-center my-auto z-10 gap-6"
           >
-            <span className="text-emerald-500/80 font-black uppercase tracking-[0.4em] text-xs sm:text-sm">
+            <span className="text-[var(--md-sys-color-primary)]/80 font-black uppercase tracking-[0.4em] text-xs sm:text-sm">
               {t("solatModeHeading")}
             </span>
             
@@ -149,7 +150,7 @@ export function SolatMode({
             </p>
 
             {/* Elegant static divider */}
-            <div className="w-16 h-0.5 rounded bg-emerald-500/30 mt-4" />
+            <div className="w-16 h-0.5 rounded bg-[var(--md-sys-color-primary)]/30 mt-4" />
           </motion.div>
         ) : (
           <motion.div
@@ -160,7 +161,7 @@ export function SolatMode({
             transition={{ duration: 0.8 }}
             className="flex flex-col items-center justify-center text-center my-auto z-10 gap-8"
           >
-            <span className="text-emerald-500/80 font-black uppercase tracking-[0.4em] text-xs sm:text-sm">
+            <span className="text-[var(--md-sys-color-primary)]/80 font-black uppercase tracking-[0.4em] text-xs sm:text-sm">
               {t("solatModeDuaHeading")}
             </span>
 
@@ -173,7 +174,7 @@ export function SolatMode({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 1.2, ease: "easeInOut" }}
-                  className="font-serif text-3.5xl sm:text-5.5xl lg:text-6.5xl text-emerald-400 font-bold leading-relaxed tracking-wide drop-shadow-[0_2px_15px_rgba(52,211,153,0.15)]"
+                  className="font-serif text-3.5xl sm:text-5.5xl lg:text-6.5xl text-[var(--md-sys-color-tertiary)] font-bold leading-relaxed tracking-wide drop-shadow-[0_2px_15px_rgba(var(--md-sys-color-tertiary-rgb),0.15)]"
                 >
                   {dhikrs[dhikrIndex]}
                 </motion.p>
@@ -185,7 +186,7 @@ export function SolatMode({
             </p>
 
             {/* Elegant static divider */}
-            <div className="w-12 h-0.5 rounded bg-emerald-500/20 mt-2" />
+            <div className="w-12 h-0.5 rounded bg-[var(--md-sys-color-primary)]/20 mt-2" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -194,7 +195,7 @@ export function SolatMode({
       <div className="w-full flex flex-col items-center gap-6 z-10">
         {showQibla && (
           <div className="flex items-center gap-2.5 text-zinc-400 font-semibold tracking-wider text-sm bg-zinc-900/30 border border-zinc-800/40 px-5 py-3 rounded-full">
-            <Compass size={16} className="text-emerald-500/80 shrink-0 animate-spin-slow" />
+            <Compass size={16} className="text-[var(--md-sys-color-primary)]/80 shrink-0 animate-spin-slow" />
             <span>Kiblat: 292.41° (Barat Laut)</span>
           </div>
         )}
@@ -213,20 +214,20 @@ export function SolatMode({
             exit={{ opacity: 0, y: 10 }}
             className="absolute bottom-24 inset-x-0 mx-auto w-fit z-20 flex flex-col items-center gap-2"
           >
-            <button
+            {/* @ts-ignore */}
+            <md-filled-tonal-button
               onClick={handleExitClick}
-              className="px-6 py-3.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-bold text-sm shadow-xl flex items-center gap-2 hover:scale-105 transition-all"
+              className="shadow-xl"
+              style={{ '--md-filled-tonal-button-container-shape': '24px', '--md-filled-tonal-button-container-height': '48px' } as any}
             >
-              <X size={16} className="stroke-[2.5]" />
-              <span>
-                {exitTapCount > 0 ? t("doubleTapExit") : t("exitSolatMode")}
-              </span>
-            </button>
+              <X slot="icon" size={16} className="stroke-[2.5]" />
+              {exitTapCount > 0 ? t("doubleTapExit") : t("exitSolatMode")}
+            </md-filled-tonal-button>
             {exitTapCount > 0 && (
               <motion.span 
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-emerald-400 text-[10px] font-bold bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full shadow-sm"
+                className="text-[var(--md-sys-color-on-error-container)] text-[10px] font-bold bg-[var(--md-sys-color-error-container)] px-3 py-1 rounded-full shadow-sm"
               >
                 {t("doubleTapExit")}
               </motion.span>

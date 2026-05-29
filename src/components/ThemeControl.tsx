@@ -337,12 +337,14 @@ export function ThemeControl() {
                             key={mode.id}
                             onClick={() => withTransition(() => updateSettings({ darkThemeMode: mode.id as any }))}
                             className={cn(
-                              "flex flex-col items-center justify-center py-2 px-0.5 rounded-xl text-center transition-all duration-200",
+                              "relative overflow-hidden flex flex-col items-center justify-center py-2 px-0.5 rounded-xl text-center transition-all duration-200",
                               isSelected 
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
                                 : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             <mode.icon size={16} className="mb-1" strokeWidth={2.5} />
                             <span className="text-[9px] sm:text-[10px] font-bold tracking-tighter sm:tracking-tight leading-none">{mode.label}</span>
                           </button>
@@ -392,12 +394,14 @@ export function ThemeControl() {
                             key={source.id}
                             onClick={() => withTransition(() => updateSettings({ colorThemeMode: source.id as any }))}
                             className={cn(
-                              "py-2 rounded-xl text-xs font-black transition-all duration-200 text-center",
+                              "relative overflow-hidden py-2 rounded-xl text-xs font-black transition-all duration-200 text-center",
                               isSelected 
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
                                 : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {source.label}
                           </button>
                         );
@@ -415,13 +419,15 @@ export function ThemeControl() {
                             whileTap={{ scale: 0.8, rotate: -10 }}
                             onClick={() => handleColorSelect(color)}
                             className={cn(
-                              "w-8 h-8 rounded-[0.75rem] border-2 transition-all shadow-sm flex items-center justify-center shrink-0 duration-300",
+                              "relative overflow-hidden w-8 h-8 rounded-[0.75rem] border-2 transition-all shadow-sm flex items-center justify-center shrink-0 duration-300",
                               settings.themeColor === color && !settings.wallpaperEnabled
                                 ? "border-transparent ring-2 ring-[var(--md-sys-color-primary)] scale-110 rounded-full" 
                                 : "border-white/10 hover:border-white/40"
                             )}
                             style={{ backgroundColor: color }}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {settings.themeColor === color && !settings.wallpaperEnabled && (
                               <Check size={14} strokeWidth={4} className="text-white drop-shadow" />
                             )}
@@ -430,9 +436,11 @@ export function ThemeControl() {
                         <motion.label 
                           whileHover={{ scale: 1.2, rotate: 10 }}
                           whileTap={{ scale: 0.8, rotate: -10 }}
-                          className="w-8 h-8 rounded-[0.75rem] bg-[var(--md-sys-color-surface-container-highest)] flex items-center justify-center cursor-pointer hover:bg-[var(--md-sys-color-secondary-container)] hover:rounded-full transition-all duration-300 border-2 border-transparent shadow-sm shrink-0"
+                          className="relative overflow-hidden w-8 h-8 rounded-[0.75rem] bg-[var(--md-sys-color-surface-container-highest)] flex items-center justify-center cursor-pointer hover:bg-[var(--md-sys-color-secondary-container)] hover:rounded-full transition-all duration-300 border-2 border-transparent shadow-sm shrink-0"
                           title={t("customColor")}
                         >
+                          {/* @ts-ignore */}
+                          <md-ripple></md-ripple>
                           <input
                             type="color"
                             className="opacity-0 absolute w-0 h-0"
@@ -503,12 +511,14 @@ export function ThemeControl() {
                                   key={src.id}
                                   onClick={() => withTransition(() => updateSettings({ wallpaperSource: src.id as any }))}
                                   className={cn(
-                                    "flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-black transition-all",
+                                    "relative overflow-hidden flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-black transition-all",
                                     isSelected 
                                       ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] shadow-sm scale-102"
                                       : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                                   )}
                                 >
+                                  {/* @ts-ignore */}
+                                  <md-ripple></md-ripple>
                                   <src.icon size={12} strokeWidth={2.5} />
                                   {src.label}
                                 </button>
@@ -542,13 +552,15 @@ export function ThemeControl() {
                               </motion.div>
                               
                               {previewWallpaperUrl && (
-                                <button
+                                /* @ts-ignore */
+                                <md-outlined-button
+                                  type="button"
                                   onClick={handleClearWallpaper}
-                                  className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] hover:bg-[var(--md-sys-color-error)] hover:text-white transition-colors"
+                                  className="w-full mt-3"
+                                  style={{ '--md-sys-color-primary': 'var(--md-sys-color-error)' } as any}
                                 >
-                                  <Trash2 size={12} />
                                   Padam Gambar Latar
-                                </button>
+                                </md-outlined-button>
                               )}
 
                               <input
@@ -630,12 +642,14 @@ export function ThemeControl() {
                                     key={style.id}
                                     onClick={() => withTransition(() => updateSettings({ wallpaperOverlayStyle: style.id as any }))}
                                     className={cn(
-                                      "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
+                                      "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                                       isSelected
                                         ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
                                         : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                                     )}
                                   >
+                                    {/* @ts-ignore */}
+                                    <md-ripple></md-ripple>
                                     {style.label}
                                   </button>
                                 );
@@ -700,12 +714,14 @@ export function ThemeControl() {
                             key={style.id}
                             onClick={() => handleVisualStyleSelect(style.id)}
                             className={cn(
-                              "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
+                              "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.visualStyle === style.id
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
                                 : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {style.name}
                           </button>
                         ))}
@@ -723,12 +739,14 @@ export function ThemeControl() {
                             key={variant.id}
                             onClick={() => handleVariantSelect(variant.id)}
                             className={cn(
-                              "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
+                              "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeVariant === variant.id
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
                                 : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {variant.name}
                           </button>
                         ))}
@@ -746,12 +764,14 @@ export function ThemeControl() {
                             key={contrast.value}
                             onClick={() => handleContrastSelect(contrast.value)}
                             className={cn(
-                              "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
+                              "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeContrast === contrast.value
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
                                 : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {contrast.name}
                           </button>
                         ))}
@@ -769,13 +789,15 @@ export function ThemeControl() {
                             key={font.id}
                             onClick={() => handleFontSelect(font.id)}
                             className={cn(
-                              "px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
+                              "relative overflow-hidden px-3 py-1 rounded-lg text-[10px] font-extrabold border transition-all",
                               settings.themeFont === font.id
                                 ? "bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] border-transparent shadow-sm"
                                 : "border-[var(--md-sys-color-outline)]/10 text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-outline)]/5"
                             )}
                             style={{ fontFamily: font.id }}
                           >
+                            {/* @ts-ignore */}
+                            <md-ripple></md-ripple>
                             {font.name}
                           </button>
                         ))}

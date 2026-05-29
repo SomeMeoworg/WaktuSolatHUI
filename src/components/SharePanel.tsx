@@ -25,7 +25,7 @@ import { cn } from "../lib/utils";
 import { JAKIM_ZONES } from "../lib/zones";
 import "@material/web/iconbutton/icon-button.js";
 import "@material/web/icon/icon.js";
-import "@material/web/textfield/filled-text-field.js";
+import "@material/web/textfield/outlined-text-field.js";
 import "@material/web/button/text-button.js";
 import "@material/web/tabs/tabs.js";
 import "@material/web/tabs/primary-tab.js";
@@ -688,16 +688,13 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                     <div className="max-h-[250px] sm:max-h-[220px] flex flex-col mt-1.5 rounded-2xl bg-[var(--md-sys-color-surface)] ring-1 ring-[var(--md-sys-color-outline)]/12 shadow-xl overflow-hidden">
                       <div className="px-3 py-2 border-b border-[var(--md-sys-color-outline)]/10 bg-[var(--md-sys-color-surface-container-low)]">
                         {/* @ts-ignore */}
-                        <md-filled-text-field
+                        <md-outlined-text-field
                           value={searchQuery}
                           onInput={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
                           placeholder={t("searchZonePlaceholder" as any)}
                           className="w-full"
                           style={{ 
-                            '--md-filled-text-field-container-shape': '28px',
-                            '--md-filled-text-field-active-indicator-height': '0px',
-                            '--md-filled-text-field-hover-active-indicator-height': '0px',
-                            '--md-filled-text-field-focus-active-indicator-height': '0px',
+                            '--md-outlined-text-field-container-shape': '28px',
                             '--md-sys-color-surface-variant': 'var(--md-sys-color-surface-container-high)'
                           } as any}
                         >
@@ -708,7 +705,7 @@ export function SharePanel({ isOpen, onClose, currentZone, currentZoneData }: Sh
                               <md-icon>close</md-icon>
                             </md-icon-button>
                           )}
-                        </md-filled-text-field>
+                        </md-outlined-text-field>
                       </div>
 
                       {/* Scrollable Zones List */}

@@ -12,7 +12,7 @@ import "@material/web/switch/switch.js";
 import "@material/web/tabs/tabs.js";
 import "@material/web/tabs/primary-tab.js";
 import "@material/web/icon/icon.js";
-import "@material/web/textfield/filled-text-field.js";
+import "@material/web/textfield/outlined-text-field.js";
 import { useAppContext } from "../AppContext";
 import { MapModal } from "./MapModal";
 import { useVisualStyle } from "../hooks/useVisualStyle";
@@ -392,17 +392,14 @@ export function ZoneSelector({
                     >
                       <div className="relative group w-full mb-2">
                         {/* @ts-ignore */}
-                        <md-filled-text-field
+                        <md-outlined-text-field
                           type="text"
                           placeholder={t("searchPlaceholder")}
                           value={searchQuery}
                           onInput={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
                           className="w-full"
                           style={{ 
-                            '--md-filled-text-field-container-shape': '28px',
-                            '--md-filled-text-field-active-indicator-height': '0px',
-                            '--md-filled-text-field-hover-active-indicator-height': '0px',
-                            '--md-filled-text-field-focus-active-indicator-height': '0px',
+                            '--md-outlined-text-field-container-shape': '28px',
                             '--md-sys-color-surface-variant': 'var(--md-sys-color-surface-container-high)'
                           } as any}
                         >
@@ -416,7 +413,7 @@ export function ZoneSelector({
                               <md-icon>close</md-icon>
                             </md-icon-button>
                           )}
-                        </md-filled-text-field>
+                        </md-outlined-text-field>
                       </div>
 
                       {!searchQuery && (

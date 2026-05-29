@@ -522,8 +522,10 @@ export function SettingsModal({
                     <button
                       onClick={() => setShowAdvancedGeneral(!showAdvancedGeneral)}
                       type="button"
-                      className="w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none"
+                      className="relative w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none overflow-hidden"
                     >
+                      {/* @ts-ignore */}
+                      <md-ripple></md-ripple>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center">
                           <Sliders size={20} className="stroke-[2.5]" />
@@ -1244,8 +1246,10 @@ export function SettingsModal({
                     <button
                       onClick={() => setShowAdvancedCalculations(!showAdvancedCalculations)}
                       type="button"
-                      className="w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none"
+                      className="relative w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none overflow-hidden"
                     >
+                      {/* @ts-ignore */}
+                      <md-ripple></md-ripple>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center">
                           <Sliders size={20} className="stroke-[2.5]" />
@@ -1367,8 +1371,10 @@ export function SettingsModal({
                     <button
                       onClick={() => setShowHijriEngine(!showHijriEngine)}
                       type="button"
-                      className="w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none"
+                      className="relative w-full flex items-center justify-between font-bold text-left cursor-pointer focus:outline-none overflow-hidden"
                     >
+                      {/* @ts-ignore */}
+                      <md-ripple></md-ripple>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center">
                           <Sliders size={20} className="stroke-[2.5]" />
