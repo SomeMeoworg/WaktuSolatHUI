@@ -1,1 +1,2 @@
-"import { heroui } from \"@heroui/react\";\nexport default heroui();\n"
+// HeroUI v3 — no plugin export needed
+export {};

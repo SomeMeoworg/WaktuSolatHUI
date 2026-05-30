@@ -257,10 +257,9 @@ export function PrayerSchedule({
             whileTap={{ scale: 0.95 }}
             className="inline-flex rotate-3 mt-1 w-10 h-10 lg:w-[48px] lg:h-[48px]"
           >
-            <Button isIconOnly variant="secondary" radius="full"
-              onClick={onSettingsClick}
-              title={t("settings")}
-              style={{ '--md-filled-tonal-icon-button-container-shape': '20px', width: '100%', height: '100%' }}
+            <Button isIconOnly variant="secondary"
+              onPress={onSettingsClick}
+              className="rounded-full w-full h-full"
             >
               <Settings size={20} className={cn(
                 visualStyle === 'retro' && "stroke-[3]",
@@ -283,17 +282,16 @@ export function PrayerSchedule({
               whileTap={{ scale: 0.96 }}
               className="inline-flex shrink-0"
             >
-              <Button radius="full" variant="secondary"
-                isSelected={isSelected ? true : undefined}
-                label={
-                  f === "all"
+              <Button variant={isSelected ? "primary" : "ghost"}
+                className="rounded-full"
+                onPress={() => setFilter(f)}
+              >
+                {f === "all"
                     ? t("filterAll" as any)
                     : f === "fardu"
-                      ? t("filterFardu" as any)
-                      : t("filterSunat" as any)
-                }
-                onClick={() => setFilter(f)}
-              ></Button>
+                      ? t("filterFardhu" as any)
+                      : t("filterSunat" as any)}
+              </Button>
             </motion.div>
           );
         })}

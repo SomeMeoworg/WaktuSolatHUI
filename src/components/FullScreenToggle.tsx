@@ -35,11 +35,10 @@ export function FullScreenToggle() {
       whileTap={{ scale: 0.95 }}
       className="inline-flex shrink-0 w-12 h-12 lg:w-[56px] lg:h-[56px]"
     >
-      <Button isIconOnly variant="secondary" radius="full"
-        onClick={toggleFullscreen}
-        title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+      <Button isIconOnly variant="secondary"
+        onPress={toggleFullscreen}
+        className="w-full h-full rounded-full"
         aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-        style={{ '--md-filled-tonal-icon-button-container-shape': '24px', width: '100%', height: '100%' }}
       >
         {isFullscreen ? (
           <Minimize size={24} className="stroke-[2.5]" />

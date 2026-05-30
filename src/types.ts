@@ -31,6 +31,7 @@ export interface PrayerPreference {
   preAlert: PreAlertTime;
   offset: number; // in minutes
   iqamahOffset?: number; // in minutes
+  volume?: number;
 }
 
 export type PrayerKey = "imsak" | "fajr" | "syuruk" | "dhuhr" | "asr" | "maghrib" | "isha";
@@ -65,6 +66,9 @@ export interface GeneralSettings {
   azanAlertStyle?: 'dramatic' | 'standard' | 'modern' | 'subtle' | 'minimal' | 'none';
   azanAlertDuration?: number; // seconds before auto-dismiss
   solatModeEnabled?: boolean;
+  solatMode?: boolean;
+  adjustments?: Record<string, number>;
+  highLatitude?: boolean;
   solatModeDuration?: Record<string, number>; // per-prayer minutes
   solatModeShowClock?: boolean;
   solatModeShowQibla?: boolean;
