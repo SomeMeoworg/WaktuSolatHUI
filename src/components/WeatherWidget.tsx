@@ -277,10 +277,10 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
       onClick={() => setIsModalOpen(true)}
       className={cn(
         "flex w-full items-center justify-between text-foreground rounded-[var(--shape-xl)] p-3 sm:p-4 lg:p-3 xl:p-4 relative overflow-hidden shrink-0 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-primary)]",
-        getWidgetBgClass(),
-        visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)]",
-        visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[8px] border border-[var(--glass-border)]",
-        visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
+        (!visualStyle || visualStyle === 'default') && getWidgetBgClass(),
+        visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] bg-content1",
+        visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-glass-contrast shadow-md",
+        visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1"
       )}
       whileHover={{ scale: 1.01, y: -2 }}
       whileTap={{ scale: 0.98 }}
@@ -322,7 +322,7 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 opacity-80">
             <div
-              className="flex items-center gap-1.5 text-[var(--app-outline)]"
+              className="flex items-center gap-1.5 text-foreground/75"
               title={t("humidity" as any)}
             >
               <Droplets className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />
@@ -335,7 +335,7 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
             </div>
             {weather.precipitationProb !== undefined && (
               <div
-                className="flex items-center gap-1.5 text-[var(--app-outline)]"
+                className="flex items-center gap-1.5 text-foreground/75"
                 title={t("rainProb" as any)}
               >
                 <Umbrella className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />
@@ -348,7 +348,7 @@ export function WeatherWidget({ selectedZone, userCoords, currentLocationName }:
               </div>
             )}
             <div
-              className="flex items-center gap-1.5 text-[var(--app-outline)]"
+              className="flex items-center gap-1.5 text-foreground/75"
               title={t("windSpeed" as any)}
             >
               <Wind className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--app-secondary)] shrink-0 stroke-[3]" />

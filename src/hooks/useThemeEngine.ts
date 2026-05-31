@@ -9,7 +9,7 @@ export function useThemeEngine() {
   
   useEffect(() => {
     // Generate the theme colors
-    const colors = generateTheme(settings.themeColor, isDark);
+    const colors = generateTheme(settings.themeColor ?? '', isDark);
     
     // Apply the colors to CSS variables
     applyTheme(colors);

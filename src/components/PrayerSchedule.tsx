@@ -230,7 +230,7 @@ export function PrayerSchedule({
   return (
     <div className="flex-1 w-full flex flex-col min-h-0">
       <div className="flex justify-between items-center mb-1 lg:mb-2 pl-3 pr-1 shrink-0">
-        <h3 className="text-xl font-bold font-black tracking-[-0.04em] text-primary opacity-90 drop-shadow-sm">
+        <h3 className="text-xl font-bold font-black tracking-[-0.04em] text-glass-contrast opacity-90">
           {t("schedule")}
         </h3>
         <div className="flex items-center gap-1">
@@ -239,10 +239,9 @@ export function PrayerSchedule({
             whileTap={{ scale: 0.95 }}
             className="inline-flex mt-1 w-10 h-10 lg:w-[44px] lg:h-[44px]"
           >
-            <Button isIconOnly variant="ghost" radius="full"
-              onClick={onShareClick}
-              title={t("share" as any) || "Share"}
-              style={{ width: '100%', height: '100%' }}
+            <Button isIconOnly variant="ghost"
+              onPress={onShareClick}
+              className="rounded-full w-full h-full"
             >
               <Share2 size={18} className={cn(
                 visualStyle === 'retro' && "stroke-[3]",
@@ -289,7 +288,7 @@ export function PrayerSchedule({
                 {f === "all"
                     ? t("filterAll" as any)
                     : f === "fardu"
-                      ? t("filterFardhu" as any)
+                      ? t("filterFardu" as any)
                       : t("filterSunat" as any)}
               </Button>
             </motion.div>
@@ -343,18 +342,44 @@ export function PrayerSchedule({
               whileTap={{ scale: 0.98 }}
               key={key}
               className={cn(
-                "group relative overflow-hidden flex items-center justify-between min-h-0",
+                "group relative overflow-hidden flex items-center justify-between min-h-0 prayer-row transition-all duration-300",
                 shapeClasses,
+                // Active / Next row state
                 isNext
-                  ? "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary shadow-md px-4 py-3 sm:p-5 lg:py-4 lg:px-5 z-20 flex-[1.05] min-h-[64px] lg:min-h-[76px] shrink-0"
+                  ? cn(
+                      (!visualStyle || visualStyle === 'default') && "prayer-row-active text-white",
+                      visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[5px_5px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-[var(--app-surface-container)]",
+                      visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] text-glass-contrast shadow-[0_8px_32px_0_rgba(0,0,0,0.15)]",
+                      visualStyle === 'soft' && "shadow-[var(--soft-shadow-medium)] border border-divider bg-content1 text-foreground"
+                    )
+                  // Current row state
                   : isCurrent
-                    ? "bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))] text-[var(--app-secondary)] shadow-sm px-4 py-3 sm:p-4 lg:py-3 lg:px-5 z-10 flex-[1.02] min-h-[60px] lg:min-h-[70px] shrink-0"
+                    ? cn(
+                        (!visualStyle || visualStyle === 'default') && "premium-glass-heavy text-white border-[var(--app-secondary)]/30 shadow-md",
+                        visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
+                        visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-md",
+                        visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
+                      )
+                    // standard active rows (fardu)
                     : isFardhu
-                      ? "bg-content2 text-foreground py-2.5 px-4 sm:p-4 lg:py-3 lg:px-4 shadow-sm flex-1 min-h-[56px] lg:min-h-[64px] shrink-0"
-                      : "bg-content1 text-[var(--app-outline)] py-2.5 px-4 sm:p-4 lg:py-2.5 lg:px-4 flex-1 min-h-[56px] lg:min-h-[64px] shrink-0",
-                visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)]",
-                visualStyle === 'glass' && "backdrop-blur-[8px] border border-[var(--glass-border)]",
-                visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0"
+                      ? cn(
+                          (!visualStyle || visualStyle === 'default') && "premium-glass text-white shadow-sm",
+                          visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
+                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-white/90 shadow-sm",
+                          visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
+                        )
+                      // inactive/sunnah rows
+                      : cn(
+                          (!visualStyle || visualStyle === 'default') && "premium-glass opacity-90 text-white/80",
+                          visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground opacity-90 bg-content1",
+                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-white/80 opacity-90",
+                          visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground opacity-90"
+                        ),
+                isNext
+                  ? "z-20 flex-[1.05] min-h-[64px] lg:min-h-[76px] shrink-0 px-4 py-3 sm:p-5 lg:py-4 lg:px-5"
+                  : isCurrent
+                    ? "px-4 py-3 sm:p-4 lg:py-3 lg:px-5 z-10 flex-[1.02] min-h-[60px] lg:min-h-[70px] shrink-0"
+                    : "py-2.5 px-4 sm:p-4 lg:py-3 lg:px-4 flex-1 min-h-[56px] lg:min-h-[64px] shrink-0"
               )}
             >
               
@@ -362,14 +387,14 @@ export function PrayerSchedule({
               <div className="flex items-center gap-2 sm:gap-3 z-10 h-full pl-0.5 sm:pl-1">
                 <motion.div
                   className={cn(
-                    "w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full flex items-center justify-center shrink-0 shadow-sm",
+                    "w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full flex items-center justify-center shrink-0 shadow-sm transition-colors duration-400",
                     isNext
-                      ? "bg-primary text-primary-foreground shadow-md w-10 h-10 sm:w-12 sm:h-12"
+                      ? "bg-[var(--app-primary)] text-white shadow-lg w-10 h-10 sm:w-12 sm:h-12"
                       : isCurrent
-                        ? "bg-[var(--app-secondary)]/20 text-[var(--app-secondary)] ring-1 ring-[var(--app-secondary)]/20"
+                        ? "bg-[var(--app-secondary)] text-white shadow-md ring-2 ring-[var(--app-secondary)]/20 ring-offset-2 ring-offset-[var(--app-surface)]"
                         : isFardhu
-                          ? "bg-content3 text-[var(--app-secondary)]"
-                          : "bg-content4 text-[var(--app-outline)]",
+                          ? "bg-[var(--app-surface-container)] text-foreground/80"
+                          : "bg-[var(--app-surface-container)] opacity-50 text-[var(--app-outline)]",
                   )}
                   whileHover={{ scale: 1.15, rotate: isNext ? 12 : isCurrent ? -12 : 0 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
@@ -392,12 +417,14 @@ export function PrayerSchedule({
                       className={cn(
                         "font-black tracking-tight",
                         isNext
-                          ? "text-lg sm:text-xl lg:text-2xl drop-shadow-sm"
+                          ? (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                            ? "text-lg sm:text-xl lg:text-2xl text-glass-contrast"
+                            : "text-lg sm:text-xl lg:text-2xl text-foreground"
                           : isCurrent
-                            ? "text-base sm:text-lg lg:text-xl"
-                            : "text-sm sm:text-base lg:text-lg",
-                        isCurrent &&
-                          "text-[var(--app-secondary)]",
+                            ? "text-base sm:text-lg lg:text-xl text-[var(--app-secondary)]"
+                            : (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                              ? "text-sm sm:text-base lg:text-lg text-glass-contrast opacity-90"
+                              : "text-sm sm:text-base lg:text-lg text-foreground opacity-90"
                       )}
                     >
                       {getPrayerDisplayName(key)}
@@ -409,7 +436,10 @@ export function PrayerSchedule({
                     )}
                   </div>
                   {isNext && (
-                    <span className="text-[10px] sm:text-xs lg:text-sm font-black uppercase tracking-[0.15em] opacity-80 mt-0.5 max-w-fit border-b-[2px] border-primary/20 pb-0.5">
+                    <span className={cn(
+                      "text-[10px] sm:text-xs lg:text-sm font-black uppercase tracking-[0.15em] mt-0.5 max-w-fit border-b-[2px] pb-0.5",
+                      (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/80 border-white/20" : "text-foreground/80 border-primary/20"
+                    )}>
                       {t("nextPrayer")}
                     </span>
                   )}
@@ -428,12 +458,14 @@ export function PrayerSchedule({
                     className={cn(
                       "font-black tracking-[-0.04em] tabular-nums whitespace-nowrap",
                       isNext
-                        ? "text-xl sm:text-2xl lg:text-3xl text-primary"
+                        ? (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                          ? "text-xl sm:text-2xl lg:text-3xl text-glass-contrast"
+                          : "text-xl sm:text-2xl lg:text-3xl text-foreground"
                         : isCurrent
-                          ? "text-lg sm:text-xl lg:text-2xl"
-                          : "text-base sm:text-lg lg:text-xl",
-                      isCurrent &&
-                        "text-[var(--app-secondary)]",
+                          ? "text-lg sm:text-xl lg:text-2xl text-[var(--app-secondary)]"
+                          : (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                            ? "text-base sm:text-lg lg:text-xl text-glass-contrast opacity-90"
+                            : "text-base sm:text-lg lg:text-xl text-foreground opacity-90"
                     )}
                   >
                     {timeLabel}
@@ -445,10 +477,14 @@ export function PrayerSchedule({
                         className={cn(
                           "text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider block text-right mt-0.5",
                           isNext
-                            ? "text-primary/70"
+                            ? (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                              ? "text-glass-contrast opacity-70"
+                              : "text-foreground/70"
                             : isCurrent
                               ? "text-[var(--app-secondary)]/70"
-                              : "text-[var(--app-outline)]/70",
+                              : (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                                ? "text-glass-contrast opacity-50"
+                                : "text-foreground/50",
                         )}
                       >
                         {t("iqamah")}:{" "}
@@ -458,12 +494,8 @@ export function PrayerSchedule({
                   {pref.preAlert > 0 && pref.enabled && (
                     <span
                       className={cn(
-                        "text-[8px] sm:text-[9px] lg:text-[10px] font-bold uppercase tracking-wider opacity-60 block text-right",
-                        settings.showIqamah &&
-                          isFardhu &&
-                          pref.iqamahOffset !== undefined
-                          ? "mt-0.5"
-                          : "mt-0.5",
+                        "text-[8px] sm:text-[9px] lg:text-[10px] font-bold uppercase tracking-wider opacity-60 block text-right mt-0.5",
+                        (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/60" : "text-foreground/60"
                       )}
                     >
                       -{pref.preAlert}
@@ -472,12 +504,12 @@ export function PrayerSchedule({
                   )}
                 </div>
 
-                <Button isIconOnly variant="ghost" radius="full"
-                  onClick={() => onTogglePreference(key as any)}
+                <Button isIconOnly variant="ghost"
+                  onPress={() => onTogglePreference(key as any)}
                   className={cn(
-                    "flex items-center justify-center shrink-0",
+                    "rounded-full flex items-center justify-center shrink-0 text-white",
                     pref.enabled &&
-                      "text-primary bg-primary/10",
+                      "text-white bg-white/10",
                   )}
                 >
                   {pref.enabled ? (

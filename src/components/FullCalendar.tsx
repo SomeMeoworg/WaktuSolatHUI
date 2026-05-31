@@ -238,18 +238,18 @@ export function FullCalendar({
 
               {/* Tab Navigation Menu (MWC) */}
               <div className="w-full shrink-0 overflow-x-auto no-scrollbar pt-0.5">
-                <div className="w-full bg-transparent shrink-0">
-                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("grid")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><CalendarDays size={14} /></span> {t("calendarGrid")}</div>
+                <div className="w-full bg-transparent shrink-0 flex border-b border-divider/40">
+                  <button type="button" data-active={activeTab === "grid" || undefined} className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100/50 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("grid")}>
+                    <div className="flex items-center justify-center gap-2 py-0.5 text-xs sm:text-sm"><span><CalendarDays size={14} /></span> {t("calendarGrid")}</div>
                   </button>
-                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("list")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><ListTree size={14} /></span> {t("schedule")}</div>
+                  <button type="button" data-active={activeTab === "list" || undefined} className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100/50 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("list")}>
+                    <div className="flex items-center justify-center gap-2 py-0.5 text-xs sm:text-sm"><span><ListTree size={14} /></span> {t("schedule")}</div>
                   </button>
-                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("public_holidays")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><PartyPopper size={14} /></span> {t("publicHolidays")}</div>
+                  <button type="button" data-active={activeTab === "public_holidays" || undefined} className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100/50 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("public_holidays")}>
+                    <div className="flex items-center justify-center gap-2 py-0.5 text-xs sm:text-sm"><span><PartyPopper size={14} /></span> {t("publicHolidays")}</div>
                   </button>
-                  <button type="button" className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("islamic_events")}>
-                    <div className="flex items-center gap-2 py-0.5 text-xs sm:text-sm"><span><Moon size={14} /></span> {t("islamicEvents")}</div>
+                  <button type="button" data-active={activeTab === "islamic_events" || undefined} className="flex-1 px-4 py-3 text-sm font-semibold transition-colors hover:bg-default-100/50 border-b-2 border-transparent focus:outline-none data-[active]:border-primary data-[active]:text-primary" onClick={() => setActiveTab("islamic_events")}>
+                    <div className="flex items-center justify-center gap-2 py-0.5 text-xs sm:text-sm"><span><Moon size={14} /></span> {t("islamicEvents")}</div>
                   </button>
                 </div>
               </div>

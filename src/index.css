@@ -1,10 +1,10 @@
 @import "tailwindcss";
-@plugin "./hero.ts";
-@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@import "@heroui/styles";
+@source "../node_modules/@heroui/styles/dist/**/*.{js,ts,jsx,tsx}";
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   WAKTU SOLAT HUI - HERO UI DESIGN SYSTEM
+   WAKTU SOLAT HUI - PREMIUM HERO UI DESIGN SYSTEM
    ============================================================ */
 
 @theme {
@@ -21,11 +21,22 @@
 
 :root {
     /* Smooth transition for theme switching */
-    --theme-transition: background-color 0.4s var(--ease-fluid), color 0.3s ease;
+    --theme-transition: background-color 0.6s var(--ease-fluid), color 0.4s ease, border-color 0.4s ease;
     
     /* Layout Constants */
     --navbar-height: 4rem;
-    --app-max-width: 1200px;
+    --app-max-width: 800px; /* narrowed for a more focused, app-like feel on desktop */
+
+    /* Premium Glassmorphism Variables */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-blur: 20px;
+}
+
+.dark {
+    --glass-bg: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: 24px;
 }
 
 html, body {
@@ -34,26 +45,231 @@ html, body {
     width: 100%;
     min-height: 100vh;
     font-family: var(--font-sans);
-    background-color: theme('colors.background');
-    color: theme('colors.foreground');
+    color: var(--app-foreground, #1a1a1a);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: var(--theme-transition);
+    overflow-x: hidden;
 }
 
-/* Glassmorphism Utilities */
-@layer utilities {
-    .glass-panel {
-        @apply bg-background/70 backdrop-blur-md border border-divider shadow-sm;
-    }
-    
-    .glass-card {
-        @apply bg-content1/80 backdrop-blur-lg border border-divider shadow-medium rounded-2xl;
-    }
-    
-    .text-glow {
-        text-shadow: 0 0 10px rgba(var(--heroui-primary), 0.5);
-    }
+/* 
+  Vibrant Animated Background Foundation 
+  Uses a base color and large blurred radial gradients to create depth.
+*/
+body {
+    background-color: var(--app-surface-container, #f3f4f6);
+}
+
+body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.6;
+    animation: drift 20s infinite alternate var(--ease-fluid);
+    pointer-events: none;
+}
+
+body::before {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background-color: color-mix(in srgb, var(--app-primary, #6366f1) 40%, transparent);
+}
+
+body::after {
+    bottom: -10%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background-color: color-mix(in srgb, var(--app-secondary, #ec4899) 30%, transparent);
+    animation-delay: -10s;
+}
+
+html.dark body::before {
+    background-color: color-mix(in srgb, var(--app-primary, #4f46e5) 30%, transparent);
+}
+
+html.dark body::after {
+    background-color: color-mix(in srgb, var(--app-secondary, #db2777) 20%, transparent);
+}
+
+@keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(5%, 10%) scale(1.1); }
+    100% { transform: translate(-5%, -5%) scale(0.9); }
+}
+
+/* Glassmorphism Utilities & Preset Overrides */
+.premium-glass {
+    transition: background 0.4s var(--ease-snappy), border-color 0.4s var(--ease-snappy), box-shadow 0.4s var(--ease-snappy), transform 0.4s var(--ease-snappy), border-radius 0.4s var(--ease-snappy);
+}
+
+.premium-glass-heavy {
+    transition: background 0.4s var(--ease-snappy), border-color 0.4s var(--ease-snappy), box-shadow 0.4s var(--ease-snappy), transform 0.4s var(--ease-snappy), border-radius 0.4s var(--ease-snappy);
+}
+
+/* 1. DEFAULT STYLE PRESET */
+html[data-style="default"] .premium-glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 8px 32px 0 rgba(15, 23, 42, 0.05),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+}
+
+html[data-style="default"].dark .premium-glass {
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+html[data-style="default"] .premium-glass-heavy {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(36px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 16px 48px 0 rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.45);
+}
+
+html[data-style="default"].dark .premium-glass-heavy {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        0 16px 48px 0 rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* 2. GLASS STYLE PRESET (Vibrant Glassmorphism & High-Contrast Glare) */
+html[data-style="glass"] .premium-glass {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(32px) saturate(220%);
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 
+        0 12px 40px 0 rgba(15, 23, 42, 0.08),
+        0 0 20px 0 color-mix(in srgb, var(--app-primary, #6366f1) 8%, transparent),
+        inset 0 1.5px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+html[data-style="glass"].dark .premium-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(40px) saturate(240%);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 12px 40px 0 rgba(0, 0, 0, 0.45),
+        0 0 24px 0 color-mix(in srgb, var(--app-primary, #6366f1) 12%, transparent),
+        inset 0 1.5px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+html[data-style="glass"] .premium-glass-heavy {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(48px) saturate(240%);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+        0 24px 64px 0 rgba(15, 23, 42, 0.12),
+        0 0 32px 0 color-mix(in srgb, var(--app-primary, #6366f1) 12%, transparent),
+        inset 0 2px 0 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-style="glass"].dark .premium-glass-heavy {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(48px) saturate(240%);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 
+        0 24px 64px 0 rgba(0, 0, 0, 0.6),
+        0 0 36px 0 color-mix(in srgb, var(--app-primary, #6366f1) 18%, transparent),
+        inset 0 2px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+/* 3. RETRO STYLE PRESET (Brutalist Neo-brutalism / Chunky High Contrast) */
+html[data-style="retro"] .premium-glass,
+html[data-style="retro"] .premium-glass-heavy {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    border: 3px solid #000000 !important;
+    box-shadow: 6px 6px 0px 0px #000000 !important;
+    border-radius: 8px !important;
+}
+
+html[data-style="retro"].dark .premium-glass,
+html[data-style="retro"].dark .premium-glass-heavy {
+    background: #18181b !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 6px 6px 0px 0px #ffffff !important;
+}
+
+html[data-style="retro"] button,
+html[data-style="retro"] input,
+html[data-style="retro"] select {
+    border: 2px solid #000000 !important;
+    border-radius: 6px !important;
+    box-shadow: 2px 2px 0px 0px #000000 !important;
+    transition: all 0.2s ease !important;
+}
+
+html[data-style="retro"].dark button,
+html[data-style="retro"].dark input,
+html[data-style="retro"].dark select {
+    border: 2px solid #ffffff !important;
+    box-shadow: 2px 2px 0px 0px #ffffff !important;
+}
+
+html[data-style="retro"] button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px #000000 !important;
+}
+
+/* 4. SOFT STYLE PRESET (Warm Pastel Soft curves & Ambient glow) */
+html[data-style="soft"] .premium-glass {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03), 0 2px 8px rgba(0, 0, 0, 0.02);
+    border-radius: 24px !important;
+}
+
+html[data-style="soft"].dark .premium-glass {
+    background: rgba(24, 24, 27, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 24px !important;
+}
+
+html[data-style="soft"] .premium-glass-heavy {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-radius: 32px !important;
+}
+
+html[data-style="soft"].dark .premium-glass-heavy {
+    background: rgba(24, 24, 27, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: 32px !important;
+}
+
+.text-glow {
+    text-shadow: 0 0 20px color-mix(in srgb, var(--app-primary, #6366f1) 60%, transparent);
+}
+
+/* Universal Contrast Utility for Glass Backgrounds */
+.text-glass-contrast {
+    color: var(--app-foreground, #1f2937) !important; /* Crisp high-contrast dark text in light mode */
+    text-shadow: none;
+    transition: color 0.4s ease;
+}
+
+.dark .text-glass-contrast {
+    color: #ffffff !important; /* Radiant white legibility in dark mode */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 /* Base App Layout Enhancements */
@@ -74,50 +290,64 @@ html, body {
 
 /* Typography Polish */
 h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight font-semibold;
+    letter-spacing: -0.03em;
+    font-weight: 700;
 }
 
-/* Ensure Prayer Schedule Highlights look premium */
-.prayer-highlight {
-    @apply relative overflow-hidden;
+/* Prayer Schedule Highlights */
+.prayer-row {
+    position: relative;
+    transition: all 0.4s var(--ease-snappy);
+    overflow: hidden;
 }
 
-.prayer-highlight::before {
-    content: '';
-    @apply absolute inset-0 bg-primary/10 opacity-0 transition-opacity duration-300;
+.prayer-row-active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    box-shadow: 
+        0 8px 32px 0 rgba(0,0,0,0.1),
+        inset 0 1px 0 0 rgba(255,255,255,0.3);
+    transform: scale(1.02);
+    border: 1px solid rgba(255,255,255,0.25) !important;
 }
 
-.prayer-highlight:hover::before {
-    @apply opacity-100;
+.dark .prayer-row-active {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255,255,255,0.2) !important;
 }
 
-/* Fix HeroUI FullCalendar Layout overlaps */
-.fc-toolbar {
-    @apply flex-wrap gap-2;
-}
-
-.fc-button-primary {
-    @apply !bg-primary !border-primary !shadow-sm hover:!bg-primary/90 transition-all;
-}
-
-/* Custom Visual Styles based on User's old ThemeControl */
-html[data-style="glass"] {
-    background: linear-gradient(135deg, theme('colors.content1') 0%, theme('colors.content2') 50%, theme('colors.primary-100') 100%);
-    background-attachment: fixed;
-}
-html.dark[data-style="glass"] {
-    background: linear-gradient(135deg, theme('colors.background') 0%, theme('colors.content1') 50%, theme('colors.primary-900') 100%);
-    background-attachment: fixed;
-}
-
-/* Shape System Overrides (To match user's pill/boxy requests with HeroUI radii) */
+/* Shape System Overrides */
 html[data-shape="boxy"] * {
-    --heroui-radius-large: 0px !important;
-    --heroui-radius-medium: 0px !important;
-    --heroui-radius-small: 0px !important;
+    --heroui-radius-large: 0.5rem !important;
+    --heroui-radius-medium: 0.25rem !important;
+    --heroui-radius-small: 0.125rem !important;
 }
 
-html[data-shape="pill"] .glass-card,
-html[data-shape="pill"] .glass-panel {
-    @apply rounded-3xl;
+html[data-shape="pill"] * {
+    --heroui-radius-large: 2rem !important;
+    --heroui-radius-medium: 1.5rem !important;
+    --heroui-radius-small: 1rem !important;
+}
+
+/* Dynamic Glowing Premium Border */
+.premium-glow-border {
+    position: relative;
+}
+
+.premium-glow-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px; /* Border thickness */
+    background: linear-gradient(135deg, color-mix(in srgb, var(--app-primary, #6366f1) 80%, white) 0%, color-mix(in srgb, var(--app-secondary, #ec4899) 70%, white) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.dark .premium-glow-border::before {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--app-primary, #6366f1) 60%, transparent) 0%, color-mix(in srgb, var(--app-secondary, #ec4899) 50%, transparent) 100%);
 }

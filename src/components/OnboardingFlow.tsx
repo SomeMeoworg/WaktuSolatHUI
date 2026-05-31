@@ -233,12 +233,12 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
         <motion.div 
           animate={{ rotate: -360 }}
           transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-[10%] -right-[10%] w-[400px] sm:w-[550px] h-[400px] sm:h-[550px] rounded-full bg-[var(--app-secondary-container, hsl(var(--heroui-secondary) / 0.15))]/15 blur-[120px]" 
+          className="absolute -bottom-[10%] -right-[10%] w-[400px] sm:w-[550px] h-[400px] sm:h-[550px] rounded-full bg-[var(--app-secondary)]/15 blur-[120px]" 
         />
       </div>
 
-      {/* Main Premium Card Wrapper - 100% Native Material 3 Surface */}
-      <div className="relative z-10 w-full max-w-xl min-h-[500px] sm:min-h-[550px] p-6 sm:p-8 rounded-[28px] sm:rounded-[36px] bg-content2 border border-divider flex flex-col justify-between overflow-hidden">
+      {/* Main Premium Card Wrapper */}
+      <div className="relative z-10 w-full max-w-xl min-h-[500px] sm:min-h-[550px] p-6 sm:p-8 rounded-[28px] sm:rounded-[36px] premium-glass-heavy premium-glow-border flex flex-col justify-between overflow-hidden shadow-2xl">
         
         
         {/* Step dots header */}
@@ -260,47 +260,49 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
               />
             ))}
           </div>
-        </div>
-
-        {/* Carousel slide contents */}
+        </div>        {/* Carousel slide contents */}
         <div className="flex-1 flex flex-col justify-center min-h-0 py-2 z-10">
           <AnimatePresence mode="wait">
             {currentStep === 0 && (
               <motion.div
                 key="step-welcome"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="flex flex-col items-center text-center space-y-6"
               >
                 {/* Premium crescent geometry simulation spinner using M3 primary theme colors */}
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
                   <motion.div 
                     animate={{ rotate: 360 }}
                     transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 rounded-full border-t-2 border-r-2 border-primary/40"
+                    className="absolute inset-0 rounded-full border-t-3 border-r-3 border-primary/50 filter drop-shadow-[0_0_8px_rgba(99,102,241,0.3)]"
                   />
                   <motion.div 
                     animate={{ rotate: -360 }}
                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-2 rounded-full border-b-2 border-l-2 border-[var(--app-secondary)]/40"
+                    className="absolute inset-2.5 rounded-full border-b-3 border-l-3 border-[var(--app-secondary)]/50 filter drop-shadow-[0_0_8px_rgba(236,72,153,0.3)]"
                   />
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-[20px] bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary border border-divider flex items-center justify-center shadow-lg">
-                    <Compass className="w-8 h-8 sm:w-10 sm:h-10 animate-pulse stroke-[1.5]" />
+                  <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-[24px] premium-glass flex items-center justify-center text-[var(--app-primary)] shadow-[0_12px_40px_rgba(0,0,0,0.1)] border border-white/30 backdrop-blur-md">
+                    <Compass className="w-9 h-9 sm:w-10 sm:h-10 text-primary animate-pulse stroke-[1.5]" />
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground leading-tight">
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-tight bg-clip-text bg-gradient-to-br from-foreground via-foreground to-foreground/70">
                     {tOnboarding.welcomeTitle}
                   </h1>
-                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm mx-auto">
+                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm mx-auto font-medium">
                     {tOnboarding.welcomeDesc}
                   </p>
                 </div>
-                <Button color="primary" onClick={handleNext} className="mt-4 bg-primary text-white font-bold rounded-2xl shadow-md hover:shadow-lg w-full max-w-xs h-12">
-                  {tOnboarding.startBtn}
-                  
+                <Button 
+                  onPress={handleNext} 
+                  className="mt-6 bg-gradient-to-r from-primary to-[var(--app-secondary)] text-white font-extrabold tracking-wide rounded-2xl shadow-[0_8px_30px_rgba(99,102,241,0.25)] hover:shadow-[0_8px_30px_rgba(99,102,241,0.45)] hover:scale-[1.03] active:scale-[0.98] transition-all w-full max-w-xs h-13 text-base flex items-center justify-center gap-2 group cursor-pointer"
+                >
+                  <span>{tOnboarding.startBtn}</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform stroke-[2.5]" />
                 </Button>
               </motion.div>
             )}
@@ -308,69 +310,75 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
             {currentStep === 1 && (
               <motion.div
                 key="step-location"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="flex flex-col space-y-4 h-full max-h-[350px] sm:max-h-[390px] min-h-0"
               >
                 <div className="text-center">
-                  <h2 className="text-2xl font-black tracking-tight text-foreground mb-1.5 flex items-center justify-center gap-2">
-                    <MapPin className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-black tracking-tight text-foreground mb-1 flex items-center justify-center gap-2">
+                    <MapPin className="w-6 h-6 text-primary stroke-[2.5]" />
                     {tOnboarding.locTitle}
                   </h2>
-                  <p className="text-xs text-[var(--app-outline)] max-w-sm mx-auto">
+                  <p className="text-xs text-[var(--app-outline)] font-medium max-w-sm mx-auto">
                     {tOnboarding.locDesc}
                   </p>
                 </div>
 
                 {/* GPS trigger */}
                 <div className="flex flex-col gap-2 shrink-0">
-                  <Button onClick={handleGPSDetect} disabled={gpsLoading} className="bg-secondary/20 text-secondary-foreground font-bold rounded-2xl shadow-sm hover:bg-secondary/30 w-full h-12">
-                    <Crosshair size={18} />
-                    {gpsLoading ? tOnboarding.gpsLoading : tOnboarding.gpsBtn}
+                  <Button 
+                    onPress={handleGPSDetect} 
+                    isDisabled={gpsLoading} 
+                    className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/40 font-bold rounded-2xl shadow-sm w-full h-12 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  >
+                    <Crosshair size={18} className={cn("stroke-[2]", gpsLoading && "animate-spin")} />
+                    <span>{gpsLoading ? tOnboarding.gpsLoading : tOnboarding.gpsBtn}</span>
                   </Button>
 
                   {gpsSuccess && (
-                    <div className="text-center text-xs font-bold text-primary animate-pulse">
-                      {tOnboarding.gpsSuccessText} ({selectedZone})
+                    <div className="text-center text-xs font-bold text-success-500 animate-pulse flex items-center justify-center gap-1.5">
+                      <CheckCircle2 size={14} className="stroke-[2.5]" />
+                      <span>{tOnboarding.gpsSuccessText} ({selectedZone})</span>
                     </div>
                   )}
 
                   {gpsError && (
-                    <div className="text-center text-[10px] font-bold text-[var(--app-danger)]">
-                      {gpsError}
+                    <div className="text-center text-[11px] font-bold text-danger flex items-center justify-center gap-1.5">
+                      <X size={14} className="stroke-[2.5]" />
+                      <span>{gpsError}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Search Manual list inside onboarding card scrollbox */}
-                <div className="flex-1 flex flex-col min-h-0 border border-divider rounded-2xl bg-content1 overflow-hidden">
-                  <div className="px-1 py-1">
-                    
-                    <Input 
-                      variant="bordered"
-                      type="text" 
-                      placeholder={tOnboarding.searchPlace}
-                      value={searchQuery}
-                      onChange={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
-                      startContent={<Search size={18} className="text-default-400" />}
-                      endContent={
-                        searchQuery ? (
-                          <Button isIconOnly variant="light" radius="full" size="sm" onClick={() => setSearchQuery("")}>
-                            <X size={16} />
-                          </Button>
-                        ) : null
-                      }
-                      classNames={{
-                        inputWrapper: "bg-content2 shadow-sm border-default-200 hover:border-primary transition-colors",
-                      }}
-                    />
+                <div className="flex-1 flex flex-col min-h-0 border border-divider rounded-2xl bg-content1/50 backdrop-blur-md overflow-hidden shadow-inner">
+                  <div className="px-2 py-2 border-b border-divider/40">
+                    <div className="relative w-full">
+                      <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--app-outline)]/80 pointer-events-none" />
+                      <input 
+                        type="text" 
+                        placeholder={tOnboarding.searchPlace}
+                        value={searchQuery}
+                        onChange={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
+                        className="w-full bg-[var(--app-surface-container)]/80 border border-divider hover:border-primary/50 focus:border-primary rounded-xl pl-10 pr-10 py-2.5 text-sm font-semibold text-foreground placeholder:text-[var(--app-outline)]/70 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-[var(--app-surface-container-high)] text-[var(--app-outline)] transition-colors cursor-pointer"
+                        >
+                          <X size={14} className="stroke-[2.5]" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-1 divide-y divide-[var(--app-outline)]/40 scrollbar-thin">
+                  <div className="flex-1 overflow-y-auto p-1 divide-y divide-divider/40 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-divider/40">
                     {filteredZonesList.map(state => (
                       <div key={state.state} className="py-1">
-                        <div className="px-3 py-0.5 text-[8px] font-black uppercase tracking-wider text-primary bg-content1/50">
+                        <div className="px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-primary bg-primary/5 rounded-md my-0.5">
                           {state.state}
                         </div>
                         {state.zones.map(z => (
@@ -381,13 +389,14 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                               setGpsSuccess(false);
                             }}
                             className={cn(
-                              "relative overflow-hidden w-full text-left px-3 py-2.5 text-xs flex items-center justify-between transition-colors hover:bg-primary/8 cursor-pointer rounded-lg mt-0.5",
-                              z.v === selectedZone && "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary font-bold"
+                              "relative overflow-hidden w-full text-left px-3 py-2.5 text-xs flex items-center justify-between transition-all hover:bg-primary/5 cursor-pointer rounded-xl mt-0.5 font-semibold",
+                              z.v === selectedZone 
+                                ? "bg-primary/10 border-l-3 border-primary text-primary pl-4 rounded-l-none font-bold"
+                                : "text-foreground/80 hover:text-foreground"
                             )}
                           >
-                            
-                            <span className="truncate text-foreground">{z.l}</span>
-                            <span className="font-mono text-[9px] text-[var(--app-outline)]/60">{z.v}</span>
+                            <span className="truncate">{z.l}</span>
+                            <span className="font-mono text-[9px] opacity-70 bg-divider/40 px-1.5 py-0.5 rounded">{z.v}</span>
                           </button>
                         ))}
                       </div>
@@ -400,33 +409,48 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
             {currentStep === 2 && (
               <motion.div
                 key="step-notifications"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="flex flex-col items-center text-center space-y-6"
               >
-                <div className="w-18 h-18 rounded-[20px] bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] text-primary flex items-center justify-center border border-divider shadow-md">
-                  <Bell className="w-9 h-9 stroke-[1.5]" />
+                <div className="w-20 h-20 rounded-[24px] premium-glass text-primary flex items-center justify-center shadow-lg border border-white/20 p-5">
+                  <Bell className="w-10 h-10 text-primary stroke-[1.5]" />
                 </div>
 
                 <div className="space-y-3">
-                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground leading-tight">
                     {tOnboarding.notifTitle}
                   </h2>
-                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm">
+                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm font-medium">
                     {tOnboarding.notifDesc}
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 w-full shrink-0 max-w-xs mt-2">
-                  <Button
-                    onClick={handleRequestNotification}
-                    style={notificationPermission === 'granted' ? { '--md-filled-button-container-color': 'var(--app-secondary)', '--md-filled-button-label-text-color': 'var(--app-secondary-foreground)', '--md-filled-button-container-shape': '16px' } as any : { '--md-filled-button-container-shape': '16px' } as any}
+                <div className="flex flex-col gap-3 w-full shrink-0 max-w-xs mt-4">
+                  {notificationPermission === 'granted' ? (
+                    <Button
+                      onPress={handleRequestNotification}
+                      variant="secondary"
+                      className="font-extrabold rounded-2xl bg-success-500 text-white shadow-md h-12 w-full text-base transition-all scale-100 hover:scale-[1.02] cursor-pointer"
+                    >
+                      {tOnboarding.notifGranted}
+                    </Button>
+                  ) : (
+                    <Button
+                      onPress={handleRequestNotification}
+                      variant="primary"
+                      className="font-extrabold rounded-2xl shadow-[0_4px_20px_rgba(99,102,241,0.25)] h-13 w-full text-base bg-gradient-to-r from-primary to-[var(--app-secondary)] text-white hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                    >
+                      {tOnboarding.notifBtn}
+                    </Button>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    onPress={handleNext} 
+                    className="font-bold rounded-2xl h-12 w-full border-divider hover:bg-content2 text-foreground/80 cursor-pointer"
                   >
-                    
-                    {notificationPermission === 'granted' ? tOnboarding.notifGranted : tOnboarding.notifBtn}
-                  </Button>
-                  <Button variant="bordered" onClick={handleNext} className="font-bold rounded-2xl border-2 h-12">
                     {tOnboarding.notifSkip}
                   </Button>
                 </div>
@@ -436,22 +460,23 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
             {currentStep === 3 && (
               <motion.div
                 key="step-sounds"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="flex flex-col space-y-4"
               >
                 <div className="text-center">
-                  <h2 className="text-2xl font-black tracking-tight text-foreground mb-1.5 flex items-center justify-center gap-2">
-                    <Volume2 className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-black tracking-tight text-foreground mb-1 flex items-center justify-center gap-2">
+                    <Volume2 className="w-6 h-6 text-primary stroke-[2.5]" />
                     {tOnboarding.soundTitle}
                   </h2>
-                  <p className="text-xs text-[var(--app-outline)] max-w-sm mx-auto">
+                  <p className="text-xs text-[var(--app-outline)] font-medium max-w-sm mx-auto">
                     {tOnboarding.soundDesc}
                   </p>
                 </div>
 
-                {/* Sounds list selector in strict M3 styles */}
+                {/* Sounds list selector in gorgeous high-fidelity design */}
                 <div className="grid grid-cols-1 gap-2.5 max-w-sm mx-auto w-full py-2">
                   {[
                     { id: 'chime', name: isMalay ? "Alunan Loceng Chime" : "Acoustic Chime", desc: isMalay ? "Melodi tonal spot premium lembut." : "Soft harmonic spot chime." },
@@ -463,27 +488,27 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                       key={snd.id}
                       onClick={() => setSelectedSound(snd.id)}
                       className={cn(
-                        "p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
+                        "p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
                         selectedSound === snd.id 
-                          ? "bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] border-primary text-primary" 
-                          : "bg-content1 border-divider hover:border-divider text-foreground"
+                          ? "bg-primary/10 border-primary text-primary pl-4 border-l-4 rounded-l-none shadow-sm" 
+                          : "bg-content1/50 border-divider/60 hover:bg-content2 text-foreground"
                       )}
                     >
                       <div className="flex flex-col text-left min-w-0 pr-4">
                         <span className="text-xs font-bold leading-tight truncate">{snd.name}</span>
-                        <span className="text-[10px] text-[var(--app-outline)]/60 truncate mt-0.5 leading-none">{snd.desc}</span>
+                        <span className={cn("text-[10px] truncate mt-1 leading-none font-medium", selectedSound === snd.id ? "text-primary/70" : "text-[var(--app-outline)]/70")}>{snd.desc}</span>
                       </div>
-                      <Button isIconOnly variant="ghost" radius="full"
-                        onClick={(e: any) => {
+                      <Button 
+                        isIconOnly 
+                        variant={isPlayingSound === snd.id ? "secondary" : "ghost"}
+                        onPress={(e: any) => {
                           e.stopPropagation();
                           playPreviewSound(snd.id);
                         }}
-                        style={isPlayingSound === snd.id 
-                          ? { '--md-icon-button-state-layer-color': 'var(--app-secondary)', '--md-icon-button-icon-color': 'var(--app-secondary)' } as any
-                          : { '--md-icon-button-state-layer-color': 'var(--app-outline)', '--md-icon-button-icon-color': 'var(--app-outline)' } as any}
+                        className="rounded-xl shadow-none cursor-pointer text-primary"
                         aria-label="Preview Sound Option"
                       >
-                        {isPlayingSound === snd.id ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                        {isPlayingSound === snd.id ? <Pause size={16} className="stroke-[2.5]" /> : <Play size={16} className="stroke-[2.5]" />}
                       </Button>
                     </div>
                   ))}
@@ -493,24 +518,28 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
           </AnimatePresence>
         </div>
 
-        {/* Footer Navigation Buttons using MWC */}
+        {/* Footer Navigation Buttons */}
         {currentStep > 0 && (
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-divider shrink-0 z-10">
-            <Button variant="light" onClick={handleBack} className="font-bold rounded-xl text-default-600 hover:bg-default-100">
-              
+            <Button 
+              variant="ghost" 
+              onPress={handleBack} 
+              className="font-bold rounded-xl text-[var(--app-outline)] hover:bg-divider/20 cursor-pointer"
+            >
               {tOnboarding.backBtn}
             </Button>
-            <Button color="primary" onClick={handleNext} className="font-bold rounded-xl bg-primary text-white shadow-sm px-6">
+            <Button 
+              variant="primary" 
+              onPress={handleNext} 
+              className="font-extrabold rounded-xl text-white shadow-sm px-6 cursor-pointer"
+            >
               {currentStep === stepsCount - 1 ? (
-                <>
-                  {tOnboarding.finishBtn}
-                  
-                </>
+                <span>{tOnboarding.finishBtn}</span>
               ) : (
-                <>
-                  {tOnboarding.nextBtn}
-                  
-                </>
+                <div className="flex items-center gap-1.5">
+                  <span>{tOnboarding.nextBtn}</span>
+                  <ArrowRight size={16} className="stroke-[2.5]" />
+                </div>
               )}
             </Button>
           </div>

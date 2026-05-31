@@ -95,8 +95,6 @@
 @media (min-width: 1024px) {
     .hui-panel-right {
         width: 50%;
-        padding-left: 1.5rem;
-        border-left: 4px solid var(--app-surface-variant);
         overflow: hidden;
     }
 }
@@ -104,7 +102,6 @@
 @media (min-width: 1280px) {
     .hui-panel-right {
         width: 45%;
-        padding-left: 2rem;
     }
 }
 
@@ -127,13 +124,11 @@
 
 /* Modifiers for Visual Styles */
 html[data-style="retro"] .hui-panel-right {
-    border-left-width: 2px;
-    border-color: var(--app-foreground);
+    border-left-width: 0px;
 }
 
 html[data-style="glass"] .hui-panel-right {
-    border-left-width: 1px;
-    border-color: var(--glass-border);
+    border-left-width: 0px;
 }
 
 html[data-style="soft"] .hui-panel-right {

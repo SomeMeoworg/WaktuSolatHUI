@@ -208,10 +208,11 @@ export function ZoneSelector({
           whileTap={{ scale: 0.98 }}
           onClick={() => setIsOpen(true)}
           className={cn(
-            "relative flex-1 max-w-full bg-[var(--app-surface-container)]/80 hover:bg-[var(--app-surface-container-high)] backdrop-blur-md rounded-[20px] sm:rounded-[24px] overflow-hidden transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-primary)] px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between group shadow-sm border border-[var(--app-outline-variant)]/20",
-            visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] hover:shadow-[2px_2px_0px_0px_var(--app-foreground)]",
-            visualStyle === 'glass' && "bg-white/10 backdrop-blur-lg border border-white/20",
-            visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border-0 bg-[var(--app-surface)]"
+            "relative flex-1 max-w-full rounded-[24px] sm:rounded-[32px] overflow-hidden transition-all duration-400 outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-primary)] px-3 py-3 sm:px-5 sm:py-4 flex items-center justify-between group",
+            (!visualStyle || visualStyle === 'default') && "premium-glass hover:premium-glass-heavy text-white",
+            visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] hover:shadow-[2px_2px_0px_0px_var(--app-foreground)] rounded-none bg-content1 text-foreground",
+            visualStyle === 'glass' && "bg-white/10 backdrop-blur-lg border border-white/20 text-white",
+            visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
           )}
         >
           <div className="flex items-center w-full min-w-0">
@@ -223,11 +224,17 @@ export function ZoneSelector({
                 !(visualStyle === 'retro' || visualStyle === 'glass' || visualStyle === 'soft') && "stroke-[2.5]"
               )} />
             </div>
-            <div className="flex flex-col overflow-hidden min-w-0 flex-1 text-left justify-center">
-              <span className="text-lg sm:text-xl lg:text-2xl leading-tight font-black tracking-tighter truncate w-full text-[var(--app-foreground)] group-hover:text-[var(--app-primary)] transition-colors">
+            <div className="flex flex-col text-left overflow-hidden w-full max-w-[200px] sm:max-w-[240px] lg:max-w-[300px]">
+              <span className={cn(
+                "text-xl sm:text-2xl lg:text-3xl leading-none font-black tracking-tighter truncate w-full transition-colors",
+                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast" : "text-foreground"
+              )}>
                 {selectedLabel}
               </span>
-              <span className="text-[10px] sm:text-[11px] lg:text-xs font-bold tracking-wide flex items-center gap-1.5 truncate mt-0.5 opacity-80 text-[var(--app-outline)]">
+              <span className={cn(
+                "text-[10px] sm:text-xs font-bold uppercase tracking-widest truncate w-full flex items-center gap-1.5 mt-1",
+                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast opacity-80" : "text-foreground/75"
+              )}>
                 {STATE_FLAGS[selectedState] && (
                   <div className="flex items-center justify-center w-[16px] h-[12px] sm:w-[18px] sm:h-[14px] bg-white overflow-hidden shadow-sm shrink-0 rounded-[2px]">
                     <img src={STATE_FLAGS[selectedState]} alt="" className="w-full h-full object-cover select-none pointer-events-none" />
@@ -276,9 +283,9 @@ export function ZoneSelector({
 
       {/* Zone Selection Modal */}
       <Modal state={modalState}>
-        <Modal.Backdrop isDismissable className="bg-black/50 backdrop-blur-sm">
-          <Modal.Container size="xl" scroll="inside" placement="center" className="max-h-[90vh] sm:max-h-[85vh] m-2 sm:m-0">
-            <Modal.Dialog className="bg-[var(--app-surface)] rounded-[2.5rem] shadow-2xl border border-[var(--app-outline-variant)]/20 outline-none flex flex-col max-h-[90vh] sm:max-h-[85vh]">
+        <Modal.Backdrop isDismissable className="bg-black/40 backdrop-blur-md">
+          <Modal.Container size="lg" scroll="inside" placement="center" className="max-h-[90vh] sm:max-h-[85vh] m-2 sm:m-0">
+            <Modal.Dialog className="premium-glass-heavy rounded-[2.5rem] outline-none flex flex-col max-h-[90vh] sm:max-h-[85vh]">
 
               {/* Header */}
               <Modal.Header className="border-b border-[var(--app-outline-variant)]/20 p-6 md:p-8 flex flex-col items-start gap-4 shrink-0">
@@ -310,7 +317,6 @@ export function ZoneSelector({
                         <Crosshair size={16} />
                         <span>{t('modeAuto' as any) || "Auto Tracking"}</span>
                       </Tabs.Tab>
-                      <Tabs.Indicator className="absolute inset-0 bg-[var(--app-surface)] rounded-lg shadow-sm -z-10" />
                     </Tabs.List>
                   </Tabs>
                 </div>

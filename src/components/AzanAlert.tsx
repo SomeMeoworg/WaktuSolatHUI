@@ -216,7 +216,7 @@ export function AzanAlert({
         transition={{ type: "spring", stiffness: 220, damping: 24 }}
         className="fixed top-0 inset-x-0 z-[300] w-full p-4 sm:p-6"
       >
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-[var(--app-surface-container-highest)]/90 via-[var(--app-surface-container-highest)]/95 to-[var(--app-surface-container-high)]/90 dark:from-[#0d0d0f]/90 dark:via-[#121214]/95 dark:to-[#0d0d0f]/90 border border-primary/20 dark:border-white/12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] rounded-[32px] p-6 sm:p-7 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 backdrop-blur-3xl ring-1 ring-black/5">
+        <div className="max-w-4xl mx-auto bg-content1/95 border border-primary/20 dark:border-white/12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] rounded-[32px] p-6 sm:p-7 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 backdrop-blur-3xl ring-1 ring-black/5">
           {/* Animated decorative concentric ring halos */}
           <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full border-[6px] border-primary/8 animate-ping pointer-events-none" />
           <div className="absolute right-10 -top-10 w-32 h-32 rounded-full border-2 border-primary/8 animate-pulse pointer-events-none" />
@@ -233,7 +233,7 @@ export function AzanAlert({
               <h2 className="text-2xl sm:text-3xl font-black text-foreground dark:text-white tracking-tight mt-3 leading-none">
                 {t("prepareForAzan" as any, { prayer: prayerName })}
               </h2>
-              <p className="text-[var(--app-outline)]/90 dark:text-zinc-400 text-sm mt-2.5 font-bold">
+              <p className="text-foreground/75 text-sm mt-2.5 font-bold">
                 {t("azanTimePrefix" as any)}: {formattedTime} • {t("closeInSeconds" as any, { seconds: remainingSeconds })}
               </p>
             </div>
@@ -266,7 +266,7 @@ export function AzanAlert({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[400] bg-gradient-to-br from-[var(--app-background)] via-[var(--app-surface-container-highest)] to-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/30 flex flex-col items-center justify-between p-8 sm:p-12 text-foreground overflow-hidden select-none"
+      className="fixed inset-0 z-[400] bg-background/95 backdrop-blur-xl flex flex-col items-center justify-between p-8 sm:p-12 text-foreground overflow-hidden select-none"
     >
       {/* Calm ambient organic breathing backdrop blobs */}
       <motion.div
@@ -287,7 +287,7 @@ export function AzanAlert({
           opacity: [0.1, 0.22, 0.14, 0.1],
         }}
         transition={{ repeat: Infinity, duration: 15, ease: "easeInOut", delay: 2 }}
-        className="absolute w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] rounded-full bg-[var(--app-secondary)]/15 blur-[110px] pointer-events-none bottom-1/4 right-1/4"
+        className="absolute w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] rounded-full bg-primary/10 blur-[110px] pointer-events-none bottom-1/4 right-1/4"
       />
 
       {/* Top linear progress bar */}
@@ -322,13 +322,13 @@ export function AzanAlert({
       {/* Elegant Mosque silhouette background */}
       <div className="absolute bottom-0 inset-x-0 h-[26vh] pointer-events-none z-0 flex items-end">
         <svg viewBox="0 0 1200 220" className="w-full h-full text-primary opacity-[0.06]" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,220 L1200,220 L1200,180 L1150,180 L1150,120 L1140,105 L1140,50 L1130,50 L1130,35 L1120,50 L1110,50 L1110,105 L1100,120 L1100,180 L920,180 L920,150 C920,120 870,105 850,105 C830,105 780,120 780,150 L780,180 L100,180 L100,120 L90,105 L90,50 L80,50 L80,35 L70,50 L60,50 L60,105 L50,120 L50,180 L0,180 Z" />
+          <path d="M0,220 L1200,220 L1200,180 L1150,180 L1150,120 L1140,105 L1140,50 L1140,50 L1130,50 L1130,35 L1120,50 L1110,50 L1110,105 L1100,120 L1100,180 L920,180 L920,150 C920,120 870,105 850,105 C830,105 780,120 780,150 L780,180 L100,180 L100,120 L90,105 L90,50 L80,50 L80,35 L70,50 L60,50 L60,105 L50,120 L50,180 L0,180 Z" />
         </svg>
       </div>
 
       {/* Top section: Mode tag & info */}
       <div className="flex justify-between items-center w-full z-10 relative">
-        <div className="flex items-center gap-2.5 text-primary font-black tracking-widest text-[10px] sm:text-xs uppercase bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] border border-primary/20 px-4 py-2.5 rounded-full shadow-sm">
+        <div className="flex items-center gap-2.5 text-primary font-black tracking-widest text-[10px] sm:text-xs uppercase bg-primary/10 border border-primary/20 px-4 py-2.5 rounded-full shadow-sm">
           <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
           {t("mosqueDisplayMode" as any)}
         </div>
@@ -342,7 +342,7 @@ export function AzanAlert({
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ repeat: Infinity, duration: 3.2, ease: "easeInOut" }}
-          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))]/80 backdrop-blur-md border-4 border-primary text-primary flex items-center justify-center shadow-[0_0_60px_rgba(var(--md-sys-color-primary-rgb),0.35)] relative group"
+          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-primary/10 backdrop-blur-md border-4 border-primary text-primary flex items-center justify-center shadow-[0_0_60px_rgba(99,102,241,0.35)] relative group"
         >
           <Volume2 size={48} className="stroke-[2.5]" />
           <motion.div
@@ -359,7 +359,7 @@ export function AzanAlert({
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-foreground drop-shadow-[0_4px_16px_rgba(0,0,0,0.15)] leading-tight">
             {prayerName}
           </h1>
-          <p className="text-xl sm:text-2xl text-[var(--app-outline)] dark:text-zinc-200 font-black tracking-wide mt-1.5 bg-black/10 px-6 py-2 rounded-2xl border border-white/5 inline-block mx-auto">
+          <p className="text-xl sm:text-2xl text-foreground/80 font-black tracking-wide mt-1.5 bg-content2 px-6 py-2 rounded-2xl border border-divider inline-block mx-auto">
             {t("azanTimePrefix" as any)}: {formattedTime}
           </p>
         </div>
@@ -379,7 +379,7 @@ export function AzanAlert({
           <motion.span 
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-primary text-xs font-black bg-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] border border-primary/15 px-4 py-1.5 rounded-full shadow-md"
+            className="text-primary text-xs font-black bg-primary/10 border border-primary/15 px-4 py-1.5 rounded-full shadow-md"
           >
             {t("doubleTapExit")}
           </motion.span>

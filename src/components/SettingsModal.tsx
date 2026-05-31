@@ -119,16 +119,16 @@ export function SettingsModal({
 
   // Reusable section card
   const SectionCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-    <div className={`bg-[var(--app-surface-container)] rounded-2xl border border-[var(--app-outline-variant)]/20 shadow-sm ${className}`}>
+    <div className={`premium-glass rounded-2xl ${className}`}>
       {children}
     </div>
   );
 
   return (
     <Modal state={state}>
-      <Modal.Backdrop isDismissable className="bg-black/50 backdrop-blur-sm">
+      <Modal.Backdrop isDismissable className="bg-black/40 backdrop-blur-md">
         <Modal.Container size="lg" scroll="inside" placement="center" className="max-h-[90vh] sm:max-h-[85vh] m-2 sm:m-0">
-          <Modal.Dialog className="bg-[var(--app-surface)] rounded-[2.5rem] shadow-2xl border border-[var(--app-outline-variant)]/20 outline-none flex flex-col max-h-[90vh] sm:max-h-[85vh]">
+          <Modal.Dialog className="premium-glass-heavy rounded-[2.5rem] outline-none flex flex-col max-h-[90vh] sm:max-h-[85vh]">
             {/* Header */}
             <Modal.Header className="border-b border-[var(--app-outline-variant)]/20 p-6 md:p-8 flex flex-col items-start gap-2 shrink-0">
               <Modal.Heading className="text-3xl md:text-4xl font-black tracking-tighter text-[var(--app-primary)] leading-none">
@@ -137,14 +137,14 @@ export function SettingsModal({
             </Modal.Header>
 
             {/* Tab Navigation */}
-            <div className="w-full bg-[var(--app-surface-container)] p-2 border-b border-[var(--app-outline-variant)]/20 shrink-0">
+            <div className="w-full bg-[var(--app-surface-container)]/30 backdrop-blur-md p-2 border-b border-white/10 shrink-0">
               <Tabs
                 selectedKey={activeTab}
                 onSelectionChange={(key) => setActiveTab(key as string)}
                 className="w-full"
               >
                 <Tabs.List className="flex w-full bg-transparent gap-1">
-                  <Tabs.Tab id="general" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="general" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
                     <Settings size={16} /><span className="hidden sm:inline">{t("general")}</span>
                   </Tabs.Tab>
                   <Tabs.Tab id="notifications" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
@@ -159,7 +159,6 @@ export function SettingsModal({
                   <Tabs.Tab id="mosque" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
                     <MoonStar size={16} /><span className="hidden sm:inline">{t("mosqueMode" as any) || "Mod Masjid"}</span>
                   </Tabs.Tab>
-                  <Tabs.Indicator className="absolute inset-0 bg-[var(--app-surface)] rounded-lg shadow-sm -z-10" />
                 </Tabs.List>
 
                 {/* Tab Panels — scrollable body */}

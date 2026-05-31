@@ -410,8 +410,8 @@ export default function App() {
 
   return (
     <div className={cn(
-      "min-h-[100dvh] lg:h-[100dvh] flex flex-col w-full font-sans text-foreground lg:overflow-hidden relative",
-      !(settings.wallpaperEnabled && activeWallpaperUrl) && "bg-background",
+      "hui-app-container",
+      !(settings.wallpaperEnabled && activeWallpaperUrl) && "hui-app-container-no-wallpaper",
       !(settings.wallpaperEnabled && activeWallpaperUrl) && visualStyle === 'glass' && "bg-gradient-to-br from-[hsl(var(--heroui-background))] via-[hsl(var(--heroui-content2))] to-[hsl(var(--heroui-primary)/0.15)]",
       settings.wallpaperEnabled && activeWallpaperUrl && settings.wallpaperTextGlow && "text-glow-boost"
     )}>
@@ -423,7 +423,7 @@ export default function App() {
             alt=""
             className="app-wallpaper-image"
             style={{
-              filter: `blur(${settings.wallpaperBlur ?? 10}px)`,
+              filter: `blur(${settings.wallpaperBlur ?? 2}px)`,
             }}
           />
           {settings.wallpaperVignette && <div className="app-wallpaper-vignette" />}
@@ -498,7 +498,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <main className="flex-1 w-full max-w-[2560px] mx-auto relative z-10 flex flex-col lg:flex-row px-4 sm:px-8 lg:px-12 xl:px-16 py-4 sm:py-6 lg:py-8 gap-8 lg:gap-12 xl:gap-16 lg:overflow-hidden min-h-0">
+      <main className="hui-main-content">
         <LocationToast 
           promptZone={promptZone}
           promptLocationName={promptLocationName}
@@ -508,8 +508,8 @@ export default function App() {
           onDismiss={dismissPrompt}
         />
         {/* Left Panel: Analog/Digital Clocks */}
-        <section className="flex flex-col w-full lg:w-[50%] xl:w-[55%] lg:overflow-visible pb-2 lg:pb-0 min-h-0 relative z-20">
-          <header className="relative flex items-center gap-3 z-[60] mb-2 flex-wrap shrink-0">
+        <section className="hui-panel-left">
+          <header className="hui-header">
             <ZoneSelector
               selectedZone={selectedZone}
               onZoneSelect={handleManualZoneSelect}
@@ -534,7 +534,7 @@ export default function App() {
             <FullScreenToggle />
           </header>
 
-          <div className="flex-1 flex flex-col justify-center lg:justify-start xl:justify-center min-h-0 lg:overflow-y-auto no-scrollbar pt-1">
+          <div className="hui-clock-container no-scrollbar">
             <ClockPanel
               currentTime={currentTime}
               nextPrayerName={nextPrayerName}
@@ -566,7 +566,7 @@ export default function App() {
             </div>
           )}
 
-          <div className="hui-panel-right-scrollable">
+          <div className="hui-panel-right-scrollable no-scrollbar">
             <div className="flex flex-col gap-2 min-h-full lg:flex-1 lg:min-h-0">
               <Suspense
                 fallback={
