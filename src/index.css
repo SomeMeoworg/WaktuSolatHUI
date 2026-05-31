@@ -351,3 +351,13 @@ html[data-shape="pill"] * {
 .dark .premium-glow-border::before {
     background: linear-gradient(135deg, color-mix(in srgb, var(--app-primary, #6366f1) 60%, transparent) 0%, color-mix(in srgb, var(--app-secondary, #ec4899) 50%, transparent) 100%);
 }
+
+/* Universal Muted Contrast Utility for Glass Backgrounds */
+.text-glass-contrast-muted {
+    color: color-mix(in srgb, var(--app-foreground, #1f2937) 65%, transparent) !important;
+    transition: color 0.4s ease;
+}
+
+.dark .text-glass-contrast-muted {
+    color: rgba(255, 255, 255, 0.65) !important;
+}

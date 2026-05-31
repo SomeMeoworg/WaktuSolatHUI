@@ -355,24 +355,24 @@ export function PrayerSchedule({
                   // Current row state
                   : isCurrent
                     ? cn(
-                        (!visualStyle || visualStyle === 'default') && "premium-glass-heavy text-white border-[var(--app-secondary)]/30 shadow-md",
+                        (!visualStyle || visualStyle === 'default') && "premium-glass-heavy text-glass-contrast border-[var(--app-secondary)]/30 shadow-md",
                         visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
-                        visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-md",
+                        visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-glass-contrast shadow-md",
                         visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
                       )
                     // standard active rows (fardu)
                     : isFardhu
                       ? cn(
-                          (!visualStyle || visualStyle === 'default') && "premium-glass text-white shadow-sm",
+                          (!visualStyle || visualStyle === 'default') && "premium-glass text-glass-contrast shadow-sm",
                           visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
-                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-white/90 shadow-sm",
+                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-glass-contrast shadow-sm",
                           visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
                         )
                       // inactive/sunnah rows
                       : cn(
-                          (!visualStyle || visualStyle === 'default') && "premium-glass opacity-90 text-white/80",
+                          (!visualStyle || visualStyle === 'default') && "premium-glass opacity-90 text-glass-contrast-muted",
                           visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[3px_3px_0px_0px_var(--app-foreground)] rounded-none text-foreground opacity-90 bg-content1",
-                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-white/80 opacity-90",
+                          visualStyle === 'glass' && "bg-white/5 backdrop-blur-lg border border-white/10 text-glass-contrast-muted opacity-90",
                           visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground opacity-90"
                         ),
                 isNext

@@ -245,7 +245,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
         <div className="flex items-center justify-between mb-6 shrink-0 z-10">
           <div className="flex items-center gap-1.5">
             <Sparkles className="w-5 h-5 text-primary stroke-[2] animate-pulse" />
-            <span className="text-[10px] font-black tracking-widest uppercase text-[var(--app-outline)]/80">
+            <span className="text-[10px] font-black tracking-widest uppercase text-foreground/60">
               {isMalay ? "PENGATURAN AWAL" : "WELCOME SETUP"}
             </span>
           </div>
@@ -255,7 +255,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                 key={idx} 
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  idx === currentStep ? "w-6 bg-primary" : "w-1.5 bg-[var(--app-outline)]"
+                  idx === currentStep ? "w-6 bg-primary" : "w-1.5 bg-foreground/20"
                 )}
               />
             ))}
@@ -293,7 +293,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                   <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-tight bg-clip-text bg-gradient-to-br from-foreground via-foreground to-foreground/70">
                     {tOnboarding.welcomeTitle}
                   </h1>
-                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm mx-auto font-medium">
+                  <p className="text-sm text-foreground/75 leading-relaxed max-w-sm mx-auto font-medium">
                     {tOnboarding.welcomeDesc}
                   </p>
                 </div>
@@ -321,7 +321,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                     <MapPin className="w-6 h-6 text-primary stroke-[2.5]" />
                     {tOnboarding.locTitle}
                   </h2>
-                  <p className="text-xs text-[var(--app-outline)] font-medium max-w-sm mx-auto">
+                  <p className="text-xs text-foreground/75 font-medium max-w-sm mx-auto">
                     {tOnboarding.locDesc}
                   </p>
                 </div>
@@ -356,18 +356,18 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                 <div className="flex-1 flex flex-col min-h-0 border border-divider rounded-2xl bg-content1/50 backdrop-blur-md overflow-hidden shadow-inner">
                   <div className="px-2 py-2 border-b border-divider/40">
                     <div className="relative w-full">
-                      <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--app-outline)]/80 pointer-events-none" />
+                      <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/50 pointer-events-none" />
                       <input 
                         type="text" 
                         placeholder={tOnboarding.searchPlace}
                         value={searchQuery}
                         onChange={(e: any) => setSearchQuery(sanitizeInput(e.target.value))}
-                        className="w-full bg-[var(--app-surface-container)]/80 border border-divider hover:border-primary/50 focus:border-primary rounded-xl pl-10 pr-10 py-2.5 text-sm font-semibold text-foreground placeholder:text-[var(--app-outline)]/70 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="w-full bg-[var(--app-surface-container)]/80 border border-divider hover:border-primary/50 focus:border-primary rounded-xl pl-10 pr-10 py-2.5 text-sm font-semibold text-foreground placeholder:text-foreground/45 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                       />
                       {searchQuery && (
                         <button
                           onClick={() => setSearchQuery("")}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-[var(--app-surface-container-high)] text-[var(--app-outline)] transition-colors cursor-pointer"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-[var(--app-surface-container-high)] text-foreground/60 transition-colors cursor-pointer"
                         >
                           <X size={14} className="stroke-[2.5]" />
                         </button>
@@ -423,7 +423,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                   <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground leading-tight">
                     {tOnboarding.notifTitle}
                   </h2>
-                  <p className="text-sm text-[var(--app-outline)] leading-relaxed max-w-sm font-medium">
+                  <p className="text-sm text-foreground/75 leading-relaxed max-w-sm font-medium">
                     {tOnboarding.notifDesc}
                   </p>
                 </div>
@@ -471,7 +471,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                     <Volume2 className="w-6 h-6 text-primary stroke-[2.5]" />
                     {tOnboarding.soundTitle}
                   </h2>
-                  <p className="text-xs text-[var(--app-outline)] font-medium max-w-sm mx-auto">
+                  <p className="text-xs text-foreground/75 font-medium max-w-sm mx-auto">
                     {tOnboarding.soundDesc}
                   </p>
                 </div>
@@ -496,7 +496,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
                     >
                       <div className="flex flex-col text-left min-w-0 pr-4">
                         <span className="text-xs font-bold leading-tight truncate">{snd.name}</span>
-                        <span className={cn("text-[10px] truncate mt-1 leading-none font-medium", selectedSound === snd.id ? "text-primary/70" : "text-[var(--app-outline)]/70")}>{snd.desc}</span>
+                        <span className={cn("text-[10px] truncate mt-1 leading-none font-medium", selectedSound === snd.id ? "text-primary/70" : "text-foreground/60")}>{snd.desc}</span>
                       </div>
                       <Button 
                         isIconOnly 
@@ -524,7 +524,7 @@ export function OnboardingFlow({ onComplete, language }: OnboardingFlowProps) {
             <Button 
               variant="ghost" 
               onPress={handleBack} 
-              className="font-bold rounded-xl text-[var(--app-outline)] hover:bg-divider/20 cursor-pointer"
+              className="font-bold rounded-xl text-foreground/70 hover:bg-divider/20 cursor-pointer"
             >
               {tOnboarding.backBtn}
             </Button>

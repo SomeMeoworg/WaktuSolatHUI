@@ -109,7 +109,7 @@ export function SettingsModal({
     <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 gap-4">
       <div className="flex-1">
         <h4 className="text-sm font-semibold text-[var(--app-foreground)]">{title}</h4>
-        {description && <p className="text-xs text-[var(--app-outline)] mt-0.5 leading-relaxed">{description}</p>}
+        {description && <p className="text-xs text-foreground/60 mt-0.5 leading-relaxed">{description}</p>}
       </div>
       <div className="flex-shrink-0 flex items-center justify-end">
         {children}
@@ -144,19 +144,19 @@ export function SettingsModal({
                 className="w-full"
               >
                 <Tabs.List className="flex w-full bg-transparent gap-1">
-                  <Tabs.Tab id="general" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="general" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-foreground/60 hover:text-foreground">
                     <Settings size={16} /><span className="hidden sm:inline">{t("general")}</span>
                   </Tabs.Tab>
-                  <Tabs.Tab id="notifications" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="notifications" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-foreground/60 hover:text-foreground">
                     <Bell size={16} /><span className="hidden sm:inline">{t("notifications")}</span>
                   </Tabs.Tab>
-                  <Tabs.Tab id="adjustments" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="adjustments" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-foreground/60 hover:text-foreground">
                     <Clock size={16} /><span className="hidden sm:inline">{t("offset")}</span>
                   </Tabs.Tab>
-                  <Tabs.Tab id="advanced" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="advanced" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-foreground/60 hover:text-foreground">
                     <Sliders size={16} /><span className="hidden sm:inline">{t("sunnahAndOptional" as any) || "Lanjutan"}</span>
                   </Tabs.Tab>
-                  <Tabs.Tab id="mosque" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-[var(--app-outline)] hover:text-[var(--app-foreground)]">
+                  <Tabs.Tab id="mosque" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors data-[selected]:bg-[var(--app-surface)] data-[selected]:text-[var(--app-primary)] data-[selected]:shadow-sm text-foreground/60 hover:text-foreground">
                     <MoonStar size={16} /><span className="hidden sm:inline">{t("mosqueMode" as any) || "Mod Masjid"}</span>
                   </Tabs.Tab>
                 </Tabs.List>
@@ -260,7 +260,7 @@ export function SettingsModal({
                               <div className="pt-4 border-t border-[var(--app-outline-variant)]/20 space-y-4">
                                 <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
                                   <div className="w-full sm:w-1/2">
-                                    <label className="text-xs text-[var(--app-outline)] mb-1 block">Alert Sound</label>
+                                    <label className="text-xs text-foreground/60 mb-1 block">Alert Sound</label>
                                     <select
                                       className="w-full rounded-xl border border-[var(--app-outline-variant)]/30 bg-[var(--app-surface)] px-3 py-2 text-sm text-[var(--app-foreground)]"
                                       value={pref.sound}
@@ -272,7 +272,7 @@ export function SettingsModal({
                                     </select>
                                   </div>
                                   <div className="w-full sm:w-1/2">
-                                    <label className="text-xs text-[var(--app-outline)] mb-1 block">Pre-Alert</label>
+                                    <label className="text-xs text-foreground/60 mb-1 block">Pre-Alert</label>
                                     <select
                                       className="w-full rounded-xl border border-[var(--app-outline-variant)]/30 bg-[var(--app-surface)] px-3 py-2 text-sm text-[var(--app-foreground)]"
                                       value={String(pref.preAlert || 0)}
@@ -285,7 +285,7 @@ export function SettingsModal({
                                   </div>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-[var(--app-outline)] mb-2">Volume</p>
+                                  <p className="text-xs text-foreground/60 mb-2">Volume</p>
                                   <Slider
                                     minValue={0}
                                     maxValue={1}
@@ -488,7 +488,7 @@ export function SettingsModal({
             </div>
 
             {/* Close button */}
-            <Modal.CloseTrigger className="absolute top-6 right-6 p-2 rounded-full hover:bg-[var(--app-surface-container)] transition-colors text-[var(--app-outline)]" />
+            <Modal.CloseTrigger className="absolute top-6 right-6 p-2 rounded-full hover:bg-[var(--app-surface-container)] transition-colors text-foreground/60" />
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Droplets, Wind, Sun, Sunrise, Sunset, Umbrella, MapPin, Search, Thermometer, RefreshCcw, Activity } from "lucide-react";
 import { cn } from "../lib/utils";
+import { useVisualStyle } from "../hooks/useVisualStyle";
 import { M3_MOTION } from "../lib/motion";
 import { useAppContext } from "../AppContext";
 import { getWeatherDetails, WeatherData } from "./WeatherWidget";
@@ -61,6 +62,7 @@ const PROVIDERS = [
 export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRefresh, isRefreshing }: FullWeatherModalProps) {
   const { t, settings, updateSettings } = useAppContext();
   const { label: currentLabel, Icon: CurrentIcon } = getWeatherDetails(weather.weatherCode, weather.isDay, t);
+  const visualStyle = useVisualStyle();
 
   const hourlyForecasts = useMemo(() => {
     if (!weather.hourly) return [];
@@ -125,7 +127,14 @@ export function FullWeatherModal({ isOpen, onClose, weather, locationName, onRef
             exit={{ scale: 0.95, opacity: 0, y: "100%" }}
             transition={M3_MOTION.expressiveSpring}
             onClick={(e) => e.stopPropagation()}
-            className="bg-content1 w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[900px] flex flex-col rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl sm:my-auto text-foreground"
+            className={cn(
+              "w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[900px] flex flex-col rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl sm:my-auto text-foreground transition-all duration-300",
+              (!visualStyle || visualStyle === 'default' || visualStyle === 'glass')
+                ? "premium-glass-heavy premium-glow-border"
+                : visualStyle === 'retro'
+                  ? "border-2 border-[var(--app-foreground)] shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none bg-content1"
+                  : "shadow-[var(--soft-shadow-medium)] bg-content1"
+            )}
           >
             <div className="relative p-5 sm:p-6 md:p-10 shrink-0 bg-gradient-to-br from-[var(--app-primary-container, hsl(var(--heroui-primary) / 0.15))] to-[var(--app-surface-variant)] flex flex-col items-center justify-center text-center overflow-hidden">
               {onRefresh && (

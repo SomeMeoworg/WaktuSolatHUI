@@ -273,7 +273,7 @@ export function ClockPanel({
               exit={{ opacity: 0, scale: 0.95 }}
               className={cn(
                 "relative w-full mb-1.5 lg:mb-2 rounded-[24px] sm:rounded-[28px] overflow-hidden flex flex-col shrink-0",
-                (!visualStyle || visualStyle === 'default') && "premium-glass-heavy premium-glow-border text-white",
+                (!visualStyle || visualStyle === 'default') && "premium-glass-heavy premium-glow-border text-glass-contrast",
                 visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[6px_6px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
                 visualStyle === 'glass' && "bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)] premium-glow-border text-glass-contrast",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
@@ -284,31 +284,31 @@ export function ClockPanel({
                 {/* Top Row: Prayer Statuses */}
                 <div className={cn(
                   "flex flex-row justify-between items-center w-full border-b pb-2.5",
-                  (visualStyle === 'glass' || visualStyle === 'default') ? "border-white/10" : "border-divider"
+                  (visualStyle === 'glass' || visualStyle === 'default') ? "border-divider/20 dark:border-white/10" : "border-divider"
                 )}>
                   {prevPrayerName && (
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
-                      <span className={cn("text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-75", (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground/70" : "text-white/70")}>
+                      <span className={cn("text-[10px] sm:text-xs font-black uppercase tracking-widest", (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast-muted opacity-75" : "text-white/70")}>
                         {t("now")}:
                       </span>
-                      <span className={cn("text-xs sm:text-sm font-black", (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground" : "text-white")}>
+                      <span className={cn("text-xs sm:text-sm font-black", (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast" : "text-white")}>
                         {prevPrayerName}
                       </span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className={cn("text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-75", (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground/70" : "text-white/70")}>
+                    <span className={cn("text-[10px] sm:text-xs font-black uppercase tracking-widest", (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast-muted opacity-75" : "text-white/70")}>
                       {t("nextPrayer")}:
                     </span>
-                    <span className={cn("text-xs sm:text-sm font-black", (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground" : "text-white")}>
+                    <span className={cn("text-xs sm:text-sm font-black", (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast" : "text-white")}>
                       {nextPrayerName}
                     </span>
                     {nextPrayerTime && (
                       <span className={cn(
                         "text-[10px] sm:text-xs font-extrabold px-2 py-0.5 rounded-full select-none",
-                        (visualStyle === 'retro' || visualStyle === 'soft')
-                          ? "bg-foreground/10 text-foreground"
+                        (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default')
+                          ? "bg-foreground/10 text-glass-contrast"
                           : "bg-white/15 text-white/90"
                       )}>
                         {format(nextPrayerTime, settings.timeFormat === "12h" ? "hh:mm a" : "HH:mm")}
@@ -320,12 +320,12 @@ export function ClockPanel({
                 {/* Middle Row: Countdown Timer & Label */}
                 <div className="flex flex-row justify-between items-center w-full">
                   <div className="flex flex-col">
-                    <span className={cn("text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-60 mb-0.5", (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground/60" : "text-white/50")}>
+                    <span className={cn("text-[9px] sm:text-[10px] font-black uppercase tracking-widest mb-0.5", (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast-muted opacity-60" : "text-white/50")}>
                       {t("timeRemaining")}
                     </span>
                     <div className={cn(
                       "flex items-baseline font-mono text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter",
-                      (visualStyle === 'retro' || visualStyle === 'soft') ? "text-foreground" : "text-white"
+                      (visualStyle === 'retro' || visualStyle === 'soft' || !visualStyle || visualStyle === 'default') ? "text-glass-contrast" : "text-white"
                     )}>
                       {countdownParts.active ? (
                         <>
@@ -466,9 +466,9 @@ export function ClockPanel({
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onCalendarClick?.(); } }}
               className={cn(
                 "relative overflow-hidden flex items-center gap-2 sm:gap-2 md:gap-3 lg:gap-2 xl:gap-4 p-2.5 sm:p-2.5 md:p-3.5 lg:p-2.5 xl:p-4 transition-all duration-500 ease-out cursor-pointer select-none group",
-                (!visualStyle || visualStyle === 'default') && "premium-glass text-white",
+                (!visualStyle || visualStyle === 'default') && "premium-glass text-glass-contrast",
                 visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none bg-content1 text-foreground",
-                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white",
+                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-glass-contrast",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
               )}
             >
@@ -495,7 +495,7 @@ export function ClockPanel({
               {/* Month, Year, Day details */}
               <div className={cn(
                 "flex flex-col min-w-0 gap-0.5 z-10",
-                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white" : "text-foreground"
+                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast" : "text-foreground"
               )}>
                 <span className="text-xs md:text-sm lg:text-base xl:text-sm 2xl:text-base font-black leading-tight tracking-tight truncate">
                   {format(currentTime, "MMMM yyyy", {
@@ -504,7 +504,7 @@ export function ClockPanel({
                 </span>
                 <span className={cn(
                   "text-[9px] md:text-[10px] lg:text-xs xl:text-[10px] 2xl:text-xs font-extrabold uppercase tracking-widest leading-none opacity-80 truncate",
-                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/80" : "text-foreground/75",
+                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast-muted" : "text-foreground/75",
                   visualStyle === 'retro' && "opacity-95 text-foreground"
                 )}>
                   {format(currentTime, "EEEE", {
@@ -521,9 +521,9 @@ export function ClockPanel({
               whileTap={{ scale: 0.98 }}
               className={cn(
                 "relative overflow-hidden flex items-center gap-2 sm:gap-2 md:gap-3 lg:gap-2 xl:gap-4 p-2.5 sm:p-2.5 md:p-3.5 lg:p-2.5 xl:p-4 transition-all duration-500 ease-out select-none group",
-                (!visualStyle || visualStyle === 'default') && "premium-glass text-white",
+                (!visualStyle || visualStyle === 'default') && "premium-glass text-glass-contrast",
                 visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none bg-content1 text-foreground",
-                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white",
+                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-glass-contrast",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
               )}
             >
@@ -550,14 +550,14 @@ export function ClockPanel({
               {/* Hijri details */}
               <div className={cn(
                 "flex flex-col min-w-0 gap-0.5 z-10",
-                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white" : "text-foreground"
+                (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast" : "text-foreground"
               )}>
                 <span className="text-xs md:text-sm lg:text-base xl:text-sm 2xl:text-base font-black leading-tight tracking-tight truncate">
                   {hijriMonthYear || "..."}
                 </span>
                 <span className={cn(
                   "text-[9px] md:text-[10px] lg:text-xs xl:text-[10px] 2xl:text-xs font-extrabold uppercase tracking-widest leading-none opacity-80 truncate",
-                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/80" : "text-foreground/75",
+                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast-muted" : "text-foreground/75",
                   visualStyle === 'retro' && "opacity-95 text-foreground"
                 )}>
                   {hijriLabel}
@@ -580,9 +580,9 @@ export function ClockPanel({
               whileTap={{ scale: 0.98 }}
               className={cn(
                 "p-2 sm:p-2.5 rounded-[var(--shape-xl)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
-                (!visualStyle || visualStyle === 'default') && "premium-glass text-white",
+                (!visualStyle || visualStyle === 'default') && "premium-glass text-glass-contrast",
                 visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
-                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white",
+                visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-glass-contrast",
                 visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
               )}
             >
@@ -598,11 +598,11 @@ export function ClockPanel({
               <div className="relative z-10 flex flex-col h-full justify-between gap-1">
                 <h3 className={cn(
                   "text-xs font-semibold tracking-wide font-black uppercase tracking-widest",
-                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/80" : "text-secondary"
+                  (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast-muted" : "text-secondary"
                 )}>
                   {t("qibla")}
                 </h3>
-                <div className={(!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white" : "text-foreground"}>
+                <div className={(!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast" : "text-foreground"}>
                   <p className="text-lg sm:text-xl lg:text-2xl font-black font-mono tracking-tighter leading-none">
                     292.41°
                   </p>
@@ -719,9 +719,9 @@ export function ClockPanel({
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className={cn(
             "p-2 sm:p-2.5 rounded-[var(--shape-xl)] flex-1 relative overflow-hidden cursor-default min-h-[56px] sm:min-h-[64px] lg:min-h-[68px] flex flex-col justify-between",
-            (!visualStyle || visualStyle === 'default') && "premium-glass text-white",
+            (!visualStyle || visualStyle === 'default') && "premium-glass text-glass-contrast",
             visualStyle === 'retro' && "border-2 border-[var(--app-foreground)] shadow-[4px_4px_0px_0px_var(--app-foreground)] rounded-none text-foreground bg-content1",
-            visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-white",
+            visualStyle === 'glass' && "bg-white/10 backdrop-blur-xl border border-white/20 text-glass-contrast",
             visualStyle === 'soft' && "shadow-[var(--soft-shadow-light)] border border-divider bg-content1 text-foreground"
           )}
         >
@@ -737,11 +737,11 @@ export function ClockPanel({
           <div className="relative z-10 flex flex-col h-full justify-between gap-1">
             <h3 className={cn(
               "text-xs font-semibold tracking-wide font-black uppercase tracking-widest",
-              (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white/80" : "text-secondary"
+              (!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast-muted" : "text-secondary"
             )}>
               {t("sunrise")}
             </h3>
-            <div className={(!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-white" : "text-foreground"}>
+            <div className={(!visualStyle || visualStyle === 'default' || visualStyle === 'glass') ? "text-glass-contrast" : "text-foreground"}>
               <p className="text-lg sm:text-xl lg:text-2xl font-black font-mono tracking-tighter leading-none">
                 {syurukTime || "--:--"}
               </p>
